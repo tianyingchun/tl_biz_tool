@@ -1,6 +1,6 @@
 {
 	"name":"build `/app` folder",
-	"assets":["images/","views/","fonts/"],
+	"assets":["images/","views/"],
 	"ignoreMinify":true,
 	"target":"app/"
 }

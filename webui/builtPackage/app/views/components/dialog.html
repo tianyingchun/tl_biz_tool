@@ -1,0 +1,16 @@
+<div class="ui-dialog modal" data-shown="showDialog" data-config="dialogConfig">
+    <div class="modal-dialog {{config.classes}}">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="showTitle">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span data-ng-click="close('close')">×</span>
+                </button>
+                <h4 class="modal-title">{{config.title||'默认标题'}}</h4>
+            </div>
+            <div class="modal-body" data-ng-bind-html="config.body">{{config.body||''}}</div>
+            <div class="modal-footer" ng-show="showFooter">
+                <button data-ng-repeat="button in config.buttons" class="{{button.classes||'btn-danger' }} btn ui-dialog-btn-cancel" data-ng-click="buttonTap(button)">{{button.txt}}</button>
+            </div>
+        </div>
+    </div>
+</div>
