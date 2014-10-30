@@ -144,6 +144,8 @@ function compileComponent(build_path, callback) {
 
                         log.writeln("copy `" + build_path + "/" + assets[i] + "` to `" + path.join(config_deploy_target, componentName, assets[i]) + "` successfully ");
                     } else {
+                        log.error(asset_deploy_source)
+                        
                         log.warn("the deploy source can't be found `" + build_path + "/" + assets[i] + "` for `" + componentName + "` ");
                     }
                 };

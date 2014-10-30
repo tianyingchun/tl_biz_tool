@@ -3,7 +3,7 @@
 // -----------------------------------------------------------
 (function(app) {
     var debugModel = true;
-    var version = "";
+    var version = "v1";
     // common configuration.
     app.constant("appConfig", {
         "debugModel": debugModel, // set to false if put it to release/test env

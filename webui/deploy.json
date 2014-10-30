@@ -2,7 +2,7 @@
     "name": "built home root",
     "target": "./",
     "ignoreMinify": false,
-    "assets": ["./index.html", "favicon.ico"],
+    "assets": ["./index.html"],
     "output": {
         "assets": "../",
         "css": "app/app.css",
