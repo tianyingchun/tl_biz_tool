@@ -1,0 +1,6 @@
+{
+    "name": "build `/content`",
+    "target": "content/",
+    "ignoreMinify": true,
+    "assets": ["spinner.css", "idcard_code.json", "images/"]
+}

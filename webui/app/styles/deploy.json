@@ -1,0 +1,8 @@
+{
+	"name":"build `/app/styles/`",
+	"target":"app/",
+	"output":{
+		"js":"app.js",
+		"css":"app.css"
+	}
+}

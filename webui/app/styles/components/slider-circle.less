@@ -1,0 +1,44 @@
+@import url(../bootstrap/mixins.less);
+ .slider-circle {
+    height: 32/12/2rem;
+    padding: 80/12/2-1rem 0 80/12/2+32/12/2/2rem;
+    position: relative;
+    .line {
+        height: 2px;
+        background: #0087e3;
+        position: absolute;
+        top: (80/12/2+32/12/2/2)-1rem;
+        width: 100%;
+        z-index: 10;
+    }
+    .circle-wrapper {
+        width: 100/3%;
+        position:relative;
+        display: inline-block;
+        float: left;
+        &.selected {
+            .circle {
+                background-color: #0087e3;
+            }
+        }
+    }
+    .circle {
+        position: relative;
+        z-index: 11;
+        width: 32/12/2rem;
+        height: 32/12/2rem;
+        .center-block();
+        &.first {
+            float:left;
+            margin-left: -32/12/4rem;
+        }
+        &.last {
+            position:absolute;
+            right: -32/12/4rem;
+        }
+        .border-top-radius(32/12/2rem);
+        .border-bottom-radius(32/12/2rem);
+        border:1px solid #0087e3;
+        background-color:#fff;
+    }
+}

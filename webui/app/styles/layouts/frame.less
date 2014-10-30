@@ -1,0 +1,32 @@
+@import url("../bootstrap/variables.less");
+@padding: 40/12/2rem;
+@margin: 40/12/2rem;
+// Document level adjustments
+html {
+    font-size: 12px;
+    // for Extra small screen / phone
+    @media (max-width: @screen-xs-max) {
+        font-size: 12px;
+    }
+    // Small screen / tablet
+    @media (min-width: @screen-sm-min) and (max-width: @screen-sm-max) {
+        font-size: 14px;
+    }
+    // Medium screen / desktop
+    @media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
+        font-size: 16px;
+    }
+    // Large screen / wide desktop
+    @media (min-width: @screen-lg-min) {
+        font-size: 18px;
+    }
+}
+body {
+    font-family: "黑体";
+    background-color: #f6f6f6;
+}
+// 
+// uniform header for all pages. -----
+// unit calculator: because the ux psd designed by iphone (320*480) and magnified to (640*960)
+// so we need to give font-size: UX (font-size /12px[html])2, padding,margin,height is the same with font-size
+// -----------------------------------

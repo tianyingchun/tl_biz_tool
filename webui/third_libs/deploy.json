@@ -1,0 +1,5 @@
+{
+	"name":"build `/third_libs`",
+	"target":"./",
+	"output":"lib"
+}

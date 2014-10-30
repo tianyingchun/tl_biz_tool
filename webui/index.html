@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html id="ng-app" data-ng-app="tl_biz_tools">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!--以IE8模式渲染-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="apple-touch-fullscreen" content="YES" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>Biz tools for clothesgate</title>
+    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" href="content/spinner.css">
+</head>
+
+<body style="margin: 0;padding:0;">
+    <!-- show spinner within main controller -->
+    <div class="wrapper" data-ng-controller="MainCtrl">
+        <div class="ui-spinner skin-default loading-wrapper" data-counter="spinnerCounter" data-x-spinner="showLoading" data-message="message || '加载中...'" data-skin="skin-default">
+            <div class="loading-wrapper">
+                <div class="loading">
+                    <div class="spinner-animation"></div>
+                    <div class="spinnerLogo"></div>
+                </div>
+                <div class="message ng-binding" ng-bind="message">加载中...</div>
+            </div>
+        </div>
+        <!-- dialog -->
+        <div data-dialog></div>
+        <div id="view" data-ng-view class="view-container">
+
+        </div>
+        <!-- <div data-app-cache></div> -->
+    </div>
+    <link rel="stylesheet" href="141030/app/app.css">
+    <script src="141030/app/app.js"></script>
+</body>
+
+</html>
