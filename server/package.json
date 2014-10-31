@@ -13,14 +13,12 @@
         "body-parser": "~1.0.0",
         "debug": "~0.7.4",
         "consolidate": "*",
-        "swig": "*",
-        "mongodb": "1.4.7",
-        "mongoose":"~3.8.4",
-        "underscore":"1.6.0",
-        "request":"*",
-        "qr-image":"*",
-        "crypto":"*",
-        "atma-formatter":"*",
-        "fs-finder":"*"
+        "underscore": "1.6.0",
+        "request": "*",
+        "mssql": "*",
+        "qr-image": "*",
+        "crypto": "*",
+        "atma-formatter": "*",
+        "fs-finder": "*"
     }
 }

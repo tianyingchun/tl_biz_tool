@@ -9,18 +9,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cons = require('consolidate');
-// mongodb.
-var mongoose = require('mongoose');
 
 var config = require("./config")();
 var route = require("./config/route");
 var debug = require('debug')(config.appName);
 
-
-// var options = {
-//     key: fs.readFileSync('./2_smartco.me.key'),
-//     cert: fs.readFileSync('./1_smartco.me_bundle.crt')
-// };
+// sql server connection.
+var sql = require('mssql');
 
 
 var app = express();
@@ -29,47 +24,34 @@ var app = express();
 app.set("env", config.mode);
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+// app.set('views', path.join(__dirname, 'views'));
 // assign the swig engine to .html files
-app.engine('html', cons.swig);
+// app.engine('html', cons.swig);
 // set .html as the default extension 
-app.set('view engine', 'html');
+// app.set('view engine', 'html');
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 
-express.static.mime.define({'text/xml': ['plist']});
+express.static.mime.define({
+    'text/xml': ['plist']
+});
 // the default is "/" capture the static dir as all static resource root.
 app.use("/static", express.static(path.join(__dirname, 'public')));
 
-// first check if mongodb has connect successfully!
-var db = mongoose.connect('mongodb://' + config.mongo.host + ':' + config.mongo.port + '/singleapp');
-db.connection.on("error", function(error) {
-    debug('Sorry, there is no mongo db server running.');
-}).once("open", function callback() {
-
+sql.connect(config.sqlserver, function(err) {
     // initialize application route config.
     route.init(app);
 
-    https.createServer( app).listen(config.port, function() {
+    https.createServer(app).listen(config.port, function() {
         debug(
-            'Successfully connected to mongodb://%s:%s %s', config.mongo.host, config.mongo.port,
-            ' Express server listening on port ' + config.port
+            'Express server listening on port ' + config.port
         );
     });
-
-    // listen http port.
-    // app.listen(config.port, function() {
-    //     debug(
-    //         'Successfully connected to mongodb://%s:%s %s', config.mongo.host, config.mongo.port,
-    //         ' Express server listening on port ' + config.port
-    //     );
-    // });
-
-
 });
+
 
 // command line $>> npm start
 module.exports = app;
