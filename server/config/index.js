@@ -9,7 +9,7 @@ var config = {
 var serverCfg = {
     local: {
         mode: "local",
-        port: 10001,
+        port: 3000,
         nginxPort: "",
         virtualDir: "",
         sqlserver: {
@@ -21,7 +21,7 @@ var serverCfg = {
     },
     production: {
         mode: "production",
-        port: 8084,
+        port: 4000,
         nginxPort: "",
         virtualDir: "",
         sqlserver: {

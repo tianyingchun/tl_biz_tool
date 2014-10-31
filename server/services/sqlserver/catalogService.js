@@ -2,7 +2,6 @@ var util = require('util');
 
 var config = require("../../config")();
 var exception = require('../../helpers/exception');
-var dateFormat = require('../../helpers/dateformat');
 var catalogDataSchema = require("../../models/Catalog");
 var debug = require('debug')(config.appName);
 

@@ -1,5 +1,4 @@
 var util = require('util');
-var mongoose = require('mongoose');
 var _ = require('underscore');
 var config = require("../../config")();
 var exception = require('../../helpers/exception');

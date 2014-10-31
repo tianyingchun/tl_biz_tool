@@ -2,4 +2,4 @@ function CatalogModel() {
     this.name = "";
 }
 
-module.exports = userSchema;
+module.exports = CatalogModel;

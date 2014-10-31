@@ -1,0 +1,42 @@
+{% extends "./html5.html" %}
+
+{% block css %}
+	{% if DEV %}
+	  {% set css = 'less' %}
+	{% else %}
+	  {% set css = 'css' %}
+	{% endif %}
+<link rel="shortcut icon" href="{{baseurl}}/assets/favicon.ico"/>
+<!-- <link rel="stylesheet{% if DEV %}/less{% endif %}" href="{{ baseurl }}/styles/master.{{ css }}"> -->
+<link rel="stylesheet" href="{{baseurl}}/styles/master.css">
+<link rel="stylesheet" href="{{baseurl}}/styles/mediaqueries.css" type="text/css" media="all">
+<link rel="stylesheet" href="{{baseurl}}/scripts/jqui/jquery-ui.css" type="text/css" media="all">
+<!--[if lt IE 9]>
+<link href="{{baseurl}}/styles/ie/ie8.css" rel="stylesheet" type="text/css" media="all">
+<script src="{{baseurl}}/scripts/ie/css3-mediaqueries.min.js"></script>
+<script src="{{baseurl}}/scripts/ie/html5shiv.min.js"></script>
+<![endif]-->
+{% endblock %}
+
+<!-- layout body fragment -->
+{% block body %}
+	{% block header %}
+		  
+	{% endblock%}
+	<div class="clear" style="margin-top:10px;">
+	{% block container %}
+		
+	{% endblock%}
+	</div>
+	  
+{% endblock %}
+<!-- layout body fragment end-->
+
+
+{% block js %}
+	 
+{% endblock %}
+
+{% block scripts%}
+
+{% endblock%}
