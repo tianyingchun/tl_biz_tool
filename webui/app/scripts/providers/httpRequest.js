@@ -129,7 +129,7 @@ app.factory("httpRequest", ['$log', '$http', '$q', 'utility', 'appConfig', 'remo
             };
 
             // in the most time ,we can invoke remoteRequest to send http request
-            this.remoteRequest = function(url, requestData, dto, customizedData, config
+            this.remoteRequest = function(url, requestData, dto, customizedData, config){
                 var promise;
                 var valid = /^(ftp|http|https):\/\/[^ "]+$/.test(url);
                 if (!valid) {
@@ -137,21 +137,21 @@ app.factory("httpRequest", ['$log', '$http', '$q', 'utility', 'appConfig', 'remo
                 }
                 switch (defaultMethod) {
                     case "POST":
-                        promise = this.postRequest(url, requestData, dto, customizedData, config
+                        promise = this.postRequest(url, requestData, dto, customizedData, config);
                         break;
                     case "GET":
-                        promise = this.getRequest(url, requestData, dto, customizedData, config
+                        promise = this.getRequest(url, requestData, dto, customizedData, config);
                         break;
                     default:
-                        promise = this.postRequest(url, requestData, dto, customizedData, config
+                        promise = this.postRequest(url, requestData, dto, customizedData, config);
                         break;
                 }
                 return promise;
             };
             // used to ajax fetch project assets.
-            this.localRequest = function(url, requestData, dto, customizedData, config
+            this.localRequest = function(url, requestData, dto, customizedData, config){
                 var url = appConfig.getTemplateUrl(url);
-                var promise = this.getRequest(url, requestData, dto, customizedData, config
+                var promise = this.getRequest(url, requestData, dto, customizedData, config);
                 return promise;
             };
         };

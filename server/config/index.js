@@ -13,9 +13,9 @@ var serverCfg = {
         nginxPort: "",
         virtualDir: "",
         sqlserver: {
-            username: "",
-            password: "",
-            server: "10.211.55.4\SQLEXPRESS", //You can use 'localhost\\instance' to connect to named instance
+            username: "sa",
+            password: "19861121.lr",
+            server: "TERENCE-PC\\SQLEXPRESSS", //You can use 'localhost\\instance' to connect to named instance
             database: ""
         }
     },
@@ -25,9 +25,9 @@ var serverCfg = {
         nginxPort: "",
         virtualDir: "",
         sqlserver: {
-            username: "",
-            password: "",
-            server: "", //You can use 'localhost\\instance' to connect to named instance
+            username: "sa",
+            password: "19861121.lr",
+            server: "TERENCE-PC\\SQLEXPRESSS", //You can use 'localhost\\instance' to connect to named instance
             database: ""
         }
     }
