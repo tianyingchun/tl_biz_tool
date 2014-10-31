@@ -10,7 +10,7 @@ var serverCfg = {
     local: {
         mode: "local",
         sqlConn:"http://192.168.12.40:8080/app/", // remove push message
-        port: 10000,
+        port: 10001,
         nginxPort:"",
         virtualDir: "",
         mongo: {

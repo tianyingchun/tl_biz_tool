@@ -5,7 +5,7 @@ app.factory("localStorageCache", ["$log",
     function($log) {
         var cacheFactories = {};
 
-        var LOCAL_STORAGE_FACTORY_PREFIX = "PAF_E90_";
+        var LOCAL_STORAGE_FACTORY_PREFIX = "TL_Biz_Tool";
 
         if (!supports_html5_storage()) {
             throw angular.$$minErr('localStorageCache')('localstorage', "the localstorage is not available!");

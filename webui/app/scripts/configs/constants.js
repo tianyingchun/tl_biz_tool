@@ -10,14 +10,14 @@ app.factory("remoteApi", ["$location", "$log", function($location, $log) {
     // OTHER SPECIFIC ENVIONMENT RESOURCE DEFINITON.
     var ENVMapping = {
         "localhost": {
-            apiBaseUrl: "http://114.80.86.110:11380/mtp-web", //"http://192.168.11.212:8080/mtp-web",//stg5://http://114.80.86.110:11380/mtp-web
+            apiBaseUrl: "http://localhost:100001", //"http://192.168.11.212:8080/mtp-web",//stg5://http://114.80.86.110:11380/mtp-web
             defaultMethod: 'POST' //will used for all http request while we invoke STAG envionment.
 
             // apiBaseUrl: "http://192.168.14.145:8081/tests",
             // defaultMethod: 'GET', //'GET', in my local /test/h5/xxxx.json we need use get request.
         },
         "production": {
-            apiBaseUrl: "https://mobile.1qianbao.com/mtp-web",
+            apiBaseUrl: "http://localhost:100001",
             defaultMethod: 'POST'
         }
     }
@@ -36,20 +36,14 @@ app.factory("remoteApi", ["$location", "$log", function($location, $log) {
 
     return result;
 }]);
- 
+
 // agreements definitions.
 app.constant("cacheKeysDefinition", {
     cacheFactoryKeys: {
-        "common": "COMMON_INFO", //other cachek item factory
-        "provinceCityArea": "PROVINCE_CITY_AREA" //省市区 CACHEKEY
+        "common": "COMMON_INFO" //other cachek item factory
     },
     cacheKeys: {
-        "idcard": "ID_CARD_NUMBER", //身份证号码CACHEKEY,
-        "basicInfo": "USER_BASIC_INFO", //用户基本信息的CACHEKEY.
-        "address": "DELIVERY_ADDRESS_INFO", //地址信息
-        "idcardOrg": "ID_CARD_ORG", // 身份证对应的发证机关
-        "provinceCityArea": "PCR_SOURCE", // 省，市，区 数据源CACHEK KAY
-        "inviterTel": "INVITER_TEL" //邀请人手机号码
+        "config": "SYSTEM_CONFIG"
     }
 });
 
@@ -68,7 +62,7 @@ app.constant("dialogDefaultCfg", {
     }],
     callbackFn: null
 });
- 
+
 // all available regex rules.
 app.constant("regexRules", {
     "postcode": /^[1-9][0-9]{5}$/, //邮政编码

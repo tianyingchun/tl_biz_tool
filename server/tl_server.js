@@ -17,10 +17,10 @@ var route = require("./config/route");
 var debug = require('debug')(config.appName);
 
 
-var options = {
-    key: fs.readFileSync('./2_smartco.me.key'),
-    cert: fs.readFileSync('./1_smartco.me_bundle.crt')
-};
+// var options = {
+//     key: fs.readFileSync('./2_smartco.me.key'),
+//     cert: fs.readFileSync('./1_smartco.me_bundle.crt')
+// };
 
 
 var app = express();

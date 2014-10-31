@@ -1,9 +1,9 @@
 {
-    "name": "beacon",
+    "name": "zl_biz_tool_server",
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "start": "DEBUG=beacon supervisor -w 'views,services,models,controllers,config' -e 'html|node|js' node lbsbms.js"
+        "start": "DEBUG=zl_biz_tool_server supervisor -w 'services,models,controllers,config' -e 'html|node|js' node tl_server.js"
     },
     "dependencies": {
         "express": "~4.2.0",
