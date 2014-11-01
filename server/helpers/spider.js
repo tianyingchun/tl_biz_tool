@@ -120,6 +120,14 @@ function fetchProductSpecOther($, $lis) {
 	return result;
 };
 
+function fetchProductDescriptions($) {
+	var $description = $("#custom-description").find(".ui-box-body");
+	if ($description && $description.length) {
+		$description.find("a").remove();
+	}
+	return $description.html();
+};
+
 /**
  * event type: starting, finished, error, success
  * @param {string} httpUrl
@@ -285,9 +293,14 @@ _.extend(SpiderService.prototype, {
 		var prices = [];
 		var $discount_price = this.$dom("#sku-discount-price").find('span');
 		var $ = this.$dom;
-		$discount_price.each(function(i, item) {
-			prices.push($(item).text());
-		});
+		// check if we have multi prices.
+		if ($discount_price && $discount_price.length) {
+			$discount_price.each(function(i, item) {
+				prices.push($(item).text());
+			});
+		} else {
+			prices.push(this.$dom("#sku-discount-price").text());
+		}
 		this.nowPrice = prices.reverse();
 	},
 	fetchProductAttribtsList: function() {
@@ -333,6 +346,7 @@ _.extend(SpiderService.prototype, {
 	},
 	fetchDescription: function() {
 		logger.debug("filter to get product description...");
+		this.description = fetchProductDescriptions(this.$dom);
 	}
 });
 
