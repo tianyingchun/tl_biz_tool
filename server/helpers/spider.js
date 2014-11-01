@@ -39,44 +39,124 @@ function loadHtmlDocument(host, callback) {
 	request.end();
 };
 
-var SpiderService = function(httpUrl) {
+/**
+ * event type: starting, finished, error, success
+ * @param {string} httpUrl
+ */
+function SpiderService(httpUrl) {
 	EventTarget.call(this);
-	// the value indicates current html loading status, false: fetching, true: done
-	this.__hasFetchDone = false;
+
+	// public properties.
 	this.url = httpUrl;
+	// store all document code fetched from providered http url.
 	this.dom = "";
 
+	// page title
+	this.title = "";
+	// categories ---women>>dresses ==>[dresses, women]
+	this.categories = [];
+	// price list the higher the before[10,9,8,5.5]
+	this.priceList = [];
 
-	var _this = this;
-	loadHtmlDocument(this.url, function(result) {
-		_this.__hasFetchDone = true;
-		if (result.failed === true) {
-			debug("loadHtmlDocument failed!");
-			_this.fire({
-				"status": "finished",
-				failed: true
-			});
-		} else {
-			// save current all dom html codes.
-			this.dom = dom;
-			// fetch all sorted categories.
-			_this.fetchCategories();
-			// fetch page title.
-			_this.fetchTitle();
-			// fetch price list from highest price 2 lowest price. [18.00,17.00,15.00] --USD
-			_this.fetchPriceList();
-			// fetch all supported color list.
-			_this.fetchColorList();
-			// fetch all size list
-			_this.fetchSizeList();
+	// all product specs attributes eg. color, size, etc.
+	this.productAttribts = {
+		size: [],
+		color: []
+	};
 
-			//fetch product item specifications.
-			_this.fetchItemSpecs();
+	// all key value canbe used to category filtered. e.g. {gender:male, style:american}
+	this.specAttribts = {};
 
-			// fetch product description.
-			_this.fetchDescription();
-		}
-	});
+	// the html code for description. need to remove all specical characters.
+	this.description = "";
+
+	// the value indicate loading html status.
+	this.__status = "starting";
+
+	// the value indicates current html loading type, false: fetching, true: done
+	this.__hasFetchDone = false;
+	// event data.
+	var eventData = {
+		"type": "finished"
+	};
+	// @private
+	this.__starting = function() {
+		this.__hasFetchDone = false;
+		this.__status = "starting";
+		// fire starting loading page document contents event.
+		this.fire(_.extend(eventData, {
+			"type": "starting"
+		}));
+
+		// loading..
+		this._loadPageHtml();
+	};
+	// @private
+	this.__finished = function() {
+		this.__hasFetchDone = true;
+		this.__status = "finished";
+
+		// fire finish loading page document contents event.
+		this.fire(_.extend(eventData, {
+			"type": "finished"
+		}));
+	};
+
+	//@private
+	this.__error: function(result) {
+		this.__hasFetchDone = true;
+		this.__status = "failed";
+		// fire finish loading page document contents event.
+		this.fire(_.extend({
+			type: "error"
+		}, result));
+	};
+
+	// @private
+	this.__success = function() {
+		this.__status = "success";
+		// fire finish loading page document contents event.
+		this.fire(_.extend({
+			type: "success"
+		}, this.getResult()));
+	};
+	this.getResult = function() {
+
+	};
+	this.hasSuccessFetched = function() {
+
+	};
+	// protected method
+	this._loadPageHtml = function() {
+		var _this = this;
+		loadHtmlDocument(this.url, function(result) {
+			_this.__finished();
+
+			if (result.failed === true) {
+				debug("loadHtmlDocument failed!");
+				_this.__error(result);
+			} else {
+				// save current all dom html codes.
+				this.dom = dom;
+				// fetch all sorted categories.
+				_this.fetchCategories();
+				// fetch page title.
+				_this.fetchTitle();
+				// fetch price list from highest price 2 lowest price. [18.00,17.00,15.00] --USD
+				_this.fetchPriceList();
+				// fetch all supported color list.
+				_this.fetchProductAttribtsList();
+
+				//fetch product item specifications.
+				_this.fetchspecAttribts();
+
+				// fetch product description.
+				_this.fetchDescription();
+
+				_this.__success();
+			}
+		});
+	}
 };
 
 SpiderService.prototype = new EventTarget();
@@ -84,26 +164,30 @@ SpiderService.prototype.constructor = SpiderService;
 
 // expose usefull interface
 _.extend(SpiderService.prototype, {
+	start: function() {
+		this.reLoad();
+	},
+	reLoad: function() {
+		this.__starting();
+	},
 	fetchCategories: function() {
-		
+		debug("filter to get categories...");
 	},
 	fetchTitle: function() {
-
+		debug("filter to get title content...");
 	},
 	fetchPriceList: function() {
+		debug("filter to get price list...");
+	},
+	fetchProductAttribtsList: function() {
+		debug("filter to get product variant specifications list...");
 
 	},
-	fetchColorList: function() {
-
-	},
-	fetchSizeList: function() {
-
-	},
-	fetchItemSpecs: function() {
-
+	fetchspecAttribts: function() {
+		debug("filter to get specifications attributes...");
 	},
 	fetchDescription: function() {
-
+		debug("filter to get product description...");
 	}
 });
 
