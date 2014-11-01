@@ -39,6 +39,7 @@ function loadHtmlDocument(url, callback) {
 
 
 function rgbConvert2Hex(rgb) {
+	if (!rgb) return "";
 	var regexp = /^rgb\(([0-9]{0,3})\,\s([0-9]{0,3})\,\s([0-9]{0,3})\)/g;
 	var re = rgb.replace(regexp, "$1 $2 $3").split(" "); //利用正则表达式去掉多余的部分
 	var hexColor = "#";
@@ -66,10 +67,10 @@ function fetchProductSpecColor($, $lis) {
 			var $liItem = $(liItem);
 			var $colorSpan = $liItem.find("span.color");
 			if ($colorSpan && $colorSpan.length) {
-				if ($colorSpan[0].tagName == "SPAN") {
+				if ($colorSpan[0].name == "span") {
 					// convert rgb 2 hex.
-					var color = rgbConvert2Hex(colorSpan.css("backgroundColor"));
-					var colorTitle = colorSpan.attr("title");
+					var colorTitle = $colorSpan.attr("title");
+					var color = rgbConvert2Hex($colorSpan.css("backgroundColor"));
 					result.push({
 						title: colorTitle,
 						value: color
@@ -95,7 +96,7 @@ function fetchProductSpecSize($, $lis) {
 			var value = $sizeSpan.text();
 			result.push({
 				title: value,
-				text: value
+				value: value
 			});
 		});
 	}
@@ -112,7 +113,7 @@ function fetchProductSpecOther($, $lis) {
 			var value = $otherSpan.text();
 			result.push({
 				title: value,
-				text: value
+				value: value
 			});
 		});
 	}
@@ -262,7 +263,7 @@ _.extend(SpiderService.prototype, {
 	},
 	fetchCategories: function() {
 		logger.debug("filter to get categories...");
-		var $breadcrumb = this.$dom("div.ui-breadcrumb").find("a");
+		var $breadcrumb = this.$dom("div.ui-breadcrumb >a");
 		var crumb = [];
 		var $ = this.$dom;
 		$breadcrumb.each(function(i, item) {
@@ -272,7 +273,7 @@ _.extend(SpiderService.prototype, {
 	},
 	fetchTitle: function() {
 		logger.debug("filter to get title content...");
-		this.title = this.$dom("h1.title").html();
+		this.title = this.$dom("h1.product-name").text();
 	},
 	fetchOldPriceList: function() {
 		logger.debug("filter to get old price list...");
@@ -299,7 +300,7 @@ _.extend(SpiderService.prototype, {
 			var $lis = $dlItem.find("ul li");
 			var title = $dlItem.find(".pp-dt-ln").text();
 
-			title = title && title.replace("/[^a-zA-Z]/ig", "").toLowerCase();
+			title = title && title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
 			if (title == "color") {
 				productAttribtsList[title] = fetchProductSpecColor($, $lis);
@@ -308,11 +309,27 @@ _.extend(SpiderService.prototype, {
 			} else {
 				productAttribtsList[title] = fetchProductSpecOther($, $lis);
 			}
+
 		});
 		this.productAttribts = productAttribtsList;
 	},
 	fetchspecAttribts: function() {
 		logger.debug("filter to get specifications attributes...");
+		var $ = this.$dom;
+		var $specItems = $("#product-desc dl.ui-attr-list");
+		var result = [];
+		if ($specItems && $specItems.length) {
+			$specItems.each(function(i, item) {
+				var title = $(item).find("dt").text();
+				title = title && title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+				var value = $(item).find("dd").text();
+				result.push({
+					title: title,
+					value: value
+				});
+			});
+		}
+		this.specAttribts = result;
 	},
 	fetchDescription: function() {
 		logger.debug("filter to get product description...");

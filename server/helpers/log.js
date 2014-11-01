@@ -10,12 +10,14 @@ var serverCfg = fs.readJsonSync("../server_config.json").server;
 if (serverCfg.logDir) {
 	fs.ensureDirSync(serverCfg.logDir);
 }
-var fileName = fs.ensureFileSync(path.join(serverCfg.logDir, dateFormat(new Date(),"YYYY-MM-DD")+".log"));
+var _filename = path.join(serverCfg.logDir, dateFormat(new Date(), "YYYY-MM-DD") + ".log");
+fs.ensureFileSync(_filename);
+
 var logger = new winston.Logger({
 	transports: [
 		new winston.transports.File({
 			level: 'info',
-			filename: fileName || './logs/all-logs.log',
+			filename: _filename || './logs/all-logs.log',
 			handleExceptions: true,
 			json: true,
 			maxsize: 5242880, //5MB
