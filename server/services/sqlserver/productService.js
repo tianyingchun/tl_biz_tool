@@ -20,6 +20,7 @@ function ProductDataProvider() {
 	this.extractOnlineProductDetail = function(httpUrl, callback) {
 		var spider = new Spider(httpUrl);
 		spider.addHandler('success', _.bind(extractDataDetailHandler, this, callback));
+		spider.addHandler('error', _.bind(extractDataDetailHandler, this, callback));
 		spider.start();
 	};
 };

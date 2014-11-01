@@ -33,6 +33,8 @@ function loadHtmlDocument(url, callback) {
 		response.on("error", function(err) {
 			callback(exception.getErrorModel(err));
 		});
+	}).on('error', function(err) {
+		callback(exception.getErrorModel(err));
 	});
 };
 
