@@ -23,7 +23,7 @@ var getBaseUrl = function(req, queryPath) {
         // if public access url has port number eg. ngix server. (10.x.x.x:8082--->localhost:3000)
         // we need to set baseurl port.
         rootPath.push(":" + config.nginxPort);
-    } else if(config.port) {
+    } else if (config.port) {
         rootPath.push(":" + config.port);
     }
     if (config.virtualDir) {
@@ -90,13 +90,20 @@ var base = {
             message: err.message || message,
             error: err
         };
-    }, 
+    },
+    getErrorModel: function(code, message) {
+        var _error = {
+            status: code || 500,
+            message: message || ''
+        };
+        return _error;
+    },
     /**
      * Get root url of current website.
      */
     getBaseUrl: function(req, queryPath) {
         return getBaseUrl(req, queryPath);
-    }, 
+    },
     /**
      * Check if service invoke callback has contains error.
      * true: no error.

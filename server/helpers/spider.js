@@ -8,14 +8,9 @@ var debug = require('debug')(config.appName);
 var exception = require("./exception");
 var EventTarget = require("./EventTarget");
 //download html document via providerd html url.
-function loadHtmlDocument(host, callback) {
+function loadHtmlDocument(url, callback) {
 	// fetch some HTML...
-	// var host = 'www.reddit.com';
-	var client = http.createClient(80, host);
-	var request = client.request('GET', '/', {
-		'host': host
-	});
-	request.on('response', function(response) {
+	http.get(url, function(response) {
 		response.setEncoding('utf8');
 		var body = "";
 		response.on('data', function(chunk) {
@@ -35,8 +30,10 @@ function loadHtmlDocument(host, callback) {
 			var parser = new htmlparser.Parser(handler);
 			parser.parseComplete(body);
 		});
+		response.on("error", function(err) {
+			callback(exception.getErrorModel(err));
+		});
 	});
-	request.end();
 };
 
 /**
@@ -103,7 +100,7 @@ function SpiderService(httpUrl) {
 	};
 
 	//@private
-	this.__error: function(result) {
+	this.__error = function(result) {
 		this.__hasFetchDone = true;
 		this.__status = "failed";
 		// fire finish loading page document contents event.
@@ -121,10 +118,18 @@ function SpiderService(httpUrl) {
 		}, this.getResult()));
 	};
 	this.getResult = function() {
-
+		var result = {
+			title: this.title,
+			categories: this.categories,
+			priceList: this.priceList,
+			productAttribts: this.productAttribts,
+			specAttribts: this.specAttribts,
+			description: this.description
+		};
+		return result;
 	};
 	this.hasSuccessFetched = function() {
-
+		return this.__status && this.__status == "success";
 	};
 	// protected method
 	this._loadPageHtml = function() {
@@ -137,7 +142,7 @@ function SpiderService(httpUrl) {
 				_this.__error(result);
 			} else {
 				// save current all dom html codes.
-				this.dom = dom;
+				this.dom = result;
 				// fetch all sorted categories.
 				_this.fetchCategories();
 				// fetch page title.

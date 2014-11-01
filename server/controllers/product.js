@@ -18,12 +18,21 @@ var productService = dataProvider.get("product");
 // router.route("*").all(base.setResponseHeaders, base.securityVerify);
 
 // send customized message to user.
-router.get("/uploadProduct", function(req, res) {
-	debug('test debug uploadProduct...');
+router.post("/auto_extract_upload_products", function(req, res) {
+	debug('test debug auto_extract_upload_products...');
 	var reqBody = req.body;
-	base.apiOkOutput(res, "ok");
-
-	productService.uploadProduct(reqBody, function(result) {});
+	var url = reqBody && reqBody.url || "";
+	if (url) {
+		productService.extractOnlineProductDetail(url, function(result) {
+			if (base.hasPassed(result)) {
+				base.apiOkOutput(res, result);
+			} else {
+				base.apiErrorOutput(res,result.error);
+			}
+		});
+	} else {
+		base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
+	}
 });
 
 module.exports = router;
