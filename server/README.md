@@ -26,8 +26,20 @@
 
 ``` shell command
 
+>>npm install -g node-inspector 
 >>npm install -g express
 >>npm install -g supervisor
 >>npm start
 
 ```
+
+
+#### 开启调试服务:
+>>npm install -g node-inspector
+>>node-inspector  -- 启动调试WEB TOOL 代理
+
+>>以DEBUG 模式开启本地的NODE 服务器 npm start
+
+in package.json-->
+"start": "set DEBUG=tl_biz_tool_server & supervisor --debug tl_server.js"
+
