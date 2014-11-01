@@ -19,6 +19,7 @@
         "mssql": "*",
         "soupselect":"*",
         "htmlparser":"*",
+        "cheerio":"*",
         "qr-image": "*",
         "crypto": "*",
         "atma-formatter": "*",
