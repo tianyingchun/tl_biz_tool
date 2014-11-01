@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "start": "DEBUG=zl_biz_tool_server supervisor -w 'views,services,models,controllers,config' -e 'html|node|js' node tl_server.js"
+        "start": "set DEBUG=tl_biz_tool_server & supervisor tl_server.js"
     },
     "dependencies": {
         "express": "~4.2.0",

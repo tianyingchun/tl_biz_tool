@@ -45,7 +45,7 @@ sql.connect(config.sqlserver, function(err) {
     route.init(app);
     https.createServer(app).listen(config.port, function() {
         debug(
-            'Express server listening on port ' + config.port
+            'Sql server connection successfully! Express server listening on port ' + config.port
         );
     });
 });

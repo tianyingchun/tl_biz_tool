@@ -18,11 +18,12 @@ var productService = dataProvider.get("product");
 // router.route("*").all(base.setResponseHeaders, base.securityVerify);
 
 // send customized message to user.
-router.post("/uploadProduct", function(req, res) {
-    var reqBody = req.body;
-    productService.uploadProduct(reqBody, function(result) {
-        base.apiOkOutput(res, result);
-    });
+router.get("/uploadProduct", function(req, res) {
+	debug('test debug uploadProduct...');
+	var reqBody = req.body;
+	base.apiOkOutput(res, "ok");
+
+	productService.uploadProduct(reqBody, function(result) {});
 });
 
 module.exports = router;

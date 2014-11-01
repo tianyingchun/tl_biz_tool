@@ -2,7 +2,7 @@ var _ = require("underscore");
 
 // site configuration.
 var config = {
-    appName: "zl_biz_tool_server",
+    appName: "tl_biz_tool_server",
     defaultDataProvider: "sqlserver"
 };
 // web server configuration
