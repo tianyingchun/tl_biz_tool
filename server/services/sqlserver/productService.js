@@ -12,6 +12,8 @@ function ProductDataProvider() {
 	// handler
 	var extractDataDetailHandler = function(callback, result) {
 		if (callback) {
+			// remove event target.
+			delete result.target;
 			callback(result);
 		}
 	};
