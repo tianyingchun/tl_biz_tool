@@ -59,7 +59,7 @@ function rgbConvert2Hex(rgb) {
 }
 
 // color spec dom converter.
-function fetchProductSpecColor($lis) {
+function fetchProductSpecColor($, $lis) {
 	var result = [];
 	if ($lis && $lis.length) {
 		$lis.each(function(i, liItem) {
@@ -85,7 +85,7 @@ function fetchProductSpecColor($lis) {
 };
 
 // size list dom converter.
-function fetchProductSpecSize($lis) {
+function fetchProductSpecSize($, $lis) {
 	var result = [];
 	if ($lis && $lis.length) {
 		$lis.each(function(i, liItem) {
@@ -102,7 +102,7 @@ function fetchProductSpecSize($lis) {
 	return result;
 };
 
-function fetchProductSpecOther($lis) {
+function fetchProductSpecOther($, $lis) {
 	var result = [];
 	if ($lis && $lis.length) {
 		$lis.each(function(i, liItem) {
@@ -296,14 +296,17 @@ _.extend(SpiderService.prototype, {
 		var productAttribtsList = {};
 		$dl.each(function(i, dlItem) {
 			var $dlItem = $(dlItem);
-			var title = $dlItem.find("pp-dt-ln").text().replae("/[^a-zA-Z]/ig", "").toLowerCase();
 			var $lis = $dlItem.find("ul li");
+			var title = $dlItem.find(".pp-dt-ln").text();
+
+			title = title && title.replace("/[^a-zA-Z]/ig", "").toLowerCase();
+
 			if (title == "color") {
-				productAttribtsList[title] = fetchProductSpecColor($lis);
+				productAttribtsList[title] = fetchProductSpecColor($, $lis);
 			} else if (title == "size") {
-				productAttribtsList[title] = fetchProductSpecSize($lis);
+				productAttribtsList[title] = fetchProductSpecSize($, $lis);
 			} else {
-				productAttribtsList[title] = fetchProductSpecOther($lis);
+				productAttribtsList[title] = fetchProductSpecOther($, $lis);
 			}
 		});
 		this.productAttribts = productAttribtsList;
