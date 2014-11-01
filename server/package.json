@@ -17,6 +17,7 @@
         "underscore": "1.6.0",
         "request": "*",
         "mssql": "*",
+        "winston":"*",
         "soupselect":"*",
         "htmlparser":"*",
         "cheerio":"*",

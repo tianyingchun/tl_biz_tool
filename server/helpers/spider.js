@@ -1,10 +1,13 @@
-var select = require('soupselect').select,
-	htmlparser = require("htmlparser"),
+// var select = require('soupselect').select,
+// htmlparser = require("htmlparser"),
+// https://github.com/cheeriojs/cheerio
+var cheerio = require('cheerio'),
 	_ = require('underscore'),
 	http = require('http');
 
 var config = require("../config")();
-var debug = require('debug')(config.appName);
+var logger = require('./log');
+
 var exception = require("./exception");
 var EventTarget = require("./EventTarget");
 //download html document via providerd html url.
@@ -18,17 +21,13 @@ function loadHtmlDocument(url, callback) {
 		});
 		response.on('end', function() {
 			// now we have the whole body, parse it and select the nodes we want...
-			var handler = new htmlparser.DefaultHandler(function(err, dom) {
-				if (err) {
-					debug("loadHtmlDocument error---->", err);
-					callback(exception.getErrorModel(err));
-				} else {
-					callback && callback(dom);
-				}
+			var $ = cheerio.load(body, {
+				normalizeWhitespace: true,
+				xmlMode: true
 			});
-
-			var parser = new htmlparser.Parser(handler);
-			parser.parseComplete(body);
+			callback($);
+			// var parser = new htmlparser.Parser(handler);
+			// parser.parseComplete(body);
 		});
 		response.on("error", function(err) {
 			callback(exception.getErrorModel(err));
@@ -36,6 +35,88 @@ function loadHtmlDocument(url, callback) {
 	}).on('error', function(err) {
 		callback(exception.getErrorModel(err));
 	});
+};
+
+
+function rgbConvert2Hex(rgb) {
+	var regexp = /^rgb\(([0-9]{0,3})\,\s([0-9]{0,3})\,\s([0-9]{0,3})\)/g;
+	var re = rgb.replace(regexp, "$1 $2 $3").split(" "); //利用正则表达式去掉多余的部分
+	var hexColor = "#";
+	var hex = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+	for (var i = 0; i < 3; i++) {
+		var r = null;
+		var c = re[i];
+		var hexAr = [];
+		while (c > 16) {
+			r = c % 16;
+			c = (c / 16) >> 0;
+			hexAr.push(hex[r]);
+		}
+		hexAr.push(hex[c]);
+		hexColor += hexAr.reverse().join('');
+	}
+	return hexColor;
+}
+
+// color spec dom converter.
+function fetchProductSpecColor($lis) {
+	var result = [];
+	if ($lis && $lis.length) {
+		$lis.each(function(i, liItem) {
+			var $liItem = $(liItem);
+			var $colorSpan = $liItem.find("span.color");
+			if ($colorSpan && $colorSpan.length) {
+				if ($colorSpan[0].tagName == "SPAN") {
+					// convert rgb 2 hex.
+					var color = rgbConvert2Hex(colorSpan.css("backgroundColor"));
+					var colorTitle = colorSpan.attr("title");
+					result.push({
+						title: colorTitle,
+						value: color
+					});
+				} else {
+					logger.debug("fetchProductSpecColor failed-->> color option is not span maybe is image");
+				}
+			}
+
+		});
+	}
+	return result;
+};
+
+// size list dom converter.
+function fetchProductSpecSize($lis) {
+	var result = [];
+	if ($lis && $lis.length) {
+		$lis.each(function(i, liItem) {
+			var $liItem = $(liItem);
+			var $sizeSpan = $liItem.find("a>span");
+			// convert rgb 2 hex.
+			var value = $sizeSpan.text();
+			result.push({
+				title: value,
+				text: value
+			});
+		});
+	}
+	return result;
+};
+
+function fetchProductSpecOther($lis) {
+	var result = [];
+	if ($lis && $lis.length) {
+		$lis.each(function(i, liItem) {
+			var $liItem = $(liItem);
+			var $otherSpan = $liItem.find("a>span");
+			// convert rgb 2 hex.
+			var value = $otherSpan.text();
+			result.push({
+				title: value,
+				text: value
+			});
+		});
+	}
+	return result;
 };
 
 /**
@@ -48,20 +129,19 @@ function SpiderService(httpUrl) {
 	// public properties.
 	this.url = httpUrl;
 	// store all document code fetched from providered http url.
-	this.dom = "";
+	this.$dom = "";
 
 	// page title
 	this.title = "";
 	// categories ---women>>dresses ==>[dresses, women]
 	this.categories = [];
-	// price list the higher the before[10,9,8,5.5]
-	this.priceList = [];
+	// old price list the higher the before [10,9,8,5.5]
+	this.oldPrice = [];
+	// now sale price.
+	this.nowPrice = [];
 
 	// all product specs attributes eg. color, size, etc.
-	this.productAttribts = {
-		size: [],
-		color: []
-	};
+	this.productAttribts = {};
 
 	// all key value canbe used to category filtered. e.g. {gender:male, style:american}
 	this.specAttribts = {};
@@ -123,7 +203,8 @@ function SpiderService(httpUrl) {
 		var result = {
 			title: this.title,
 			categories: this.categories,
-			priceList: this.priceList,
+			oldPrice: this.oldPrice,
+			nowPrice: this.nowPrice,
 			productAttribts: this.productAttribts,
 			specAttribts: this.specAttribts,
 			description: this.description
@@ -136,21 +217,23 @@ function SpiderService(httpUrl) {
 	// protected method
 	this._loadPageHtml = function() {
 		var _this = this;
-		loadHtmlDocument(this.url, function(result) {
+		loadHtmlDocument(this.url, function($) {
 			_this.__finished();
 
-			if (result.failed === true) {
+			if ($.failed === true) {
 				debug("loadHtmlDocument failed!");
-				_this.__error(result);
+				_this.__error($);
 			} else {
 				// save current all dom html codes.
-				this.dom = result;
+				_this.$dom = $;
 				// fetch all sorted categories.
 				_this.fetchCategories();
 				// fetch page title.
 				_this.fetchTitle();
 				// fetch price list from highest price 2 lowest price. [18.00,17.00,15.00] --USD
-				_this.fetchPriceList();
+				_this.fetchOldPriceList();
+
+				_this.fetchNowPriceList();
 				// fetch all supported color list.
 				_this.fetchProductAttribtsList();
 
@@ -178,23 +261,58 @@ _.extend(SpiderService.prototype, {
 		this.__starting();
 	},
 	fetchCategories: function() {
-		debug("filter to get categories...");
+		logger.debug("filter to get categories...");
+		var $breadcrumb = this.$dom("div.ui-breadcrumb").find("a");
+		var crumb = [];
+		var $ = this.$dom;
+		$breadcrumb.each(function(i, item) {
+			crumb.push($(item).text());
+		});
+		this.categories = crumb.reverse();
 	},
 	fetchTitle: function() {
-		debug("filter to get title content...");
+		logger.debug("filter to get title content...");
+		this.title = this.$dom("h1.title").html();
 	},
-	fetchPriceList: function() {
-		debug("filter to get price list...");
+	fetchOldPriceList: function() {
+		logger.debug("filter to get old price list...");
+		var prices = this.$dom("#sku-price").text().split(/\s*-\s*/);
+		this.oldPrice = prices.reverse();
+	},
+	fetchNowPriceList: function() {
+		logger.debug("filter to get now sale price list...");
+		var prices = [];
+		var $discount_price = this.$dom("#sku-discount-price").find('span');
+		var $ = this.$dom;
+		$discount_price.each(function(i, item) {
+			prices.push($(item).text());
+		});
+		this.nowPrice = prices.reverse();
 	},
 	fetchProductAttribtsList: function() {
-		debug("filter to get product variant specifications list...");
-
+		logger.debug("filter to get product variant specifications list...");
+		var $ = this.$dom;
+		var $dl = $("#product-info-sku").find("dl");
+		var productAttribtsList = {};
+		$dl.each(function(i, dlItem) {
+			var $dlItem = $(dlItem);
+			var title = $dlItem.find("pp-dt-ln").text().replae("/[^a-zA-Z]/ig", "").toLowerCase();
+			var $lis = $dlItem.find("ul li");
+			if (title == "color") {
+				productAttribtsList[title] = fetchProductSpecColor($lis);
+			} else if (title == "size") {
+				productAttribtsList[title] = fetchProductSpecSize($lis);
+			} else {
+				productAttribtsList[title] = fetchProductSpecOther($lis);
+			}
+		});
+		this.productAttribts = productAttribtsList;
 	},
 	fetchspecAttribts: function() {
-		debug("filter to get specifications attributes...");
+		logger.debug("filter to get specifications attributes...");
 	},
 	fetchDescription: function() {
-		debug("filter to get product description...");
+		logger.debug("filter to get product description...");
 	}
 });
 
