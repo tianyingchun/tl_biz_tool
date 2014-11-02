@@ -40,9 +40,11 @@ function downloadFile(url, dest, callback) {
 	var request = http.get(url, function(response) {
 		response.pipe(file);
 		file.on('finish', function() {
+			file.end();
 			file.close(callback); // close() is async, call cb after close completes.
 		});
 	}).on('error', function(err) { // Handle errors
+		file.end();
 		fs.unlink(dest); // Delete the file async. (But we don't check the result)
 		if (callback) callback(exception.getErrorModel(err));
 	});
