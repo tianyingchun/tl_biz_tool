@@ -9,32 +9,10 @@ var config = require("../config")();
 var logger = require('./log');
 // getting parser module
 var cssparser = require("cssparser");
-
+var utility = require("./utility");
 var exception = require("./exception");
 var EventTarget = require("./EventTarget");
 var skuStyleContent = "";
-//download html document via providerd html url.
-function loadHtmlDocument(url, callback) {
-	// fetch some HTML...
-	http.get(url, function(response) {
-		response.setEncoding('utf8');
-		var body = "";
-		response.on('data', function(chunk) {
-			body = body + chunk;
-		});
-		response.on('end', function() {
-			callback(body);
-			// var parser = new htmlparser.Parser(handler);
-			// parser.parseComplete(body);
-		});
-		response.on("error", function(err) {
-			callback(exception.getErrorModel(err));
-		});
-	}).on('error', function(err) {
-		callback(exception.getErrorModel(err));
-	});
-};
-
 
 function rgbConvert2Hex(rgb) {
 	if (!rgb) return "";
@@ -62,7 +40,7 @@ function fetchSkuColorStyleContent(callback) {
 	if (!skuStyleContent) {
 		var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
 		var sku_color_url = module_product_extract.sku_color_css_url;
-		loadHtmlDocument(sku_color_url, function(body) {
+		utility.loadHtmlDocument(sku_color_url, function(body) {
 			skuStyleContent = body;
 			callback({
 				body: skuStyleContent,
@@ -172,10 +150,15 @@ function fetchProductSpecOther($, $lis) {
 	return result;
 };
 
+/**
+ * Fetch product description without html tag, remved http link.
+ * @param  {string}   productId productid
+ * @param  {Function} callback  [description]
+ */
 function fetchProductDescriptions(productId, callback) {
 	var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
 	var product_description_url = module_product_extract.product_description_url.replace("{pid}", productId);
-	loadHtmlDocument(product_description_url, function(desc) {
+	utility.loadHtmlDocument(product_description_url, function(desc) {
 		desc = desc && desc.replace(/\s+\S*productDescription=\s*['"]/, "");
 		desc = desc && desc.replace(/['"];$"/, "");
 		callback({
@@ -189,14 +172,14 @@ function fetchProductDescriptions(productId, callback) {
  * event type: starting, finished, error, success
  * @param {string} httpUrl
  */
-function SpiderService(httpUrl) {
+function ProductSpiderService(httpUrl) {
 	EventTarget.call(this);
 
 	// public properties.
 	this.url = httpUrl;
 
 	// current product id.
-	this.productId = this.url && this.url.match(/[^/]*$/)[0].replace(/.html.*$/, "");
+	this.productId = utility.extractProductId(this.url);
 	// store all document code fetched from providered http url.
 	this.$dom = "";
 
@@ -293,7 +276,7 @@ function SpiderService(httpUrl) {
 					message: "preload sku color style failed! url: " + result.url
 				});
 			} else {
-				loadHtmlDocument(_this.url, function(body) {
+				utility.loadHtmlDocument(_this.url, function(body) {
 					// now we have the whole body, parse it and select the nodes we want...
 					var $ = cheerio.load(body, {
 						normalizeWhitespace: true,
@@ -303,7 +286,7 @@ function SpiderService(httpUrl) {
 					_this.__finished();
 
 					if ($.failed === true) {
-						debug("loadHtmlDocument failed!");
+						debug("utility.loadHtmlDocument failed!");
 						_this.__error($);
 					} else {
 						// save current all dom html codes.
@@ -332,11 +315,15 @@ function SpiderService(httpUrl) {
 	}
 };
 
-SpiderService.prototype = new EventTarget();
-SpiderService.prototype.constructor = SpiderService;
+ProductSpiderService.prototype = new EventTarget();
+ProductSpiderService.prototype.constructor = ProductSpiderService;
 
 // expose usefull interface
-_.extend(SpiderService.prototype, {
+_.extend(ProductSpiderService.prototype, {
+
+	/**
+	 * product spider service entry, we can simple start the whole fetch data operations from here.
+	 */
 	start: function() {
 		this.reLoad();
 	},
@@ -423,8 +410,8 @@ _.extend(SpiderService.prototype, {
 		var _this = this;
 		fetchProductDescriptions(this.productId, function(result) {
 			var desc = result.body;
-			desc = _this.$dom(result.body).text();
-			_this.description = desc || "";
+			var $desc = _this.$dom(result.body).find("a").remove();
+			_this.description = $desc.text() || "";
 			// flush cached result to client.
 			_this.__success();
 		});
@@ -432,4 +419,4 @@ _.extend(SpiderService.prototype, {
 });
 
 
-module.exports = SpiderService;
+module.exports = ProductSpiderService;

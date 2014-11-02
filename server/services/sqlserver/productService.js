@@ -5,7 +5,7 @@ var exception = require('../../helpers/exception');
 var productDataSchema = require("../../models/Product");
 var debug = require('debug')(config.appName);
 
-var Spider = require("../../helpers/spider");
+var ProductSpider = require("../../helpers/productSpider");
 // product data model.
 
 function ProductDataProvider() {
@@ -26,7 +26,7 @@ function ProductDataProvider() {
 		}
 	};
 	this.extractOnlineProductDetail = function(httpUrl, callback) {
-		var spider = new Spider(httpUrl);
+		var spider = new ProductSpider(httpUrl);
 		spider.addHandler('success', _.bind(extractDataDetailHandler, this, callback));
 		spider.addHandler('error', _.bind(extractDataDetailHandler, this, callback));
 		spider.start();
