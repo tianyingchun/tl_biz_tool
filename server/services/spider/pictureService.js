@@ -1,9 +1,12 @@
 var utility = require("../../helpers/utility");
 var exception = require("../../helpers/exception");
 var EventTarget = require("../../helpers/EventTarget");
-_ = require('underscore'),
-http = require('http'),
-fs = require("fs-extra");
+var _ = require('underscore'),
+	http = require('http'),
+	fs = require("fs-extra");
+
+// product module config.
+var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
 
 function PictureSpiderService(httpUrl) {
 	EventTarget.call(this);
@@ -33,8 +36,20 @@ function PictureSpiderService(httpUrl) {
 		}));
 
 		// download product pictures
-		// 
-
+		var product_description_url = module_product_extract.product_description_url.replace("{pid}", this.productId);
+		// run picture spider.
+		var _this = this;
+		utility.downloadPicture(this.productId, product_description_url, function(result) {
+			if (result.failed === true) {
+				logger.error("extract product picture failed!", result.error);
+				_this.__error({
+					message: "extract product picture failed!"
+				});
+			} else {
+				// flush cached result to client.
+				_this.__success(result);
+			}
+		});
 	};
 	// @private
 	this.__finished = function() {
@@ -58,12 +73,12 @@ function PictureSpiderService(httpUrl) {
 	};
 
 	// @private
-	this.__success = function() {
+	this.__success = function(result) {
 		this.__status = "success";
 		// fire finish loading page document contents event.
 		this.fire(_.extend({
 			type: "success"
-		}, this.getResult()));
+		}, result || this.getResult()));
 	};
 
 	this.getResult = function() {
@@ -76,7 +91,7 @@ PictureSpiderService.prototype = new EventTarget();
 PictureSpiderService.prototype.constructor = PictureSpiderService;
 
 // expose usefull interface
-_.extend(PictureSpiderService.prototype, {\
+_.extend(PictureSpiderService.prototype, {
 	/**
 	 * product spider service entry, we can simple start the whole fetch data operations from here.
 	 */
@@ -85,6 +100,6 @@ _.extend(PictureSpiderService.prototype, {\
 	},
 	reLoad: function() {
 		this.__starting();
-	},
+	}
 });
 module.exports = PictureSpiderService;

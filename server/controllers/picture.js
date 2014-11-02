@@ -3,7 +3,7 @@ var router = express.Router();
 var _ = require("underscore");
 var config = require("../config")();
 var base = require("./base");
-var debug = require('debug')(config.appName);
+var logger = require("../helpers/log");
 
 // data provider singleton.
 var dataProvider = require("../services/dataProvider");
@@ -18,11 +18,21 @@ var pictureService = dataProvider.get("picture");
 // router.route("*").all(base.setResponseHeaders, base.securityVerify);
 
 // send customized message to user.
-router.post("/addPictures2Product", function(req, res) {
-    var reqBody = req.body;
-    pictureService.addPictures2Product(reqBody, function(result) {
-        base.apiOkOutput(res, result);
-    });
+router.post("/auto_extract_product_pictures", function(req, res) {
+	logger.debug('controller: auto_extract_product_pictures...');
+	var reqBody = req.body;
+	var url = reqBody && reqBody.url || "";
+	if (url) {
+		pictureService.autoExtractProductPictures(url, function(result) {
+			if (base.hasPassed(result)) {
+				base.apiOkOutput(res, result);
+			} else {
+				base.apiErrorOutput(res, result.error);
+			}
+		});
+	} else {
+		base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
+	}
 });
 
 module.exports = router;
