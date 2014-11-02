@@ -63,7 +63,7 @@ function fetchSkuColorStyleContent(callback) {
 		loadHtmlDocument(sku_color_url, function(body) {
 			skuStyleContent = body;
 			callback({
-				body: "",
+				body: skuStyleContent,
 				url: sku_color_url
 			});
 		});
@@ -138,12 +138,17 @@ function fetchProductSpecOther($, $lis) {
 	return result;
 };
 
-function fetchProductDescriptions($) {
-	var $description = $("#custom-description").find(".ui-box-body");
-	if ($description && $description.length) {
-		$description.find("a").remove();
-	}
-	return $description.html();
+function fetchProductDescriptions(productId, callback) {
+	var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
+	var product_description_url = module_product_extract.product_description_url.replace("{pid}", productId);
+	loadHtmlDocument(product_description_url, function(desc) {
+		desc = desc && desc.replace(/\s+\S*productDescription=\s*['"]/, "");
+		desc = desc && desc.replace(/['"];$"/, "");
+		callback({
+			body: desc,
+			url: product_description_url
+		});
+	});
 };
 
 /**
@@ -155,6 +160,9 @@ function SpiderService(httpUrl) {
 
 	// public properties.
 	this.url = httpUrl;
+
+	// current product id.
+	this.productId = this.url && this.url.match(/[^/]*$/)[0].replace(/.html.*$/, "");
 	// store all document code fetched from providered http url.
 	this.$dom = "";
 
@@ -280,10 +288,9 @@ function SpiderService(httpUrl) {
 						//fetch product item specifications.
 						_this.fetchspecAttribts();
 
-						// fetch product description.
+						// fetch product description. Note: because we will aysnc send an new request to get product description html code here
+						// and we will waiting for all description has been downloaded, then flush success event to consumer.
 						_this.fetchDescription();
-
-						_this.__success();
 					}
 				});
 			}
@@ -379,7 +386,14 @@ _.extend(SpiderService.prototype, {
 	},
 	fetchDescription: function() {
 		logger.debug("filter to get product description...");
-		this.description = fetchProductDescriptions(this.$dom);
+		var _this = this;
+		fetchProductDescriptions(this.productId, function(result) {
+			var desc = result.body;
+			desc = _this.$dom(result.body).text();
+			_this.description = desc || "";
+			// flush cached result to client.
+			_this.__success();
+		});
 	}
 });
 
