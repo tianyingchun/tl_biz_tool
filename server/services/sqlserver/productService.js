@@ -14,7 +14,15 @@ function ProductDataProvider() {
 		if (callback) {
 			// remove event target.
 			delete result.target;
-			callback(result);
+			// if failed occur for spider biz logics 
+			if (result.type == "error") {
+				callback(exception.getErrorModel({
+					status: 400,
+					message: result.message
+				}));
+			} else {
+				callback(result);
+			}
 		}
 	};
 	this.extractOnlineProductDetail = function(httpUrl, callback) {

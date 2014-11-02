@@ -3,13 +3,14 @@
 // https://github.com/cheeriojs/cheerio
 var cheerio = require('cheerio'),
 	_ = require('underscore'),
-	http = require('http');
-
+	http = require('http'),
+	fs = require("fs-extra");
 var config = require("../config")();
 var logger = require('./log');
 
 var exception = require("./exception");
 var EventTarget = require("./EventTarget");
+var skuStyleContent = "";
 //download html document via providerd html url.
 function loadHtmlDocument(url, callback) {
 	// fetch some HTML...
@@ -20,12 +21,7 @@ function loadHtmlDocument(url, callback) {
 			body = body + chunk;
 		});
 		response.on('end', function() {
-			// now we have the whole body, parse it and select the nodes we want...
-			var $ = cheerio.load(body, {
-				normalizeWhitespace: true,
-				xmlMode: true
-			});
-			callback($);
+			callback(body);
 			// var parser = new htmlparser.Parser(handler);
 			// parser.parseComplete(body);
 		});
@@ -57,11 +53,33 @@ function rgbConvert2Hex(rgb) {
 		hexColor += hexAr.reverse().join('');
 	}
 	return hexColor;
-}
+};
+
+// download fetch sku color style cotent
+function fetchSkuColorStyleContent(callback) {
+	if (!skuStyleContent) {
+		var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
+		var sku_color_url = module_product_extract.sku_color_css_url;
+		loadHtmlDocument(sku_color_url, function(body) {
+			skuStyleContent = body;
+			callback({
+				body: "",
+				url: sku_color_url
+			});
+		});
+	} else {
+		// do some fetch operations.
+		callback({
+			body: skuStyleContent,
+			url: sku_color_url
+		});
+	}
+};
 
 // color spec dom converter.
 function fetchProductSpecColor($, $lis) {
 	var result = [];
+	logger.debug("styles: ", skuStyleContent);
 	if ($lis && $lis.length) {
 		$lis.each(function(i, liItem) {
 			var $liItem = $(liItem);
@@ -226,33 +244,48 @@ function SpiderService(httpUrl) {
 	// protected method
 	this._loadPageHtml = function() {
 		var _this = this;
-		loadHtmlDocument(this.url, function($) {
-			_this.__finished();
-
-			if ($.failed === true) {
-				debug("loadHtmlDocument failed!");
-				_this.__error($);
+		fetchSkuColorStyleContent(function(result) {
+			if (!result.body) {
+				logger.error("pre load sku color style failed!", result.url);
+				_this.__error({
+					message: "preload sku color style failed! url: " + result.url
+				});
 			} else {
-				// save current all dom html codes.
-				_this.$dom = $;
-				// fetch all sorted categories.
-				_this.fetchCategories();
-				// fetch page title.
-				_this.fetchTitle();
-				// fetch price list from highest price 2 lowest price. [18.00,17.00,15.00] --USD
-				_this.fetchOldPriceList();
+				loadHtmlDocument(_this.url, function(body) {
+					// now we have the whole body, parse it and select the nodes we want...
+					var $ = cheerio.load(body, {
+						normalizeWhitespace: true,
+						xmlMode: true
+					});
 
-				_this.fetchNowPriceList();
-				// fetch all supported color list.
-				_this.fetchProductAttribtsList();
+					_this.__finished();
 
-				//fetch product item specifications.
-				_this.fetchspecAttribts();
+					if ($.failed === true) {
+						debug("loadHtmlDocument failed!");
+						_this.__error($);
+					} else {
+						// save current all dom html codes.
+						_this.$dom = $;
+						// fetch all sorted categories.
+						_this.fetchCategories();
+						// fetch page title.
+						_this.fetchTitle();
+						// fetch price list from highest price 2 lowest price. [18.00,17.00,15.00] --USD
+						_this.fetchOldPriceList();
 
-				// fetch product description.
-				_this.fetchDescription();
+						_this.fetchNowPriceList();
+						// fetch all supported color list.
+						_this.fetchProductAttribtsList();
 
-				_this.__success();
+						//fetch product item specifications.
+						_this.fetchspecAttribts();
+
+						// fetch product description.
+						_this.fetchDescription();
+
+						_this.__success();
+					}
+				});
 			}
 		});
 	}
