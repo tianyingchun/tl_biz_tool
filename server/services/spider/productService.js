@@ -9,9 +9,10 @@ var logger = require('../../helpers/log');
 // getting parser module
 var cssparser = require("cssparser");
 var utility = require("../../helpers/utility");
-var exception = require("../../helpers/exception");
 var EventTarget = require("../../helpers/EventTarget");
 var skuStyleContent = "";
+// module product extract config.
+var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
 
 function rgbConvert2Hex(rgb) {
 	if (!rgb) return "";
@@ -37,7 +38,6 @@ function rgbConvert2Hex(rgb) {
 // download fetch sku color style cotent
 function fetchSkuColorStyleContent(callback) {
 	if (!skuStyleContent) {
-		var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
 		var sku_color_url = module_product_extract.sku_color_css_url;
 		utility.loadHtmlDocument(sku_color_url, function(body) {
 			skuStyleContent = body;
@@ -155,7 +155,6 @@ function fetchProductSpecOther($, $lis) {
  * @param  {Function} callback  [description]
  */
 function fetchProductDescriptions(productId, callback) {
-	var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
 	var product_description_url = module_product_extract.product_description_url.replace("{pid}", productId);
 	utility.loadHtmlDocument(product_description_url, function(desc) {
 		desc = desc && desc.replace(/\s+\S*productDescription=\s*['"]/, "");

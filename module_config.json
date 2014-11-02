@@ -3,5 +3,8 @@
 		"sku_color_css_url": "http://style.aliunicorn.com/css/6v/run/wholesale/buyer/module/sku-color-card.css",
 		"product_description_url": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
 		"price_rate": 1.4
+	},
+	"module_picture_extract":{
+		"saveto_dir":"D:\\Github_Works\\extract_dir"
 	}
 }
