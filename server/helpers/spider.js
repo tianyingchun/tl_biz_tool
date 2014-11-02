@@ -7,6 +7,8 @@ var cheerio = require('cheerio'),
 	fs = require("fs-extra");
 var config = require("../config")();
 var logger = require('./log');
+// getting parser module
+var cssparser = require("cssparser");
 
 var exception = require("./exception");
 var EventTarget = require("./EventTarget");
@@ -76,25 +78,57 @@ function fetchSkuColorStyleContent(callback) {
 	}
 };
 
+function queryBackgroundProperty(selector) {
+	try {
+		// logger.debug("styles: ", skuStyleContent);
+		// create new instance of Parser
+		var parser = new cssparser.Parser();
+		// parse & getting json
+		var json = parser.parse(skuStyleContent);
+		logger.debug("styles: ", json);
+		var styleJson = json["rulelist"];
+		var hexColor = "";
+		for (var i = styleJson.length - 1; i >= 0; i--) {
+			var style = styleJson[i];
+			if (style.selector == selector) {
+				hexColor = style.declarations["background"].replace(/#|\s*!important/ig, "");
+				break;
+			}
+		};
+
+		// convert rgb 2 hex.
+		// var color = rgbConvert2Hex($colorSpan.css("backgroundColor"));
+		return hexColor;
+	} catch (e) {
+		return "";
+	}
+};
+
 // color spec dom converter.
 function fetchProductSpecColor($, $lis) {
 	var result = [];
-	logger.debug("styles: ", skuStyleContent);
 	if ($lis && $lis.length) {
 		$lis.each(function(i, liItem) {
 			var $liItem = $(liItem);
-			var $colorSpan = $liItem.find("span.color");
+			var $colorSpan = $liItem.find(".color");
 			if ($colorSpan && $colorSpan.length) {
+				var colorTitle = $colorSpan.attr("title");
 				if ($colorSpan[0].name == "span") {
-					// convert rgb 2 hex.
-					var colorTitle = $colorSpan.attr("title");
-					var color = rgbConvert2Hex($colorSpan.css("backgroundColor"));
+					try {
+						var selector = "." + $colorSpan.attr("class").replace(/color\s*/, "");
+						result.push({
+							title: colorTitle,
+							value: queryBackgroundProperty(selector)
+						});
+					} catch (e) {
+						logger.error("get color span sku-color selector exception: ", e);
+					}
+				} else if ($colorSpan[0].name == "img") {
+					logger.debug("fetchProductSpecColor failed-->> color option is not span maybe is image");
 					result.push({
 						title: colorTitle,
-						value: color
+						value: "" // if color is "" we don't set product variant color value.
 					});
-				} else {
-					logger.debug("fetchProductSpecColor failed-->> color option is not span maybe is image");
 				}
 			}
 
