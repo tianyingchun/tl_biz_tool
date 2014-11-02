@@ -410,8 +410,15 @@ _.extend(ProductSpiderService.prototype, {
 		var _this = this;
 		fetchProductDescriptions(this.productId, function(result) {
 			var desc = result.body;
-			var $desc = _this.$dom(result.body).find("a").remove();
-			_this.description = $desc.text() || "";
+			var $desc = _this.$dom(desc);
+			// remove a link.
+			$desc.find("a").remove();
+			// remove img link.
+			$desc.find("img").remove();
+			// extract all text content.
+			desc = $desc.text();
+
+			_this.description = desc || "";
 			// flush cached result to client.
 			_this.__success();
 		});
