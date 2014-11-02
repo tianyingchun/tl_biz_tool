@@ -5,13 +5,12 @@ var cheerio = require('cheerio'),
 	_ = require('underscore'),
 	http = require('http'),
 	fs = require("fs-extra");
-var config = require("../config")();
-var logger = require('./log');
+var logger = require('../../helpers/log');
 // getting parser module
 var cssparser = require("cssparser");
-var utility = require("./utility");
-var exception = require("./exception");
-var EventTarget = require("./EventTarget");
+var utility = require("../../helpers/utility");
+var exception = require("../../helpers/exception");
+var EventTarget = require("../../helpers/EventTarget");
 var skuStyleContent = "";
 
 function rgbConvert2Hex(rgb) {
@@ -63,7 +62,7 @@ function queryBackgroundProperty(selector) {
 		var parser = new cssparser.Parser();
 		// parse & getting json
 		var json = parser.parse(skuStyleContent);
-		logger.debug("styles: ", json);
+		// logger.debug("styles: ", json);
 		var styleJson = json["rulelist"];
 		var hexColor = "";
 		for (var i = styleJson.length - 1; i >= 0; i--) {

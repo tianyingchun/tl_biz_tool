@@ -1,11 +1,9 @@
 var util = require('util');
 var _ = require('underscore');
-var config = require("../../config")();
 var exception = require('../../helpers/exception');
 var productDataSchema = require("../../models/Product");
-var debug = require('debug')(config.appName);
-
-var ProductSpider = require("../../helpers/productSpider");
+var logger = require('../../helpers/log');
+var ProductSpider = require("../spider/productService");
 // product data model.
 
 function ProductDataProvider() {
