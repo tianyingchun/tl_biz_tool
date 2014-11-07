@@ -1,5 +1,9 @@
 enyo.depends(
-	"third_libs/",
-	"bower_components/",
+	// "third_libs/",
+	"bower_components/angular/angular.js",
+	"bower_components/angular-route/angular-route.js",
+	"bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
+	"bower_components/bootstrap/dist/css/bootstrap.min.css",
+	"bower_components/jquery/dist/jquery.min.js",
 	"app/"
 );

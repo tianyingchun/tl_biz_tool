@@ -1,21 +1,31 @@
 <div class="panel panel-default">
-	<div class="panel-body"></div>
-	<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<th>地址</th>
-				<th>状态</th>
-				<th>操作</th>
-			</tr>
-		</thead>
+	<div class="panel-body">
+		<div class="pull-right">
+			<button class="btn btn-primary" ng-click="controller.uploadFile()">上传</button>
+			<button class="btn btn-primary" ng-click="controller.doBatch()">批量处理</button>
+		</div>
+	</div>
+	<div class="panel-body">
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>地址</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+			</thead>
 
-		<tbody>
-			<tr ng-repeat="item in list">
-				<td>{{item.url}}</td>
-				<td></td>
-				<td></td>
-			</tr>
-		</tbody>
-	</table>
-
+			<tbody>
+				<tr ng-repeat="item in list">
+					<td>{{item.url}}</td>
+					<td></td>
+					<td>
+						<div>
+							<button>处理</button>	
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>

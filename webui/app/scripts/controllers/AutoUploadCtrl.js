@@ -1,15 +1,18 @@
-app.controller("AutoUploadCtrl", ["$scope", function ($scope) {
-	// body...
-	// 
+app.controller("AutoUploadCtrl", ["$scope", "FileService", function ($scope, FileService) {
+
 	$scope.list = [];
-	$scope.$on("fileUploadFinish", function (event, results) {
-		if (results && results.length > 0) {
-			angular.forEach(results, function (item) {
-				var temp = {};
-				temp.url = item;
-				$scope.list.push(temp);
+
+	this.uploadFile = function () {
+		helper.file_upload.click();
+		helper.file_upload.change(function () {
+			var path = $(this).val();
+			$(this).val('');
+			console.log(path);
+			var promise = FileService.readFile(path);
+			promise.then(function (file) {
+				console.log(file);
 			})
-			$scope.$apply();
-		}
-	})
+		})
+	}
+
 }])
