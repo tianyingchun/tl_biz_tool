@@ -44,8 +44,20 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
         $routeProvider 
             // we need to put root matcher the last line.
             .when('/', {
-                templateUrl: appConfig.getTemplateUrl('app/views/upload-products.html'),
-                controller: 'UploadProductCtrl'
+                templateUrl: appConfig.getTemplateUrl('app/views/index.html'),
+                controller: 'IndexCtrl'
+            })
+            .when('/auto-upload', {
+                templateUrl: appConfig.getTemplateUrl('app/views/auto-upload.html'),
+                controller: 'AutoUploadCtrl'
+            })
+            .when('/image-spider', {
+                templateUrl: appConfig.getTemplateUrl('app/views/image-spider.html'),
+                controller: 'ImageSpiderCtrl'
+            })
+            .when('/image-upload', {
+                templateUrl: appConfig.getTemplateUrl('app/views/image-upload.html'),
+                controller: 'ImageUploadCtrl'
             })
             .otherwise({
                 redirectTo: '/'

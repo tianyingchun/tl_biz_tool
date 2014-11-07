@@ -17,5 +17,13 @@ var app = angular.module('tl_biz_tools', [
     // 'ngTouch', // the ng touch event has some conflict with ng-quick-date.js about event.
     // 'ngQuickDate',
     // 'ngUpload',
-    'ui.bootstrap.tabs'
+    // 'ui.bootstrap.tabs'
+    "ui.bootstrap"
 ]);
+
+(function (window) {
+    window.helper = {};
+
+    helper.file_upload = $("#file_upload");
+    helper.fr = new FileReader();
+})(window)

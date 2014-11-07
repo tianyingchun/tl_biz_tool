@@ -72,3 +72,33 @@ app.constant("regexRules", {
     "mobile": /^1[0-9][0-9]\d{8}$/, //验证手机号码/^1[3|4|5|8][0-9]\d{4,8}$/
     "empty": /^\s+|\s+$/ig // 移除字符串空字符串
 });
+
+app.constant("navigationConfig", {
+    categories: [
+        {
+            name: "产品管理",
+            path: "product-manage",
+            subCategories: [
+                {name: "自动上传产品", path:"auto-upload"},
+                {name: "图片抓取管理", path:"image-spider"},
+                {name: "图片上传模块", path:"image-upload"}
+            ]
+        },
+        {
+            name: "系统配置管理",
+            subCategories: [
+                {name: "自动上传产品", path:"auto-upload"},
+                {name: "图片抓取管理", path:"image-spider"},
+                {name: "图片上传模块", path:"image-upload"}
+            ]
+        },
+        {
+            name: "模块功能配置",
+            subCategories: [
+                {name: "自动上传产品", path:"auto-upload"},
+                {name: "图片抓取管理", path:"image-spider"},
+                {name: "图片上传模块", path:"image-upload"}
+            ]
+        }
+    ]
+})

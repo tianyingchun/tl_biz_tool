@@ -1,3 +1,4 @@
 enyo.depends(
-	"frame.css"
+	"frame.css",
+	"main.css"
 );

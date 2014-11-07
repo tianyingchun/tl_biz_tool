@@ -3,6 +3,19 @@
  */
 app.controller("MainCtrl", ["$scope", "$log", "$sce", "$timeout",
     function($scope, $log, $sce, $timeout) {
+
+        $scope.uploadFile = function () {
+            helper.file_upload.click();
+            helper.file_upload.on("change", function () {
+                var file = this.files[0];
+                helper.fr.onloadend = function (e) {
+                    var results = e.target.result.split('\n');
+                    $scope.$broadcast("fileUploadFinish", results);
+                }
+                helper.fr.readAsText(file);
+            });
+        }
+
         //
         // the default value that indicating if the spinner shown.
         // ------------------------------------------------------

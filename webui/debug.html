@@ -13,6 +13,7 @@
     <title>Biz tools for clothesgate</title>
     <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link rel="stylesheet" href="content/spinner.css">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"> -->
 </head>
 
 <body style="margin: 0;padding:0;">
@@ -28,10 +29,22 @@
             </div>
         </div>
         <!-- dialog -->
-        <div data-dialog></div>
-        <div id="view" data-app-cache data-ng-view class="view-container">
-
+        <div id="help" class="hidden">
+            <input type="file" id="file_upload"/>
         </div>
+        <div data-dialog></div>
+        <div class="container">
+            <div class="row">
+                <div class="left-container col-md-2 col-sm-3 col-xs-3">
+                    <ng-navigation></ng-navigation>
+                </div>
+                <div id="view" data-ng-view class="view-container right-container col-md-10 col-sm-9 col-xs-9"></div>
+                </div>
+            </div>
+        <div class="footer">
+            This is footer
+        </div>     
+
         <!-- <div data-app-cache></div> -->
     </div>
     <script src="buildtool/enyo.js"></script>
@@ -39,7 +52,6 @@
     <script type="text/javascript">
     enyo.ready(function() {
         console.log("ready go...");
-        // var server = require('../server/tl_server.js');
     });
     </script>
 </body>

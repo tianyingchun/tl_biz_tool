@@ -1,5 +1,5 @@
 enyo.depends(
-	"bootstrap/",
+	// "bootstrap/",
 	"components/",
 	"layouts/",
 	"modules/"

@@ -1,0 +1,26 @@
+{
+  "name": "tl_tool",
+  "version": "0.0.1",
+  "homepage": "https://github.com/tianyingchun/tl_biz_tool",
+  "description": "tool",
+  "main": "index.html",
+  "keywords": [
+    "tool"
+  ],
+  "authors": [
+    "noop"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.0",
+    "ngDialog": "~0.3.4"
+  }
+}
