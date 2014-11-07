@@ -2,3 +2,4 @@ node_modules
 bower_components
 .DS_Store
 test.txt
+npm_debug.log
