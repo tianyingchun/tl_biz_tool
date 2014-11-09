@@ -358,9 +358,16 @@ _.extend(ProductSpiderService.prototype, {
 				prices.push($(item).text());
 			});
 		} else {
-			prices.push(this.$dom("#sku-discount-price").text());
+			var  _nowprice = this.$dom("#sku-discount-price").text();
+			if(_nowprice){
+				prices.push(_nowprice);
+			}
 		}
 		this.nowPrice = prices.reverse();
+		// if no now price, then use old price.
+		if (!this.nowPrice.length) {
+			this.nowPrice = this.oldPrice;
+		}
 	},
 	fetchProductAttribtsList: function() {
 		logger.debug("filter to get product variant specifications list...");

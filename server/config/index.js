@@ -13,21 +13,21 @@ var serverCfg = {
         nginxPort: "",
         virtualDir: "",
         sqlserver: {
-            username: "sa",
+            user: "sa",
             password: "19861121.lr",
-            server: "TERENCE-PC\\SQLEXPRESSS", //You can use 'localhost\\instance' to connect to named instance
+            server: "TERENCE-PC", //You can use 'localhost\\instance' to connect to named instance
             database: "Nop28"
         }
     },
     production: {
         mode: "production",
         port: 4000,
-        nginxPort: "",
+        nginxPort: "",  
         virtualDir: "",
         sqlserver: {
-            username: "sa",
+            user: "sa",
             password: "19861121.lr",
-            server: "TERENCE-PC\\SQLEXPRESSS", //You can use 'localhost\\instance' to connect to named instance
+            server: "TERENCE-PC", //You can use 'localhost\\instance' to connect to named instance
             database: "Nop28"
         }
     }
