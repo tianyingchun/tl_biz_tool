@@ -1,2 +1,0 @@
-{"name":"ConnectionError","message":"sql connection excetion","code":"ELOGIN","level":"error","timestamp":"2014-11-08T15:25:16.805Z"}
-{"name":"ConnectionError","message":"sql connection excetion","code":"ETIMEOUT","level":"error","timestamp":"2014-11-08T16:02:56.681Z"}

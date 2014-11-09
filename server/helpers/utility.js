@@ -10,6 +10,20 @@ var dateFormat = require("./dateformat");
 var module_picture_extract = fs.readJsonSync("../module_config.json").module_picture_extract;
 
 /**
+ *  format string e.g  stringFormat("my name is {0}, sex is: {1}","tian","male")
+ * @param  {array like} str the source string that will be replace by regex .
+ */
+function stringFormat() {
+	// use this string as the format,Note {x},x start from 0,1,2,3
+	// walk through each argument passed in
+	for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
+		// replace {1} with argument[1], {2} with argument[2], etc.
+		fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), arguments[ndx]);
+	}
+	// return the formatted string
+	return fmt;
+}
+/**
  * download html source code helper function.
  * @param  {string}   url      webiste product detail page absolute url
  * @param  {Function} callback [description]
@@ -113,6 +127,7 @@ function extractProductId(url) {
 };
 
 module.exports = {
+	stringFormat: stringFormat,
 	extractProductId: extractProductId,
 	loadHtmlDocument: loadHtmlDocument,
 	downloadPicture: downloadPicture,

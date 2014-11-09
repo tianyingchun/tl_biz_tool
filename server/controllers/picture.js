@@ -38,16 +38,15 @@ router.post("/auto_extract_product_pictures", function(req, res) {
 router.get("/sql_server_connection_test", function(req, res) {
 	var sql = require("mssql");
 	console.log(config.sqlserver)
-	var connection = sql.connect(config.sqlserver, function(err) {
-		if (err) {
-			logger.error("sql connection excetion", err);
-			return;
-		}
-		var request = new sql.Request(connection); // or: var request = connection.request();
-		request.query('select 1 as number', function(err, recordset) {
-			// ... error checks 
-			logger.debug(recordset);
-		});
-	})
+	var picture = {
+		id: 1
+	};
+	pictureService.updatePicture(picture, function(result) {
+		logger.debug("picture controller error: ", result);
+		base.apiOkOutput(res, "success");
+	}, function(err) {
+		logger.debug("picture controller error: ", err);
+		base.apiErrorOutput(res, err);
+	});
 })
 module.exports = router;

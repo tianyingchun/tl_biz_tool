@@ -19,6 +19,7 @@
         "mssql": "*",
         "winston":"*",
         "fs-extra":"*",
+        "q":"*",
         "soupselect":"*",
         "htmlparser":"*",
         "cheerio":"*",

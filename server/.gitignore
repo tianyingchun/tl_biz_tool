@@ -1,4 +1,4 @@
 node_modules
 bower_components
 .DS_Store
-npm_debug.log
+npm-debug.log
