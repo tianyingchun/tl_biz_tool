@@ -8,6 +8,7 @@ app.controller("AutoUploadCtrl", ["$scope", "FileService", function ($scope, Fil
 			var path = $(this).val();
 			$(this).val('');
 			console.log(path);
+
 			var promise = FileService.readFile(path);
 			promise.then(function (file) {
 				console.log(file);
@@ -19,6 +20,11 @@ app.controller("AutoUploadCtrl", ["$scope", "FileService", function ($scope, Fil
 				})
 			})
 		})
+	};
+
+	this.doBatch = function (arguments) {
+		
 	}
 
+	
 }])

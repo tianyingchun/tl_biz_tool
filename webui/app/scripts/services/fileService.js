@@ -2,6 +2,10 @@
 	app.factory('FileService', ['$q', function($q){
 		var FileService = {};
 
+		if (window.require === undefined) {
+			return FileService;
+		}
+
 		var fs = require('fs-extra');
 
 		FileService.readFile = function (path) {
