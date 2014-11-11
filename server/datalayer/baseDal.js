@@ -5,6 +5,15 @@ var utility = require('../helpers/utility');
 // https://github.com/kriskowal/q
 var Q = require("q");
 
+var toString = Object.prototype.toString;
+
+var isObject = function(obj) {
+	return toString.call(obj) === "[object Object]";
+}
+var isArray = function(obj) {
+	return toString.call(obj) === "[object Array]";
+}
+
 /**
  * executeNoneQuery
  * @param  {arguments} serialized correpsonding data identity field. it will auto relace sql parameters {0}, {1}.
@@ -37,6 +46,21 @@ function executeNoneQuery() {
 	return deferred.promise;
 };
 
+function cast2Entity(json, constructor) {
+	var dest = new constructor();
+	var toString = Object.prototype.toString;
+	if (typeof json === "undefined" || toString.call(json) !== "[object Object]") {
+		return dest;
+	}
+	for (var i in json) {
+		if (dest.hasOwnProperty(i)) {
+			dest[i] = json[i];
+		}
+	}
+	return dest;
+};
+
 module.exports = {
-	executeNoneQuery: executeNoneQuery
+	executeNoneQuery: executeNoneQuery,
+	cast2Entity: cast2Entity
 };
