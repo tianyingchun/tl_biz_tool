@@ -22,7 +22,7 @@ app.controller("AutoUploadCtrl", ["$scope", "FileService", function ($scope, Fil
 		})
 	};
 
-	this.doBatch = function (arguments) {
+	this.doBatch = function () {
 		
 	}
 
