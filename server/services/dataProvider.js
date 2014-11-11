@@ -8,6 +8,9 @@ var factory = function(providerType, serviceName) {
         case "remote":
             service = require([".", "remote", serviceName + "Service"].join("/"))();
             break;
+        case "sqlserver":
+            service = require([".", "sqlserver", serviceName + "Service"].join("/"))();
+            break;
         default:
             service = require([".", providerType, serviceName + "Service"].join("/"))();
             break;
