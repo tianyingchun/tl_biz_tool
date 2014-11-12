@@ -24,7 +24,7 @@
     angular.extend(ProductService.prototype, {
         //上传产品
         uploadProduct: function(product, sucess_cb, failed_cb) {
-            var promise = this.remoteRequest("/product/upload_basic_info", product, this.productBasicInfoDto);
+            var promise = this.postRequest("/product/upload_basic_info", product, this.productBasicInfoDto);
             promise.then(sucess_cb, failed_cb || sucess_cb);
         }
     });

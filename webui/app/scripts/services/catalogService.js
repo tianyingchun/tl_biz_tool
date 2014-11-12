@@ -16,7 +16,7 @@
     angular.extend(CatalogService.prototype, {
         //上传产品
         addProducts2Category: function(product, categoryId, sucess_cb, failed_cb) {
-            var promise = this.remoteRequest("/catalog/add_products", {
+            var promise = this.postRequest("/catalog/add_products", {
                 product: product,
                 categoryId: categoryId
             });
