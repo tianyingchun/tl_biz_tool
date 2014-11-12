@@ -18,39 +18,56 @@ app.factory("utility", ["$log", "$window",
          * @param  {array like} str the source string that will be replace by regex .
          */
         function stringFormat() {
-            // use this string as the format,Note {x},x start from 1,2,3
-            // walk through each argument passed in
-            for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
-                // replace {1} with argument[1], {2} with argument[2], etc.
-                fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), angular.toJson(arguments[ndx]));
+                // use this string as the format,Note {x},x start from 1,2,3
+                // walk through each argument passed in
+                for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
+                    // replace {1} with argument[1], {2} with argument[2], etc.
+                    fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), angular.toJson(arguments[ndx]));
+                }
+                // return the formatted string
+                return fmt;
             }
-            // return the formatted string
-            return fmt;
-        }
-
+            /**
+             * parseParams("a=1&b=2&a=3") ==> {a: "3", b: "2"}
+             * @param  {string} str query string
+             */
+        function parseParams(str) {
+            return str.split('&').reduce(function(params, param) {
+                var paramSplit = param.split('=').map(function(value) {
+                    return decodeURIComponent(value.replace('+', ' '));
+                });
+                params[paramSplit[0]] = paramSplit[1];
+                return params;
+            }, {});
+        };
+        /**
+         * parse objet to query string
+         * @param  {object} obj {name:'ssss', password:''}
+         */
+        function toQueryString(obj) {
+            var parts = [];
+            for (var i in obj) {
+                if (obj.hasOwnProperty(i)) {
+                    parts.push(encodeURIComponent(i) + "=" + encodeURIComponent(obj[i]));
+                }
+            }
+            return parts.join("&");
+        };
         // http request success converter.
         function httpRespDataConverter(data, status, headers, config) {
-            var _newResult = {};
-            var resp = {};
             if (status == 200) {
-                _newResult = angular.copy(data);
-                delete _newResult.resultCode; //"1000"表示业务逻辑成功！,"1022"-业务走不下去的错误, "2022"-表示系统未知错误
-                delete _newResult.resultMsg;
-                resp = {
-                    code: data.resultCode,
-                    message: data.resultMsg,
-                    data: _newResult
+                return {
+                    code: data.code,
+                    message: data.message,
+                    data: data.data
                 };
             } else {
-                resp = {
+                return {
                     code: status,
                     message: "HTTP 接口访问错误 [code]: " + status,
-                    data: _newResult
+                    data: data.data
                 };
             }
-
-            // $log.debug(data, status, headers, config);
-            return resp;
         };
         /**
          * the short to generate javascirpt object namespace.
@@ -90,9 +107,10 @@ app.factory("utility", ["$log", "$window",
             }
         };
         return {
-            tracking: tracking,
             tryDecodeURIComponent: tryDecodeURIComponent,
             stringFormat: stringFormat,
+            parseParams: parseParams,
+            toQueryString: toQueryString,
             httpRespDataConverter: httpRespDataConverter,
             ns: namespace
         };

@@ -1,5 +1,5 @@
 enyo.depends(
-	"utilities.js",
+	"utility.js",
 	"httpRequest.js",
 	"localStorageCache.js"
 );
