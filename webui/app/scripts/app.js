@@ -18,7 +18,8 @@ var app = angular.module('tl_biz_tools', [
     // 'ngQuickDate',
     // 'ngUpload',
     // 'ui.bootstrap.tabs'
-    "ui.bootstrap"
+    "ui.bootstrap",
+    "ngDialog"
 ]);
 
 (function (window) {
