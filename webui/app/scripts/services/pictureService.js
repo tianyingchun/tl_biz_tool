@@ -21,7 +21,7 @@
          * @param {object} product   [description]
          */
         addPictures2Product: function(pictures, product, sucess_cb, failed_cb) {
-            var promise = this.remoteRequest("/picture/add_pictures", {
+            var promise = this.postRequest("/picture/add_pictures", {
                 pictures: pictures,
                 categoryId: categoryId
             });

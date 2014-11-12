@@ -31,16 +31,6 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
 
         // page deniftions.
 
-        // +share page: #/share/data (cid: customer id);
-        // + home page: #/home/cid, #card-apply/cid   
-        // + card apply closed: #/card-apply-closed/:data
-        // + id card form filled page: #/identity-card-from    ----cache key: idcard-form
-        // + id card two picture upload: #/identity-card-pics  
-        // + post office delivery address: #/address   -----cache key:   address
-        // + opt mobile message validation: #opt-varify
-        // + payment method form: #payment-password
-        // + apply card success page: #card-apply-success
-
         $routeProvider 
             // we need to put root matcher the last line.
             .when('/', {

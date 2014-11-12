@@ -1,38 +1,25 @@
 //This configures the routes and associates each route with a view and a controller
 app.factory("remoteApi", ["$location", "$log", function($location, $log) {
 
-    // COMMON  RESOURCE DEFINITION.
+    // common remote api resource definitions.
     var commonResource = {
-        clientId: "",
-        appId: "T-100014" //T-100014" //花漾卡
+        //noting now
     };
 
-    // OTHER SPECIFIC ENVIONMENT RESOURCE DEFINITON.
-    var ENVMapping = {
-        "localhost": {
-            apiBaseUrl: "http://localhost:100001", //"http://192.168.11.212:8080/mtp-web",//stg5://http://114.80.86.110:11380/mtp-web
-            defaultMethod: 'POST' //will used for all http request while we invoke STAG envionment.
+    // envionment resource definitions here.
+    var env = {
+        // we can specificed api baseurl here, if not use current web server root path.
+        apiBaseUrl: ""
+    };
+    var protocol = $location.protocol(),
+        currHost = $location.host(), // $location.port();
+        port = $location.port(),
+        _baseUrl = protocol + "://" + (port ? (currHost + ":" + port) : currHost);
 
-            // apiBaseUrl: "http://192.168.14.145:8081/tests",
-            // defaultMethod: 'GET', //'GET', in my local /test/h5/xxxx.json we need use get request.
-        },
-        "production": {
-            apiBaseUrl: "http://localhost:100001",
-            defaultMethod: 'POST'
-        }
-    }
-    var currHost = $location.host(); // $location.port();
-    $log.info("currHost: ", currHost);
-    var result = {};
-    switch (currHost) {
-        case "localhost":
-        case "192.168.14.145":
-            angular.extend(result, commonResource, ENVMapping["localhost"]);
-            break;
-        default:
-            angular.extend(result, commonResource, ENVMapping["production"]);
-            break;
-    }
+    var result = angular.extend({}, commonResource, {
+        apiBaseUrl: env.apiBaseUrl || _baseUrl
+    });
+    $log.debug(result);
 
     return result;
 }]);
@@ -47,22 +34,6 @@ app.constant("cacheKeysDefinition", {
     }
 });
 
-// dialog default configurations.
-app.constant("dialogDefaultCfg", {
-    title: "默认标题",
-    body: "默认弹窗内容",
-    buttons: [{
-        txt: "确定",
-        classes: "btn-primary",
-        action: "confirm"
-    }, {
-        txt: "取消",
-        classes: "btn-danger",
-        action: "cancel"
-    }],
-    callbackFn: null
-});
-
 // all available regex rules.
 app.constant("regexRules", {
     "postcode": /^[1-9][0-9]{5}$/, //邮政编码
@@ -74,31 +45,42 @@ app.constant("regexRules", {
 });
 
 app.constant("navigationConfig", {
-    categories: [
-        {
-            name: "产品管理",
-            path: "product-manage",
-            subCategories: [
-                {name: "自动上传产品", path:"auto-upload"},
-                {name: "图片抓取管理", path:"image-spider"},
-                {name: "图片上传模块", path:"image-upload"}
-            ]
-        },
-        {
-            name: "系统配置管理",
-            subCategories: [
-                {name: "自动上传产品", path:"auto-upload"},
-                {name: "图片抓取管理", path:"image-spider"},
-                {name: "图片上传模块", path:"image-upload"}
-            ]
-        },
-        {
-            name: "模块功能配置",
-            subCategories: [
-                {name: "自动上传产品", path:"auto-upload"},
-                {name: "图片抓取管理", path:"image-spider"},
-                {name: "图片上传模块", path:"image-upload"}
-            ]
-        }
-    ]
+    categories: [{
+        name: "产品管理",
+        path: "product-manage",
+        subCategories: [{
+            name: "自动上传产品",
+            path: "auto-upload"
+        }, {
+            name: "图片抓取管理",
+            path: "image-spider"
+        }, {
+            name: "图片上传模块",
+            path: "image-upload"
+        }]
+    }, {
+        name: "系统配置管理",
+        subCategories: [{
+            name: "自动上传产品",
+            path: "auto-upload"
+        }, {
+            name: "图片抓取管理",
+            path: "image-spider"
+        }, {
+            name: "图片上传模块",
+            path: "image-upload"
+        }]
+    }, {
+        name: "模块功能配置",
+        subCategories: [{
+            name: "自动上传产品",
+            path: "auto-upload"
+        }, {
+            name: "图片抓取管理",
+            path: "image-spider"
+        }, {
+            name: "图片上传模块",
+            path: "image-upload"
+        }]
+    }]
 })

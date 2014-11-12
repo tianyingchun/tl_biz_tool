@@ -2,8 +2,8 @@ app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi'
 
     function($log, $http, utility, appConfig, remoteApi) {
 
+        // api base url
         var apiBaseUrl = remoteApi.apiBaseUrl;
-        var defaultMethod = remoteApi.defaultMethod; // local debug requird 'GET' live is 'POST'
 
         // common header, 
         var commonHeader = {
@@ -17,10 +17,8 @@ app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi'
         // get current api async request data object.
         function getRequestData(data) {
             // default request data
-            var defaultRequestData = {
-                appId: remoteApi.appId,
-                clientId: remoteApi.clientId
-            };
+            var defaultRequestData = {};
+
             return angular.extend(defaultRequestData, data);
         };
         // get current api request url full path string.
@@ -37,20 +35,7 @@ app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi'
 
         // for get request get params parameter
         function getSerializedUrl(url, requestData) {
-            var oParam = {};
-            requestData = angular.isArray(requestData) ? requestData : [requestData];
-            for (var i = 0; i < requestData.length; i++) {
-                var oCur = requestData[i];
-                for (var p in oCur) {
-                    oParam[p] = encodeURIComponent(oCur[p]);
-                }
-            }
-
-            var newUrlParamStr = "";
-            for (var i in oParam) {
-                newUrlParamStr += i + "=" + oParam[i] + "&";
-            }
-            return url.split("?")[0] + "?" + newUrlParamStr.substring(0, newUrlParamStr.length - 1);
+            return url.split("?")[0] + "?" + utility.toQueryString(requestData);
         };
         /**
          * Define global row data result converter.
@@ -124,40 +109,13 @@ app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi'
                                     );
                             };
                             break;
-                        case "LOCAL":
-                            // used to write mock service in local env.
-                            this["localRequest"] = function(url, requestData, dto, customizedData, config) {
-                                url = appConfig.getTemplateUrl(url);
-                                return this.getRequest(url, requestData, dto, customizedData, config);
-                            }
-                            break;
-                        case "REMOTE":
-                            this["remoteRequest"] = function(url, requestData, dto, customizedData, config) {
-                                var promise;
-                                switch (defaultMethod) {
-                                    case "POST":
-                                        promise = this.postRequest(url, requestData, dto, customizedData, config);
-                                        break;
-                                    case "GET":
-                                        promise = this.getRequest(url, requestData, dto, customizedData, config);
-                                        break;
-                                    case "LOCAL":
-                                        promise = this.localRequest(url, requestData, dto, customizedData, config);
-                                        break;
-                                    default:
-                                        promise = this.postRequest(url, requestData, dto, customizedData, config);
-                                        break;
-                                }
-                                return promise;
-                            };
-                            break;
                     };
                 };
             };
             //
             // invoke shortcut to create base http request helper methods
             // -----------------------------------------------------------
-            registerMultipleMethods.call(this, ['GET', 'POST', 'REMOTE', 'LOCAL']);
+            registerMultipleMethods.call(this, ['GET', 'POST']);
         };
         return BaseHttpRequest;
     }
