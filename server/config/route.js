@@ -12,7 +12,7 @@ var errorHandler404 = function(req, res, next) {
 };
 var errorHandler500 = function(err, req, res, next) {
     res.status(err.status || 500);
-    var contentType = res.get('Content-Type');
+    var contentType = req.get('Content-Type');
     switch (contentType) {
         case "application/json":
             exception.writeJSONError(res, err);

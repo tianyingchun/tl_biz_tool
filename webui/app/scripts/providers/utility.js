@@ -57,7 +57,7 @@ app.factory("utility", ["$log", "$window",
         function httpRespDataConverter(data, status, headers, config) {
             if (status == 200) {
                 return {
-                    code: data.code,
+                    code: data.retCode,// if code equlas 1 request exec ok!
                     message: data.message,
                     data: data.data
                 };
