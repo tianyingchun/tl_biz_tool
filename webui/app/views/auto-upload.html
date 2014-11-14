@@ -16,7 +16,7 @@
 			</thead>
 
 			<tbody>
-				<tr ng-repeat="item in list">
+				<tr ng-repeat="item in list" ng-class="{success: item.success, danger: item.error}">
 					<td>{{item.url}}</td>
 					<td></td>
 					<td>

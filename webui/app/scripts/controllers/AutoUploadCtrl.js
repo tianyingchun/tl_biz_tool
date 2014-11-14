@@ -27,7 +27,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             if ($scope.list.length > 0) {
                 $log.info("start do a batch");
                 var list = $scope.list;
-
+                
                 ProductService.uploadProduct();
 
             } else {

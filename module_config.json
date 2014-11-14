@@ -1,10 +1,22 @@
 {
 	"module_product_extract": {
+		"title": "产品XXX",
 		"sku_color_css_url": "http://style.aliunicorn.com/css/6v/run/wholesale/buyer/module/sku-color-card.css",
 		"product_description_url": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
 		"price_rate": 1.4
 	},
 	"module_picture_extract":{
-		"saveto_dir":"D:\\Github_Works\\extract_dir"
+		"title": "图片模块配置",
+		"description": "jfklsdjafkljasdkfjasl",
+		"configs": {
+			"saveto_dir": {
+				"description" : "",
+				"value": "D:\\Github_Works\\extract_dir"
+			},
+			"others" :　{
+				"description" : "",
+				"value": "D:\\Github_Works\\extract_dir"	
+			}
+		}
 	}
 }
