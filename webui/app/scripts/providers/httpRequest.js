@@ -1,6 +1,6 @@
-app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi',
+app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
 
-    function($log, $http, utility, appConfig, remoteApi) {
+    function($log, $http, $q, utility, remoteApi) {
 
         // api base url
         var apiBaseUrl = remoteApi.apiBaseUrl;
@@ -42,7 +42,7 @@ app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi'
          */
         var promisecb = {
 
-            success: function(dto, requestData, customizedData, resp) {
+            success: function(defered, dto, requestData, customizedData, resp) {
                 // converted raw data.
                 var result = utility.httpRespDataConverter(resp.data, resp.status);
                 // customized dto if available.
@@ -52,14 +52,15 @@ app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi'
                 }
                 $log.debug(this.logKey(), utility.stringFormat("success -> converted data {0} ", result));
 
-                return result;
+                defered.resolve(result);
             },
-            failed: function(resp) {
+            failed: function(defered, resp) {
 
                 var result = utility.httpRespDataConverter(resp.statusText || resp.data, resp.status);
+
                 $log.debug(this.logKey(), utility.stringFormat("failed -> converted data {0}", result));
 
-                return result;
+                defered.reject(result);
             }
         };
 
@@ -91,22 +92,28 @@ app.factory("httpRequest", ['$log', '$http', 'utility', 'appConfig', 'remoteApi'
                             this["getRequest"] = function(url, requestData, dto, customizedData, config) {
                                 // get serialized data Url for get request.
                                 url = getSerializedUrl(getRequestUrl(url), requestData);
-
-                                return $http.get(url, config)
-                                    .then(
-                                        angular.bind(this, promisecb.success, dto, requestData, customizedData),
-                                        angular.bind(this, promisecb.failed)
-                                    );
+                                // customized defered.
+                                var defered = $q.defer();
+                                
+                                $http.get(url, config).then(
+                                    angular.bind(this, promisecb.success, defered, dto, requestData, customizedData),
+                                    angular.bind(this, promisecb.failed, defered)
+                                );
+                                return defered.promise;
                             };
                             break;
 
                         case "POST":
                             this["postRequest"] = function(url, requestData, dto, customizedData, config) {
-                                return $http.post(getRequestUrl(url), getRequestData(requestData), config)
+                                // customized defered.
+                                var defered = $q.defer();
+
+                                $http.post(getRequestUrl(url), getRequestData(requestData), config)
                                     .then(
-                                        angular.bind(this, promisecb.success, dto, requestData, customizedData),
-                                        angular.bind(this, promisecb.failed)
+                                        angular.bind(this, promisecb.success, defered, dto, requestData, customizedData),
+                                        angular.bind(this, promisecb.failed, defered)
                                     );
+                                return defered.promise;
                             };
                             break;
                     };
