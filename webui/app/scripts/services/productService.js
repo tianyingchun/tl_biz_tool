@@ -24,7 +24,10 @@
     angular.extend(ProductService.prototype, {
         //上传产品
         uploadProduct: function(product) {
-            var promise = this.postRequest("/product/upload_basic_info", product, this.productBasicInfoDto);
+            var data = {
+                url: product.url
+            }
+            var promise = this.postRequest("/product/upload_basic_info", data, this.productBasicInfoDto);
             return promise;
         }
     });

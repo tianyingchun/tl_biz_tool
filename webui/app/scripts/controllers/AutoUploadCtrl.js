@@ -22,14 +22,25 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 })
             })
         };
-
+        $scope.list = [{url: "www.baidu.com"},{url: "www.baidu.com"}];
         this.doBatch = function() {
             if ($scope.list.length > 0) {
                 $log.info("start do a batch");
                 var list = $scope.list;
-                
-                ProductService.uploadProduct();
 
+                async.eachSeries(list, function (item, callback) {
+                    var promise = ProductService.uploadProduct(item);
+                    $log.log(item.url);
+                    promise.then(function (results) {
+                        item.success = true;
+                        callback();
+                    }, function (err) {
+                        item.error = true;
+                        callback(err);
+                    })
+                }, function (err) {
+                    $log.error(err);
+                })
             } else {
                 $log.info("nothing to do!");
                 ngDialog.open({

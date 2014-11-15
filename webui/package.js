@@ -8,6 +8,6 @@ enyo.depends(
 	"bower_components/ngDialog/js/ngDialog.js",
 	"bower_components/ngDialog/css/ngDialog.css",
 	"bower_components/ngDialog/css/ngDialog-theme-default.css",
-	"bower_components/async/libb/async.js",
+	"bower_components/async/lib/async.js",
 	"app/"
 );
