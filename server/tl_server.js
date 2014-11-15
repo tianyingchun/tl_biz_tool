@@ -35,9 +35,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 
-express.static.mime.define({
-	'text/xml': ['plist']
-});
+// express.static.mime.define({
+// 	'text/xml': ['plist']
+// });
 // the default is "/" capture the static dir as all static resource root.
 app.use("/static", express.static(path.join(__dirname, 'public')));
 // sql.connect(config.sqlserver, function(err) {

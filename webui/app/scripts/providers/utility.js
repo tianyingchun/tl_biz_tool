@@ -65,7 +65,7 @@ app.factory("utility", ["$log", "$window",
                 return {
                     code: status,
                     message: "HTTP 接口访问错误 [code]: " + status,
-                    data: data.data
+                    data: data
                 };
             }
         };
@@ -96,15 +96,6 @@ app.factory("utility", ["$log", "$window",
                 container = container[part];
             }
             return container;
-        };
-        /**
-         * TRACKING service utitlity for index.html live release version.
-         */
-        function tracking(eventId) {
-            $log.info("tracking id: ", eventId);
-            if (typeof Agent != "undefined" && Agent) {
-                Agent.clickEvent(eventId);
-            }
         };
         return {
             tryDecodeURIComponent: tryDecodeURIComponent,

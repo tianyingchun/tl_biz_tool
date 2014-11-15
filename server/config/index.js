@@ -11,25 +11,13 @@ var serverCfg = {
         mode: "local",
         port: 3000,
         nginxPort: "",
-        virtualDir: "",
-        sqlserver: {
-            user: "sa",
-            password: "19861121.lr",
-            server: "TERENCE-PC", //You can use 'localhost\\instance' to connect to named instance
-            database: "Nop28"
-        }
+        virtualDir: ""
     },
     production: {
         mode: "production",
         port: 4000,
         nginxPort: "",  
-        virtualDir: "",
-        sqlserver: {
-            user: "sa",
-            password: "19861121.lr",
-            server: "TERENCE-PC", //You can use 'localhost\\instance' to connect to named instance
-            database: "Nop28"
-        }
+        virtualDir: ""
     }
 };
 // exports site configuration.

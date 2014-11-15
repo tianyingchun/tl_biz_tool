@@ -5,12 +5,16 @@ var dateFormat = require("./dateformat");
 var path = require("path");
 winston.emitErrs = true;
 
-var serverCfg = fs.readJsonSync("../server_config.json").server;
+var localServerCfg = fs.readJsonSync("../server_config.json").local_server_config.configs;
 
-if (serverCfg.logDir) {
-	fs.ensureDirSync(serverCfg.logDir);
+var logdir = localServerCfg.logdir && localServerCfg.logdir.value || "./logs";
+
+if (logdir) {
+	fs.ensureDirSync(logdir);
 }
-var _filename = path.join(serverCfg.logDir, dateFormat(new Date(), "YYYY-MM-DD") + ".log");
+// make log files with current day.
+var _filename = path.join(logdir, dateFormat(new Date(), "YYYY-MM-DD") + ".log");
+
 fs.ensureFileSync(_filename);
 
 var logger = new winston.Logger({

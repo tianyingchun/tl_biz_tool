@@ -1,7 +1,12 @@
 var sql = require('mssql');
-var config = require('../config')();
+var fs = require("fs-extra");
 var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
+// remote configs
+var remoteServerCfg = fs.readJsonSync("../server_config.json").remote_server_config.configs;
+
+var clothesgate_conn = remoteServerCfg.sqlserver_clothesgate_conn;
+
 // https://github.com/kriskowal/q
 var Q = require("q");
 
@@ -27,7 +32,7 @@ function executeNoneQuery() {
 
 	logger.debug("request sql string: ", sqlStr);
 
-	var connection = sql.connect(config.sqlserver, function(err) {
+	var connection = sql.connect(clothesgate_conn.value, function(err) {
 		if (err) {
 			logger.error("sql connection excetion", err);
 			deferred.reject(new Error(err));

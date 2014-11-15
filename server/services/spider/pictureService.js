@@ -6,7 +6,7 @@ var _ = require('underscore'),
 	fs = require("fs-extra");
 
 // product module config.
-var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
+var module_product_extract_cfg = fs.readJsonSync("../module_config.json").module_product_extract.configs;
 
 function PictureSpiderService(httpUrl) {
 	EventTarget.call(this);
@@ -36,7 +36,7 @@ function PictureSpiderService(httpUrl) {
 		}));
 
 		// download product pictures
-		var product_description_url = module_product_extract.product_description_url.replace("{pid}", this.productId);
+		var product_description_url = module_product_extract_cfg.product_description_url.value.replace("{pid}", this.productId);
 		// run picture spider.
 		var _this = this;
 		utility.downloadPicture(this.productId, product_description_url, function(result) {

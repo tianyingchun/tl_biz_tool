@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var _ = require("underscore");
-var config = require("../config")();
 var base = require("./base");
 var logger = require("../helpers/log");
 
@@ -35,14 +34,12 @@ router.post("/auto_extract_product_pictures", function(req, res) {
 	}
 });
 
-router.get("/sql_server_connection_test", function(req, res) {
-	var sql = require("mssql");
-	console.log(config.sqlserver)
+router.get("/sql_server_connection_test", function(req, res) { 
 	var picture = {
 		id: 1
 	};
 	pictureService.updatePicture(picture, function(result) {
-		logger.debug("picture controller error: ", result);
+		logger.debug("picture controller success: ", result);
 		base.apiOkOutput(res, "success");
 	}, function(err) {
 		logger.debug("picture controller error: ", err);

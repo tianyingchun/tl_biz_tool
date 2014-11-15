@@ -1,5 +1,36 @@
 {
-	"server":{
-		"logDir":"D:\\Github_Works\\tl_biz_tool\\server\\logs"
+	"local_server_config": {
+		"title": "本地服务配置管理",
+		"description": "用来配置本地的web server相关信息如log, webserver port等",
+		"configs": {
+			"logdir": {
+				"description": "用来存储本地错误日志的目录路径",
+				"value": "D:\\Github_Works\\tl_biz_tool\\server\\logs"
+			}
+		}
+	},
+	"remote_server_config": {
+		"title": "远程服务配置管理",
+		"description": "用来配置存放到远程服务器的相关资源信息,如远程sqlserver 配置",
+		"configs": {
+			"sqlserver_clothesgate_conn": {
+				"description": "远程DB Clothesgate的连接配置",
+				"value": {
+					"user": "sa",
+					"password": "19861121.lr",
+					"server": "TERENCE-PC",
+					"database": "Nop28"
+				}
+			},
+			"sqlserver_docs_conn": {
+				"description": "远程DB Docs的连接配置",
+				"value": {
+					"user": "sa",
+					"password": "19861121.lr",
+					"server": "TERENCE-PC", 
+					"database": "Docs"
+				}
+			}
+		}
 	}
 }

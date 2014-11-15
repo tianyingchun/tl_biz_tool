@@ -12,7 +12,7 @@ var utility = require("../../helpers/utility");
 var EventTarget = require("../../helpers/EventTarget");
 var skuStyleContent = "";
 // module product extract config.
-var module_product_extract = fs.readJsonSync("../module_config.json").module_product_extract;
+var module_product_extract_cfg = fs.readJsonSync("../module_config.json").module_product_extract.configs;
 
 function rgbConvert2Hex(rgb) {
 	if (!rgb) return "";
@@ -38,7 +38,7 @@ function rgbConvert2Hex(rgb) {
 // download fetch sku color style cotent
 function fetchSkuColorStyleContent(callback) {
 	if (!skuStyleContent) {
-		var sku_color_url = module_product_extract.sku_color_css_url;
+		var sku_color_url = module_product_extract_cfg.sku_color_css_url.value;
 		utility.loadHtmlDocument(sku_color_url, function(body) {
 			skuStyleContent = body;
 			callback({
@@ -155,7 +155,7 @@ function fetchProductSpecOther($, $lis) {
  * @param  {Function} callback  [description]
  */
 function fetchProductDescriptions(productId, callback) {
-	var product_description_url = module_product_extract.product_description_url.replace("{pid}", productId);
+	var product_description_url = module_product_extract_cfg.product_description_url.value.replace("{pid}", productId);
 	utility.loadHtmlDocument(product_description_url, function(desc) {
 		desc = desc && desc.replace(/\s+\S*productDescription=\s*['"]/, "");
 		desc = desc && desc.replace(/['"];$"/, "");

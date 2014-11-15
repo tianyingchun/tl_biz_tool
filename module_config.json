@@ -1,21 +1,29 @@
 {
 	"module_product_extract": {
-		"title": "产品XXX",
-		"sku_color_css_url": "http://style.aliunicorn.com/css/6v/run/wholesale/buyer/module/sku-color-card.css",
-		"product_description_url": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
-		"price_rate": 1.4
+		"title": "产品抓取模块配置",
+		"description": "用来配置一些关于产品抓取数据源所必须的资源地址信息",
+		"configs": {
+			"sku_color_css_url": {
+				"description": "产品数据ColorList颜色的来源Css文件",
+				"value": "http://style.aliunicorn.com/css/6v/run/wholesale/buyer/module/sku-color-card.css"
+			},
+			"product_description_url": {
+				"description": "产品描述数据来源API地址",
+				"value": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}"
+			},
+			"price_rate": {
+				"description": "当前产品价格制定比率 = 当前抓取价格的倍率",
+				"value": 1.4
+			}
+		}
 	},
-	"module_picture_extract":{
+	"module_picture_extract": {
 		"title": "图片模块配置",
-		"description": "jfklsdjafkljasdkfjasl",
+		"description": "图片模块相关配置信息管理",
 		"configs": {
 			"saveto_dir": {
-				"description" : "",
+				"description": "用来保存图片抓取后临到保存到当前电脑的指定目录",
 				"value": "D:\\Github_Works\\extract_dir"
-			},
-			"others" :　{
-				"description" : "",
-				"value": "D:\\Github_Works\\extract_dir"	
 			}
 		}
 	}
