@@ -59,7 +59,7 @@ app.factory("utility", ["$log", "$window",
                 return {
                     code: data.retCode,// if code equlas 1 request exec ok!
                     message: data.message,
-                    data: data.data
+                    data: data.info
                 };
             } else {
                 return {
