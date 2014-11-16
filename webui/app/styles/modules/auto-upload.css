@@ -2,8 +2,12 @@
   width: 200px;
 }
 .auto-upload .status {
-  width: 200px;
+  width: 100px;
 }
 .auto-upload table tbody tr td {
   vertical-align: middle;
+}
+.auto-upload .search-bar {
+  width: 300px;
+  display: inline-block;
 }

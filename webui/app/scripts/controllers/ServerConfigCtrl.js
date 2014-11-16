@@ -10,5 +10,6 @@ app.controller('ServerConfigCtrl', ['$scope', 'configService', 'configPath',func
 
     this.saveConfig = function (argument) {
     	console.log($scope.configData);
+    	configService.saveServerConfigData(configPath.client, $scope.configData);
     }
 }])

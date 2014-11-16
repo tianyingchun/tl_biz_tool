@@ -1,7 +1,7 @@
-    app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductService", "ngDialog", "regexRules", "statusEnum",
-    function ($scope, $log, FileService, ProductService, ngDialog, regexRules, statusEnum) {
+    app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductService", "ngDialog", "regexRules", "statusEnum", "$filter",
+    function ($scope, $log, FileService, ProductService, ngDialog, regexRules, statusEnum, $filter) {
 
-        $scope.list = [];
+        var list = [];
         this.uploadFile = function() {
             helper.file_upload.click();
             helper.file_upload.change(function() {
@@ -17,14 +17,21 @@
                         var temp = {};
                         if (regexRules.url.test(item)){ 
                             temp.url = item;
-                            $scope.list.push(temp);
+                            list.push(temp);
+                            $scope.list = angular.copy(list);
                         }
                     })
                 })
             })
         };
 
-        $scope.list = [{url: "www.baidu.com"},{url: "www.baidu.com"}];
+        // var list = [{url: "www.baidu.com"},{url: "www.google.com"}];
+        
+        $scope.list = angular.copy(list);
+        $scope.doFilter = function () {
+            $scope.list = $filter('filter')(list, $scope.searchFilter);
+        }
+        
         
         this.handle = function (item) {
             if (item.url && item.url.length > 0) {

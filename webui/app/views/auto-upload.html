@@ -1,7 +1,7 @@
 <div class="panel panel-default auto-upload">
 	<div class="panel-body">
 		<div class="pull-right">
-			<input ng-model="filter">
+			<input ng-model="searchFilter" class="search-bar form-control" ng-change="doFilter()">
 			<button class="btn btn-primary" ng-click="controller.uploadFile()">上传</button>
 			<button class="btn btn-primary" ng-click="controller.doBatch()">批量处理</button>
 		</div>
