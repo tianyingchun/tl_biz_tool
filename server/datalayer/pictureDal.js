@@ -2,7 +2,7 @@ var sql = require('mssql');
 var config = require('../config')();
 var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
-
+var PictureModel = require("../models/Picture");
 var baseDal = require("./baseDal");
 
 function pictureDal() {
@@ -13,7 +13,10 @@ function pictureDal() {
 	 */
 	this.updatePicture = function(picture) {
 		var sql = "select * from picture where id= {0}";
-		return baseDal.executeNoneQuery(sql, picture.id);
+		return baseDal.executeEntity(PictureModel, [sql, picture.id]);
+	};
+	this.insertPicture = function(picture) {
+
 	};
 };
 

@@ -1,4 +1,8 @@
+var util = require('util');
+var BaseModel = require("./BaseModel");
+
 function ProductVariant(productId, name, sku, description, price, oldPrice, sourcePrice, costPrice, sourceUrl, sourceInfoComment, productAttribts, specAttribts) {
+    BaseModel.call(this, "ProductVariant");
     /// <summary>
     /// Gets or sets the productVariant identifier
     /// </summary>
@@ -31,7 +35,7 @@ function ProductVariant(productId, name, sku, description, price, oldPrice, sour
     /// <summary>
     /// Gets or sets the manufacturer part number
     /// </summary>
-    this.ManufacturerPartNumber = "CG0" + this.Sku;
+    this.ManufacturerPartNumber = "CG" + this.Sku;
 
     /// <summary>
     /// Gets or sets the Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books).
@@ -362,6 +366,8 @@ function ProductVariant(productId, name, sku, description, price, oldPrice, sour
     this.productAttribts = productAttribts;
 
     this.specAttribts = specAttribts;
-}
+};
+
+util.inherits(ProductVariant, BaseModel);
 
 module.exports = ProductVariant;

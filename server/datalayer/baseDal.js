@@ -1,5 +1,7 @@
 var sql = require('mssql');
 var fs = require("fs-extra");
+var _ = require("underscore");
+var BaseModel = require("../models/BaseModel");
 var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
 // remote configs
@@ -10,31 +12,22 @@ var clothesgate_conn = remoteServerCfg.sqlserver_clothesgate_conn;
 // https://github.com/kriskowal/q
 var Q = require("q");
 
-var toString = Object.prototype.toString;
-
-var isObject = function(obj) {
-	return toString.call(obj) === "[object Object]";
-}
-var isArray = function(obj) {
-	return toString.call(obj) === "[object Array]";
-}
-
 /**
  * executeNoneQuery
- * @param  {arguments} serialized correpsonding data identity field. it will auto relace sql parameters {0}, {1}.
- * // the arguments like: e.g.  (sqlStr, parameters)
+ * @param  {array} sqlParams serialized correpsonding data identity field. it will auto relace sql parameters {0}, {1}.
+ * // the arguments like: e.g.  [sqlStr, parameters]
  * @return {number} return effectRow
  */
-function executeNoneQuery() {
+function executeNoneQuery(sqlParams) {
 	// serialized the arguments to sql string.
-	var sqlStr = utility.stringFormat.apply(this, arguments);
+	var sqlStr = utility.stringFormat.apply(this, sqlParams);
 	var deferred = Q.defer();
 
-	logger.debug("request sql string: ", sqlStr);
+	logger.debug("request sql string: `%s`", sqlStr);
 
 	var connection = sql.connect(clothesgate_conn.value, function(err) {
 		if (err) {
-			logger.error("sql connection excetion", err);
+			logger.error("sql connection excetion: ", err);
 			deferred.reject(new Error(err));
 		} else {
 			var request = new sql.Request(connection); // or: var request = connection.request();
@@ -51,8 +44,44 @@ function executeNoneQuery() {
 	return deferred.promise;
 };
 
-function cast2Entity(json, constructor) {
-	var dest = new constructor();
+function executeEntity(Constructor, sqlParams) {
+
+	return executeNoneQuery(sqlParams).then(function success(result) {
+
+		var _instance = new Constructor();
+		// make sure that the consturcto inherits from BaseModel
+		if (_instance instanceof BaseModel) {
+			if (_.isArray(result) && result.length) {
+				_instance = cast2Entity(result[0], _instance);
+			} else {
+				_instance = cast2Entity(result, _instance);
+			}
+			return _instance;
+		} else {
+			logger.warn("the model constructor `%s` must be inherits from BaseModel", Constructor.name);
+		}
+	});
+};
+
+function executeList(Constructor, sqlParams) {
+
+};
+
+function cast2EntityList(arrayJson, dest) {
+	var result = [];
+	for (var i = 0; i < arrayJson.length; i++) {
+		var json = arrayJson[i];
+		result.push(cast2Entity(json, dest));
+	};
+	return result;
+};
+
+/**
+ * Cast json object into specificed instance model property.
+ * @param  {json} json json object
+ * @param  {object} dest Constructor instance inherits from BaseModel.
+ */
+function cast2Entity(json, dest) {
 	var toString = Object.prototype.toString;
 	if (typeof json === "undefined" || toString.call(json) !== "[object Object]") {
 		return dest;
@@ -67,5 +96,6 @@ function cast2Entity(json, constructor) {
 
 module.exports = {
 	executeNoneQuery: executeNoneQuery,
+	executeEntity: executeEntity,
 	cast2Entity: cast2Entity
 };

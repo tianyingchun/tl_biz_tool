@@ -1,3 +1,5 @@
+var util = require('util');
+var BaseModel = require("./BaseModel");
 /**
  * Category entity model
  * @param {number} id               id.
@@ -6,6 +8,7 @@
  * @param {number} displayOrder     display order.
  */
 function TierPrice(productVariantId, quantity, price) {
+	BaseModel.call(this, "TierPrice");
 	/// <summary>
 	/// Gets or sets the product variant identifier
 	/// </summary>
@@ -24,6 +27,8 @@ function TierPrice(productVariantId, quantity, price) {
 	/// Gets or sets the price
 	/// </summary>
 	this.Price = price;
-}
+};
+
+util.inherits(TierPrice, BaseModel);
 
 module.exports = TierPrice;
