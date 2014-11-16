@@ -1,4 +1,8 @@
+var util = require('util');
+var BaseModel = require("./BaseModel");
+
 function Product(name, fullDescription) {
+	BaseModel.call(this, "Product");
 	/// <summary>
 	/// Gets or sets the Id
 	/// </summary>
@@ -79,5 +83,7 @@ function Product(name, fullDescription) {
 	/// </summary>
 	this.UpdatedOnUtc = new Date();
 };
+
+util.inherits(Product, BaseModel);
 
 module.exports = Product;
