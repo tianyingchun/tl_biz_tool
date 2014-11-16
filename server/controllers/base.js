@@ -60,7 +60,7 @@ var base = {
         if (this.hasPassed(info)) {
             res.json({
                 retCode: 1,
-                info: info,
+                info: _.isUndefined(info) ? null : info,
                 message: ''
             });
         } else {

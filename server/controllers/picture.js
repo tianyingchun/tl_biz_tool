@@ -35,15 +35,17 @@ router.post("/auto_extract_product_pictures", function(req, res) {
 });
 
 router.get("/sql_server_connection_test", function(req, res) {
-	var picture = {
-		id: 1
-	};
-	pictureService.updatePicture(picture, function(result) {
+	var pictureId = 9;
+	pictureService.deletePicture(pictureId, function(result) {
+
 		logger.debug("picture controller success: ", result);
 		base.apiOkOutput(res, result);
+
 	}, function(err) {
+
 		logger.debug("picture controller error: ", err);
 		base.apiErrorOutput(res, err);
+
 	});
 })
 module.exports = router;

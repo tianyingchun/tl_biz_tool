@@ -13,19 +13,15 @@ var clothesgate_conn = remoteServerCfg.sqlserver_clothesgate_conn;
 var Q = require("q");
 
 /**
- * executeNoneQuery
- * @param  {array} sqlParams serialized correpsonding data identity field. it will auto relace sql parameters {0}, {1}.
- * // the arguments like: e.g.  [sqlStr, parameters]
- * @return {number} return effectRow
+ * Define proxy to connect sqlserver db,
+ * @param  {string} sqlStr        sql Str
+ * @param  {object} connectionCfg sql connection cfg object.
+ * @return {promise}
  */
-function executeNoneQuery(sqlParams) {
-	// serialized the arguments to sql string.
-	var sqlStr = utility.stringFormat.apply(this, sqlParams);
+function _executeSql(sqlStr, connectionCfg) {
 	var deferred = Q.defer();
-
 	logger.debug("request sql string: `%s`", sqlStr);
-
-	var connection = sql.connect(clothesgate_conn.value, function(err) {
+	var connection = sql.connect(connectionCfg || clothesgate_conn.value, function(err) {
 		if (err) {
 			logger.error("sql connection excetion: ", err);
 			deferred.reject(new Error(err));
@@ -43,10 +39,44 @@ function executeNoneQuery(sqlParams) {
 	});
 	return deferred.promise;
 };
+/**
+ * executeNoneQuery
+ * @param  {array} sqlParams serialized correpsonding data identity field. it will auto relace sql parameters {0}, {1}.
+ * // the arguments like: e.g.  [sqlStr, parameters]
+ * @return {number} return effectRow
+ */
+function executeNoneQuery(sqlParams) {
+	// serialized the arguments to sql string.
+	var sqlStr = utility.stringFormat.apply(this, sqlParams);
+	// we need to get effectedrow while exec update, delete, add.
+	sqlStr = sqlStr + ";select @@ROWCOUNT as affectedRows;";
+
+	// return promise.
+	return _executeSql(sqlStr).then(function success(result) {
+		var affectedRows = result[0].affectedRows || 0;
+		//delete from picture where id=4;select @@ROWCOUNT as effectRow;
+		logger.debug("base dal query result: ", affectedRows);
+
+		return affectedRows;
+	});
+};
+
+/**
+ * executeQuery
+ * @param  {array} sqlParams serialized correpsonding data identity field. it will auto relace sql parameters {0}, {1}.
+ * // the arguments like: e.g.  [sqlStr, parameters]
+ * @return {number} return effectRow
+ */
+function executeQuery(sqlParams) {
+	// serialized the arguments to sql string.
+	var sqlStr = utility.stringFormat.apply(this, sqlParams);
+	// return promise.
+	return _executeSql(sqlStr);
+};
 
 function executeEntity(Constructor, sqlParams) {
 
-	return executeNoneQuery(sqlParams).then(function success(result) {
+	return executeQuery(sqlParams).then(function success(result) {
 
 		var _instance = new Constructor();
 		// make sure that the consturcto inherits from BaseModel
@@ -64,7 +94,7 @@ function executeEntity(Constructor, sqlParams) {
 };
 
 function executeList(Constructor, sqlParams) {
-	return executeNoneQuery(sqlParams).then(function success(result) {
+	return executeQuery(sqlParams).then(function success(result) {
 		var _instance = new Constructor();
 		// make sure that the consturcto inherits from BaseModel
 		if (_instance instanceof BaseModel) {
