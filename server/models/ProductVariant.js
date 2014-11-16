@@ -362,10 +362,21 @@ function ProductVariant(productId, name, sku, description, price, oldPrice, sour
     this.SourceInfoComment = sourceInfoComment;
     /// <summary>
     /// Gets or set the product Colors list
+    /// [{title:'', value:''}]
     /// </summary>
-    this.productAttribts = productAttribts;
+    this.ProductAttribts = productAttribts || [];
 
-    this.specAttribts = specAttribts;
+    /// <summary>
+    /// Gets or set the product specification list
+    /// [{title:'', value:''}]
+    /// </summary>
+    this.SpecAttribts = specAttribts || [];
+
+    /// <summary>
+    /// Gets or set the product variant tiePrices.
+    /// refs TierPriceModel.
+    /// </summary>
+    this.TierPrices = [];
 };
 
 util.inherits(ProductVariant, BaseModel);

@@ -39,7 +39,11 @@ function catalogDal() {
 		var sql = "DELETE FROM dbo.Product_Category_Mapping WHERE ProductId = {0}";
 		return baseDal.executeNoneQuery([sql, productId]);
 	};
-
+	/**
+	 * 找出当前分类下的所有发布的产品，并把所有产品的当前分类映射关系删除
+	 * 仅仅为了Staff，工作任务每个月重置
+	 * @param  {number} categoryId 分类ID
+	 */
 	this.removeALLPublishedProductsByCategoryId = function(categoryId) {
 		var sql = "DELETE FROM dbo.Product_Category_Mapping WHERE ProductId IN (SELECT Id FROM product WHERE id IN ( SELECT ProductId FROM dbo.Product_Category_Mapping WHERE CategoryId={0}) AND Published=1";
 		sql += ") AND dbo.Product_Category_Mapping.CategoryId ={0}";
