@@ -30,8 +30,7 @@ function UtilityDataProvider() {
 	 */
 	this.getAttributControlTypeIds = function() {
 		var deferred = Q.defer();
-		// system defiend product attribute control type
-		deferred.resolve({
+		var system_define = {
 			"DropdownList": 1,
 			"RadioList": 2,
 			"Checkboxes": 3,
@@ -40,7 +39,14 @@ function UtilityDataProvider() {
 			"Datepicker": 20,
 			"FileUpload": 30,
 			"ColorSquares": 40
-		})
+		};
+
+		// system defiend product attribute control type
+		deferred.resolve({
+			"color": 40,
+			"size": 1,
+			"other": 1
+		});
 		return deferred.promise;
 	};
 };

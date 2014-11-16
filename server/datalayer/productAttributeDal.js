@@ -19,7 +19,26 @@ function ProductAttributeDal() {
 			return productAttribute;
 		});
 	};
+	/**
+	 * 查找默认的是否存在
+	 * @param  {object} productAttribute ProductAttribute Model
+	 */
+	this.autoCreatedIfNotExist = function(productAttribute) {
+		// find all
+		this.getAllProductAttributes().then(function(all) {
+			var find = false;
+			for (var i = 0; i < all.length; i++) {
+				var item = all[i];
+				if (item.Name == productAttribute) {
+					find = true;
+					break;
+				}
+			};
+			if (find) {
 
+			}
+		});
+	};
 	/**
 	 * 返回所有的ProductAttributes.
 	 */

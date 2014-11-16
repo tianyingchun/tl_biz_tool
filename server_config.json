@@ -5,7 +5,8 @@
 		"configs": {
 			"logdir": {
 				"description": "用来存储本地错误日志的目录路径",
-				"value": "D:\\Github_Works\\tl_biz_tool\\server\\logs"
+				"value": "D:\\Github_Works\\tl_biz_tool\\server\\logs",
+				"type": "textbox"
 			}
 		}
 	},
@@ -20,16 +21,18 @@
 					"password": "19861121.lr",
 					"server": "TERENCE-PC",
 					"database": "Nop28"
-				}
+				},
+				"type": "textbox"
 			},
 			"sqlserver_docs_conn": {
 				"description": "远程DB Docs的连接配置",
 				"value": {
 					"user": "sa",
 					"password": "19861121.lr",
-					"server": "TERENCE-PC", 
+					"server": "TERENCE-PC",
 					"database": "Docs"
-				}
+				},
+				"type": "textbox"
 			}
 		}
 	}
