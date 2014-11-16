@@ -1,12 +1,12 @@
 var util = require('util');
 var BaseModel = require("./BaseModel");
 
-function ProductAttribute(id, name, description) {
+function ProductAttribute(name, description) {
 	BaseModel.call(this, "ProductAttribute");
 	/// <summary>
 	/// Gets or sets the ProductAttribute identifier
 	/// </summary>
-	this.Id = id;
+	this.Id = 0;
 
 	/// <summary>
 	/// Gets or sets the picture identifier

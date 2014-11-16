@@ -362,9 +362,9 @@ function ProductVariant(productId, name, sku, description, price, oldPrice, sour
     this.SourceInfoComment = sourceInfoComment;
     /// <summary>
     /// Gets or set the product Colors list
-    /// [{title:'', value:''}]
+    /// {"color": [  { "title": "Black", "value": "000" }],"size"...}
     /// </summary>
-    this.ProductAttribts = productAttribts || [];
+    this.ProductAttribts = productAttribts || {};
 
     /// <summary>
     /// Gets or set the product specification list

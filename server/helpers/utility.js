@@ -1,6 +1,7 @@
 var http = require('http');
 var fs = require("fs-extra");
 var path = require("path");
+var _ = require("underscore");
 var cheerio = require('cheerio');
 var logger = require('./log');
 var exception = require("./exception");
@@ -9,6 +10,22 @@ var dateFormat = require("./dateformat");
 // module product extract config.
 var module_picture_extract_cfg = fs.readJsonSync("../module_config.json").module_picture_extract.configs;
 
+/**
+ * Escape sql query string
+ * @param  {any} fieldValue sql parameter
+ */
+function escapeSqlField(fieldValue) {
+	if (_.isString(fieldValue)) {
+		fieldValue = stringFormat("'{0}'", fieldValue);
+	} else if (_.isDate(fieldValue)) {
+		fieldValue = stringFormat("'{0}'", fieldValue);
+	} else if (_.isNumber(fieldValue)) {
+		fieldValue = stringFormat("{0}", fieldValue);
+	} else if (_.isBoolean(fieldValue)) {
+		fieldValue = stringFormat("{0}", true ? 1 : 0);
+	}
+	return fieldValue;
+};
 /**
  *  format string e.g  stringFormat("my name is {0}, sex is: {1}","tian","male")
  * @param  {array like} str the source string that will be replace by regex .
@@ -19,6 +36,17 @@ function stringFormat() {
 	for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
 		// replace {1} with argument[1], {2} with argument[2], etc.
 		fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), arguments[ndx]);
+	}
+	// return the formatted string
+	return fmt;
+};
+
+function stringFormatSql() {
+	// use this string as the format,Note {x},x start from 0,1,2,3
+	// walk through each argument passed in
+	for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
+		// replace {1} with argument[1], {2} with argument[2], etc.
+		fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), escapeSqlField(arguments[ndx]));
 	}
 	// return the formatted string
 	return fmt;
@@ -125,11 +153,18 @@ function extractProductId(url) {
 	}
 	return "";
 };
-
+/**
+ * Capitalize the first letter of string 
+ */
+function capitalize(s) {
+	return s && s[0].toUpperCase() + s.slice(1);
+}
 module.exports = {
 	stringFormat: stringFormat,
+	stringFormatSql: stringFormatSql,
 	extractProductId: extractProductId,
 	loadHtmlDocument: loadHtmlDocument,
 	downloadPicture: downloadPicture,
-	downloadFile: downloadFile
+	downloadFile: downloadFile,
+	capitalize: capitalize
 };
