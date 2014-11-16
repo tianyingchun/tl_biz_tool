@@ -153,12 +153,18 @@ function extractProductId(url) {
 	}
 	return "";
 };
-
+/**
+ * Capitalize the first letter of string 
+ */
+function capitalize(s) {
+	return s && s[0].toUpperCase() + s.slice(1);
+}
 module.exports = {
 	stringFormat: stringFormat,
 	stringFormatSql: stringFormatSql,
 	extractProductId: extractProductId,
 	loadHtmlDocument: loadHtmlDocument,
 	downloadPicture: downloadPicture,
-	downloadFile: downloadFile
+	downloadFile: downloadFile,
+	capitalize: capitalize
 };

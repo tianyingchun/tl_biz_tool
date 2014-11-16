@@ -1,10 +1,13 @@
 var sql = require('mssql');
+var async = require('async');
 var config = require('../config')();
 var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
 var ProductModel = require("../models/Product");
 var ProductVariantModel = require("../models/ProductVariant");
 var baseDal = require("./baseDal");
+// product attributes dal
+var ProductAttributeDal = require("./productAttributeDal");
 
 function productDal() {
 	/**
@@ -177,18 +180,59 @@ function productDal() {
 	function insertProductVariantAttributes(newVariant) {
 		var sqlStr = "INSERT INTO dbo.ProductVariant_ProductAttribute_Mapping " +
 			"(ProductVariantId , ProductAttributeId ,TextPrompt,IsRequired ,AttributeControlTypeId , DisplayOrder)" +
-			" VALUES ({0},{1},{2},{3},{4},{5})";
-		var sql = [];
-		var productAttributeIds = [1, 4];
-		var attributControlTypeIds = [40, 1];
-		var textPrompt = ["Color", "Size"];
-		// all attributs.
-		var productAttribts = newVariant.ProductAttribts;
-		for (var i = 0; i < productAttribts.length; i++) {
-			var attribts = productAttribts[i];
-			sql.push(utility.stringFormatSql.apply(this, [sqlStr, newVariant.Id, productAttributeIds[i], textPrompt[i], true, attributControlTypeIds[i], 0]));
-		};
-		return baseDal.executeNoneQuery([sql.join(";")]);
+			" VALUES ({0},{1},{2},{3},{4},{5}); SELECT SCOPE_IDENTITY() AS Id; ";
+		// create instance.
+		var productAttribtsDal = new ProductAttributeDal();
+		var ProductAttributeModel = require("../models/ProductAttribute");
+
+		var deferred = Q.defer();
+
+		productAttribtsDal.getAttributControlTypeIds().then(function(paIds) {
+			// { "color": 40, "size": 1, "other": 1 }
+			var productAttributeIds = paIds;
+			// all attributs. {"color": [  { "title": "Black", "value": "000" }],"size"...}
+			var productAttribts = newVariant.ProductAttribts;
+
+			var productAttribtsKeys = Object.keys(productAttribts);
+
+			async.eachSeries(productAttribtsKeys, function(key, callback) {
+				var controlTypeId = productAttributeIds[key.toLowerCase()] || productAttributeIds["other"];
+				var promptText = utility.capitalize(key);
+				var _productAttribute = new ProductAttributeModel(promptText, "auto created by tool");
+				// create product attribute item.
+				productAttribtsDal.autoCreatedIfNotExist(_productAttribute).then(function success(newProductAttribute) {
+					// 执行DB EXEC.
+					// 
+					var PVAMapping = require("../models/PVAMapping");
+					// add new record to [ProductVariant_ProductAttribute_Mapping]
+					baseDal.executeEntity(PVAMapping, [sqlStr, newVariant.Id, newProductAttribute.Id, promptText, true, controlTypeId, 0]).then(function(pvaMapping) {
+
+						// color:[{ "title": "Black", "value": "000" }]
+						var sql = [];
+						
+						var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
+
+						for (var i = 0; i < productAttribts[key].length; i++) {
+							// color|size...
+							var _productVariantOption = productAttribts[key][i];
+							// speical deal with color option.
+							var colorSqureRgb = key.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
+							sql.push(utility.stringFormatSql(_productVariantAttribute_values_sql, pvaMapping.Id, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0));
+						}
+						baseDal.executeNoneQuery([sql.join(";")]), .then(function() {
+							callback();
+						});
+					});
+				}, function error(error) {
+					logger.error("error: ", error);
+					callback();
+				});
+			}, function finnaly() {
+				// 
+				deferred.resolve("success");
+			});
+		});
+		return deferred.promise;
 	};
 }
 module.exports = productDal;
