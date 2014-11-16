@@ -11,7 +11,7 @@ var dataProvider = require("../services/dataProvider");
 // remote request.
 var request = require("../helpers/remoteRequest");
 
-// area service
+// catalog service
 var catalogService = dataProvider.get("catalog");
 
 // authenticating api security.

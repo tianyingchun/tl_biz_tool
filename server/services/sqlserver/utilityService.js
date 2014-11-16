@@ -5,7 +5,10 @@ var logger = require('../../helpers/log');
 // https://github.com/kriskowal/q
 var Q = require("q");
 
-var productAttribtsDal = new require("../../datalayer/productAttributeDal");
+var ProductAttributeDal = require("../../datalayer/productAttributeDal");
+
+// product attributes data access instance.
+var productAttribtsDal = new ProductAttributeDal();
 // product data model.
 function UtilityDataProvider() {
 	/**
@@ -30,6 +33,7 @@ function UtilityDataProvider() {
 	 */
 	this.getAttributControlTypeIds = function() {
 		var deferred = Q.defer();
+		// now no need to use below definitions.
 		var system_define = {
 			"DropdownList": 1,
 			"RadioList": 2,
