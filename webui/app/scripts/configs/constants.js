@@ -41,7 +41,14 @@ app.constant("regexRules", {
     "chCode": /[^\u4e00-\u9fa5\s+]/ig, //所有字符必须为中文字符
     "enCode": /^[a-zA-Z\s]+$/, // 所有的英文字符
     "mobile": /^1[0-9][0-9]\d{8}$/, //验证手机号码/^1[3|4|5|8][0-9]\d{4,8}$/
-    "empty": /^\s+|\s+$/ig // 移除字符串空字符串
+    "empty": /^\s+|\s+$/ig, // 移除字符串空字符串
+    "url": /^https?:\/\//
+});
+
+app.constant("statusEnum", {
+    "PROCESSING": "处理中",
+    "PROCESS_SUCCESS": "处理成功",
+    "PROCESS_FAILED": "处理失败"
 });
 
 app.constant("navigationConfig", {
@@ -60,27 +67,15 @@ app.constant("navigationConfig", {
         }]
     }, {
         name: "系统配置管理",
-        subCategories: [{
-            name: "自动上传产品",
-            path: "auto-upload"
-        }, {
-            name: "图片抓取管理",
-            path: "image-spider"
-        }, {
-            name: "图片上传模块",
-            path: "image-upload"
-        }]
+        subCategories: []
     }, {
         name: "模块功能配置",
         subCategories: [{
-            name: "自动上传产品",
-            path: "auto-upload"
+            name: "客户端配置",
+            path: "client-config"
         }, {
-            name: "图片抓取管理",
-            path: "image-spider"
-        }, {
-            name: "图片上传模块",
-            path: "image-upload"
+            name: "服务端配置",
+            path: "server-config"
         }]
     }]
 })

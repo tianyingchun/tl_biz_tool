@@ -1,1 +1,29 @@
-.header{height:70px;text-align:center;position:fixed;left:0;right:0;top:0}.container-fluid{margin-top:15px;margin-bottom:31px}.footer{position:fixed;left:0;bottom:0;right:0;height:30px;background-color:#f00}.panel-title a{cursor:pointer}.nav li{cursor:pointer}
+.header {
+  height: 70px;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+.container-fluid {
+  margin-top: 15px;
+  margin-bottom: 31px;
+}
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 30px;
+  background-color: red;
+}
+.panel-title a {
+  cursor: pointer;
+}
+.nav li {
+  cursor: pointer;
+}
+.vertical-middle {
+  vertical-align: middle;
+}

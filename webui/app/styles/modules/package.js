@@ -1,3 +1,3 @@
 enyo.depends(
-	"upload-products-page.css"
+	"auto-upload.css"
 );

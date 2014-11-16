@@ -48,9 +48,10 @@ app.controller("MainCtrl", ["$scope", "$log", "$sce", "$timeout",
 
         // received child controller scope emmit events.
         // change the spinner show/hide .
-        $scope.$on("changeSpinnerStatus", function($event, status) {
+        $scope.$on("changeSpinnerStatus", function($event, status, message) {
             // show spinner, spinner counter++;
             if (status === true) {
+                $scope.message = message || "加载中...";
                 $scope.spinnerCounter++;
             } else {
                 $scope.spinnerCounter--;
@@ -63,20 +64,6 @@ app.controller("MainCtrl", ["$scope", "$log", "$sce", "$timeout",
         $scope.$on("changeSpinnerSkin", function($event, skin) {
             $scope.skin = skin;
             $event.stopPropagation();
-        });
-        //
-        // Dialog components Apis: showDialog. 
-        // --------------------------------------------------------
-        $scope.$on("showDialog", function(event, config) {
-            $log.debug("show dialog event receiver:", config);
-            $scope.showDialog = true;
-            config.body = $sce.trustAsHtml(config.body || "");
-            $scope.dialogConfig = config;
-        });
-        // Dialog components Apis: closeDialog.
-        $scope.$on("closeDialog", function(event) {
-            $log.debug("close dialog event receiver");
-            $scope.showDialog = false;
         });
     }
 ]);

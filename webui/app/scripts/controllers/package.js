@@ -1,7 +1,7 @@
 enyo.depends(
 	"MainCtrl.js",
-	"UploadProductCtrl.js",
 	"AutoUploadCtrl.js",
-	"HeaderCtrl.js",
+	"ImageSpiderCtrl.js",
+	"ImageUploadCtrl.js",
 	"IndexCtrl.js"
 );

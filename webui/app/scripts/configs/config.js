@@ -53,6 +53,16 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
                 controller: 'ImageUploadCtrl',
                 controllerAs: 'controller'
             })
+            .when('/client-config', {
+                templateUrl: appConfig.getTemplateUrl('app/views/client-config.html'),
+                controller: 'ClientConfigCtrl',
+                controllerAs: 'controller'
+            })
+            .when('/server-config', {
+                templateUrl: appConfig.getTemplateUrl('app/views/server-config.html'),
+                controller: 'ServerConfigCtrl',
+                controllerAs: 'controller'
+            })
             .otherwise({
                 redirectTo: '/'
             });
