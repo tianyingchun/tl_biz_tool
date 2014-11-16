@@ -13,7 +13,7 @@ function pictureDal() {
 	 */
 	this.updatePicture = function(picture) {
 		var sql = "select * from picture where id= {0}";
-		return baseDal.executeEntity(PictureModel, [sql, picture.id]);
+		return baseDal.executeList(PictureModel, [sql, picture.id]);
 	};
 	this.insertPicture = function(picture) {
 

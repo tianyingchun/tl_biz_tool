@@ -64,7 +64,20 @@ function executeEntity(Constructor, sqlParams) {
 };
 
 function executeList(Constructor, sqlParams) {
-
+	return executeNoneQuery(sqlParams).then(function success(result) {
+		var _instance = new Constructor();
+		// make sure that the consturcto inherits from BaseModel
+		if (_instance instanceof BaseModel) {
+			if (_.isArray(result) && result.length) {
+				_instance = cast2EntityList(result, _instance);
+			} else {
+				_instance = cast2EntityList([result], _instance);
+			}
+			return _instance;
+		} else {
+			logger.warn("the model constructor `%s` must be inherits from BaseModel", Constructor.name);
+		}
+	});
 };
 
 function cast2EntityList(arrayJson, dest) {
@@ -97,5 +110,6 @@ function cast2Entity(json, dest) {
 module.exports = {
 	executeNoneQuery: executeNoneQuery,
 	executeEntity: executeEntity,
+	executeList: executeList,
 	cast2Entity: cast2Entity
 };
