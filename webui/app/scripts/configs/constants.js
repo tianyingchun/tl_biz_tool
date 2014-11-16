@@ -51,6 +51,11 @@ app.constant("statusEnum", {
     "PROCESS_FAILED": "处理失败"
 });
 
+app.constant("configPath", {
+    "server": "./tl_biz_tool/server_config.json",
+    "client": "./tl_biz_tool/module_config.json"
+});
+
 app.constant("navigationConfig", {
     categories: [{
         name: "产品管理",
