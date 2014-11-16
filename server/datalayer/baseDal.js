@@ -83,14 +83,12 @@ function executeQuery(sqlParams) {
 function executeEntity(Constructor, sqlParams) {
 
 	return executeQuery(sqlParams).then(function success(result) {
-
-		var _instance = new Constructor();
 		// make sure that the consturcto inherits from BaseModel
-		if (_instance instanceof BaseModel) {
+		if (Constructor.prototype instanceof BaseModel) {
 			if (_.isArray(result) && result.length) {
-				_instance = cast2Entity(result[0], _instance);
+				_instance = cast2Entity(result[0], Constructor);
 			} else {
-				_instance = cast2Entity(result, _instance);
+				_instance = cast2Entity(result, Constructor);
 			}
 			return _instance;
 		} else {
@@ -101,13 +99,12 @@ function executeEntity(Constructor, sqlParams) {
 
 function executeList(Constructor, sqlParams) {
 	return executeQuery(sqlParams).then(function success(result) {
-		var _instance = new Constructor();
 		// make sure that the consturcto inherits from BaseModel
-		if (_instance instanceof BaseModel) {
+		if (Constructor.prototype instanceof BaseModel) {
 			if (_.isArray(result) && result.length) {
-				_instance = cast2EntityList(result, _instance);
+				_instance = cast2EntityList(result, Constructor);
 			} else {
-				_instance = cast2EntityList([result], _instance);
+				_instance = cast2EntityList([result], Constructor);
 			}
 			return _instance;
 		} else {
@@ -116,11 +113,11 @@ function executeList(Constructor, sqlParams) {
 	});
 };
 
-function cast2EntityList(arrayJson, dest) {
+function cast2EntityList(arrayJson, Constructor) {
 	var result = [];
 	for (var i = 0; i < arrayJson.length; i++) {
 		var json = arrayJson[i];
-		result.push(cast2Entity(json, dest));
+		result.push(cast2Entity(json, Constructor));
 	};
 	return result;
 };
@@ -130,7 +127,8 @@ function cast2EntityList(arrayJson, dest) {
  * @param  {json} json json object
  * @param  {object} dest Constructor instance inherits from BaseModel.
  */
-function cast2Entity(json, dest) {
+function cast2Entity(json, Constructor) {
+	var dest = new Constructor();
 	var toString = Object.prototype.toString;
 	if (typeof json === "undefined" || toString.call(json) !== "[object Object]") {
 		return dest;

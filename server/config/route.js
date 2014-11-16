@@ -2,7 +2,7 @@ var exception = require("../helpers/exception");
 var product = require('../controllers/product');
 var catalog = require('../controllers/catalog');
 var picture = require('../controllers/picture');
-
+var utility = require('../controllers/utility');
 var _app = null;
 /// error handlers
 var errorHandler404 = function(req, res, next) {
@@ -26,16 +26,17 @@ var errorHandler500 = function(err, req, res, next) {
             break;
     }
 };
-    
+
 module.exports = {
     init: function(app) {
 
         _app = app;
-        
+
         // 
         _app.use('/product', product);
         _app.use('/catalog', catalog);
         _app.use('/picture', picture);
+        _app.use('/utility', utility);
 
         /// catch 404 and forward to error handler
         _app.use(errorHandler404);

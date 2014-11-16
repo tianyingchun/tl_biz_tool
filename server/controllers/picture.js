@@ -10,7 +10,7 @@ var dataProvider = require("../services/dataProvider");
 // remote request.
 var request = require("../helpers/remoteRequest");
 
-// area service
+// picture service
 var pictureService = dataProvider.get("picture");
 
 // authenticating api security.

@@ -1,6 +1,6 @@
-function BaseModel(constructorName) {
+function BaseModel(modelName) {
 	// protected variable indicates current constructor name.
-	this._constructorName = constructorName;
+	this._modelName = modelName;
 };
 BaseModel.prototype = {
 	constructor: BaseModel

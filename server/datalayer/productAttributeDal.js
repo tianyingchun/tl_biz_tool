@@ -12,31 +12,31 @@ function ProductAttributeDal() {
 	 */
 	this.addNewProductAttribute = function(productAttribute) {
 		var sql = " INSERT INTO [dbo].[ProductAttribute] (Name, Description) VALUES({0},{1});SELECT SCOPE_IDENTITY() AS Id;";
-		return baseDal.executeEntity(ProductAttributeModel, [sql, productAttribute.Name, productAttribute.Description]).then(function success(newEntity) {
-			if (newEntity.Id) {
-				productAttribute.Id = newEntity.Id;
-			}
-			return productAttribute;
-		});
+		return baseDal.executeEntity(ProductAttributeModel, [sql, productAttribute.Name, productAttribute.Description])
+			.then(function success(newEntity) {
+				if (newEntity.Id) {
+					productAttribute.Id = newEntity.Id;
+				}
+				return productAttribute;
+			});
 	};
 	/**
-	 * 查找默认的是否存在
+	 * 查找默认的是否存在,如果不存则自动创建
 	 * @param  {object} productAttribute ProductAttribute Model
 	 */
 	this.autoCreatedIfNotExist = function(productAttribute) {
-		// find all
+		// find all product attributes.
+		var _this = this;
 		this.getAllProductAttributes().then(function(all) {
-			var find = false;
+			var find = null;
 			for (var i = 0; i < all.length; i++) {
 				var item = all[i];
-				if (item.Name == productAttribute) {
-					find = true;
+				if (item.Name == productAttribute.Name) {
+					find = item;
 					break;
 				}
 			};
-			if (find) {
-
-			}
+			return find || _this.addNewProductAttribute(productAttribute);
 		});
 	};
 	/**
