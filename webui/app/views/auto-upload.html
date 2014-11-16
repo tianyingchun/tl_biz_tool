@@ -1,6 +1,7 @@
 <div class="panel panel-default auto-upload">
 	<div class="panel-body">
 		<div class="pull-right">
+			<input ng-model="filter">
 			<button class="btn btn-primary" ng-click="controller.uploadFile()">上传</button>
 			<button class="btn btn-primary" ng-click="controller.doBatch()">批量处理</button>
 		</div>
@@ -10,6 +11,7 @@
 			<thead>
 				<tr>
 					<th>地址</th>
+					<th>分类列表</th>
 					<th>状态</th>
 					<th>操作</th>
 				</tr>
@@ -19,6 +21,9 @@
 				<tr ng-repeat="item in list" ng-class="{success: item.success, danger: item.error}">
 					<td class="url-content">
 						<div>{{item.url}}</div>
+					</td>
+					<td>
+						
 					</td>
 					<td class="status">
 						<div>{{item.status}}</div>

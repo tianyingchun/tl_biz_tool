@@ -1,0 +1,9 @@
+.auto-upload .action {
+  width: 200px;
+}
+.auto-upload .status {
+  width: 200px;
+}
+.auto-upload table tbody tr td {
+  vertical-align: middle;
+}

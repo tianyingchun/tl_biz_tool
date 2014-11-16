@@ -7,5 +7,6 @@ enyo.depends(
 	// "ngFileUploadPreview.js",
 	// "otpVerification.js",
 	"formFields.js",
-	"ngNavigation.js"
+	"ngNavigation.js",
+	"configuration.js"
 );
