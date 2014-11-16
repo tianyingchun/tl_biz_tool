@@ -50,7 +50,7 @@ function executeNoneQuery(sqlParams) {
 		logger.error("executeNoneQuery sqlParams must be array type!");
 	}
 	// serialized the arguments to sql string.
-	var sqlStr = utility.stringFormat.apply(this, sqlParams);
+	var sqlStr = utility.stringFormatSql.apply(this, sqlParams);
 	// we need to get effectedrow while exec update, delete, add.
 	sqlStr = sqlStr + ";select @@ROWCOUNT as affectedRows;";
 
@@ -75,7 +75,7 @@ function executeQuery(sqlParams) {
 		logger.error("executeNoneQuery sqlParams must be array type!");
 	}
 	// serialized the arguments to sql string.
-	var sqlStr = utility.stringFormat.apply(this, sqlParams);
+	var sqlStr = utility.stringFormatSql.apply(this, sqlParams);
 	// return promise.
 	return _executeSql(sqlStr);
 };

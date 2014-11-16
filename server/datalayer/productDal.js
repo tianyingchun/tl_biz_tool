@@ -166,7 +166,7 @@ function productDal() {
 		var sql = [];
 		for (var i = 0; i < newVariant.TierPrices.length; i++) {
 			var item = newVariant.TierPrices[i];
-			sql.push(utility.stringFormat.apply(this, [sqlTierPrice, newVariant.Id, null, item.Quantity, item.Price]));
+			sql.push(utility.stringFormatSql.apply(this, [sqlTierPrice, newVariant.Id, null, item.Quantity, item.Price]));
 		};
 		return baseDal.executeNoneQuery([sql.join(";")]);
 	};
@@ -186,7 +186,7 @@ function productDal() {
 		var productAttribts = newVariant.ProductAttribts;
 		for (var i = 0; i < productAttribts.length; i++) {
 			var attribts = productAttribts[i];
-			sql.push(utility.stringFormat.apply(this, [sqlStr, newVariant.Id, productAttributeIds[i], textPrompt[i], true, attributControlTypeIds[i], 0]));
+			sql.push(utility.stringFormatSql.apply(this, [sqlStr, newVariant.Id, productAttributeIds[i], textPrompt[i], true, attributControlTypeIds[i], 0]));
 		};
 		return baseDal.executeNoneQuery([sql.join(";")]);
 	};
