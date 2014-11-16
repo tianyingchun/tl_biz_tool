@@ -46,6 +46,9 @@ function _executeSql(sqlStr, connectionCfg) {
  * @return {number} return effectRow
  */
 function executeNoneQuery(sqlParams) {
+	if (!_.isArray(sqlParams)) {
+		logger.error("executeNoneQuery sqlParams must be array type!");
+	}
 	// serialized the arguments to sql string.
 	var sqlStr = utility.stringFormat.apply(this, sqlParams);
 	// we need to get effectedrow while exec update, delete, add.
@@ -68,6 +71,9 @@ function executeNoneQuery(sqlParams) {
  * @return {number} return effectRow
  */
 function executeQuery(sqlParams) {
+	if (!_.isArray(sqlParams)) {
+		logger.error("executeNoneQuery sqlParams must be array type!");
+	}
 	// serialized the arguments to sql string.
 	var sqlStr = utility.stringFormat.apply(this, sqlParams);
 	// return promise.
