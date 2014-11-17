@@ -5,10 +5,11 @@ var logger = require('../../helpers/log');
 
 var ProductAttributeDal = require("../../datalayer/productAttributeDal");
 var ManufacturerDal = require("../../datalayer/manufacturerDal");
-
+var CatalogDal = require("../../datalayer/catalogDal");
 // product attributes data access instance.
 var productAttribtsDal = new ProductAttributeDal();
 var manufacturerDal = new ManufacturerDal();
+var categoryDal =new CatalogDal();
 // product data model.
 function UtilityDataProvider() {
 	/**
@@ -39,6 +40,13 @@ function UtilityDataProvider() {
 	 */
 	this.getAllManufacturers = function() {
 		return manufacturerDal.getAllManufacturers();
+	};
+
+	/**
+	 * 返回所有的产品分类列表
+	 */
+	this.getAllCatagory = function() {
+		return categoryDal.getAllCatagory();
 	};
 };
 module.exports = function() {
