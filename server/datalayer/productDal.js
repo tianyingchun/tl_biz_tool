@@ -68,22 +68,48 @@ function productDal() {
 	 * 添加新产品信息到数据库
 	 * @param {object} product 产品实例
 	 */
-	this.addNewProduct = function(product) {
+	this.addNewProduct = function(product, productVariant) {
+		var deferred = Q.defer();
 		// 1.  step1. insert product basic information.
 		insertProduct(product).then(function(newProduct) {
-			// step2. add product to manufactuer
+
 			if (newProduct.Id) {
-				
-				var default_manufacturerids = clientProductCfg.defaultManufacturerId.value;
+				async.series(
+					[
+						function(callback) {
+							var default_manufacturerids = clientProductCfg.defaultManufacturerId.value;
 
-				addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
+							logger.debug("default_manufacturerids: ", default_manufacturerids);
 
-				});
+							// step2. add product to manufactuer.
+							addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
+								callback();
+							});
+						},
+						function(callback) {
+							// step3. add product variant.
+							insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
+								// add tier price.
+								insertProductVariantTierPrice(newProductVariant).then(function() {
+									// add tier product variant attributes.
+									insertProductVariantAttributes(newProductVariant).then(function() {
+										callback();
+									});
+								});
+							});
+						}
+					],
+					function(err, results) {
+						// results is now equal to ['one', 'two']
+						logger.debug("addNewProduct async series completed!");
+						deferred.resove("success");
+					});
 
 			} else {
-
+				deferred.reject("failed,can't find the new uploaded product id !");
 			}
 		});
+		return deferred.promise;
 	};
 
 	//
