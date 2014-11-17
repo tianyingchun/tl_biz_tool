@@ -9,6 +9,10 @@ app.controller('ServerConfigCtrl', ['$scope', 'configService', 'configPath',func
 	});
 
     this.saveConfig = function (argument) {
-    	configService.saveServerConfigData(configPath.server, $scope.configData);
+    	$scope.$emit("changeSpinnerStatus", true);
+    	var promise = configService.saveServerConfigData(configPath.server, $scope.configData).then();
+    	promise.then(function () {
+    		$scope.$emit("changeSpinnerStatus", false);
+    	})
     }
 }])
