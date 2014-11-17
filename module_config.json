@@ -28,7 +28,7 @@
 				"description": "默认品牌ID",
 				"value": "",
 				"type": "dropdown",
-				"api": "/utility/get_all_"
+				"api": "/utility/get_all_manufacturers"
 			}
 		}
 	},
