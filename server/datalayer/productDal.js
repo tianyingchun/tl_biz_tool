@@ -66,7 +66,15 @@ function productDal() {
 	 * @param {object} product 产品实例
 	 */
 	this.addNewProduct = function(product) {
-		// todo.
+		// 1.  step1. insert product basic information.
+		insertProduct(product).then(function(newProduct) {
+			// step2. add product to manufactuer
+			if (newProduct.Id) {
+				addProductIntoManufacturer(newProduct.Id, )
+			} else {
+
+			}
+		});
 	};
 
 	//
@@ -209,7 +217,7 @@ function productDal() {
 
 						// color:[{ "title": "Black", "value": "000" }]
 						var sql = [];
-						
+
 						var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
 
 						for (var i = 0; i < productAttribts[key].length; i++) {

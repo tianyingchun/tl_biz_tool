@@ -20,6 +20,18 @@
 			}
 		}
 	},
+	"module_product_autoupload": {
+		"title": "产品自动上传默认值配置",
+		"description": "用来配置产品默认设定的值,比如Manufacturer Ids",
+		"configs": {
+			"defaultManufacturerId": {
+				"description": "默认品牌ID",
+				"value": "",
+				"type": "dropdown",
+				"api": "/utility/get_all_"
+			}
+		}
+	},
 	"module_picture_extract": {
 		"title": "图片模块配置",
 		"description": "图片模块相关配置信息管理",

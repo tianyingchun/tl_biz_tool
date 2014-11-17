@@ -4,9 +4,11 @@ var exception = require('../../helpers/exception');
 var logger = require('../../helpers/log');
 
 var ProductAttributeDal = require("../../datalayer/productAttributeDal");
+var ManufacturerDal = require("../../datalayer/manufacturerDal");
 
 // product attributes data access instance.
 var productAttribtsDal = new ProductAttributeDal();
+var manufacturerDal = new ManufacturerDal();
 // product data model.
 function UtilityDataProvider() {
 	/**
@@ -31,6 +33,12 @@ function UtilityDataProvider() {
 	 */
 	this.getAttributControlTypeIds = function() {
 		return productAttribtsDal.getAttributControlTypeIds();
+	};
+	/**
+	 * 获取所有的产品Manufacturer列表
+	 */
+	this.getAllManufacturers = function() {
+		return manufacturerDal.getAllManufacturers();
 	};
 };
 module.exports = function() {
