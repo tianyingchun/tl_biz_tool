@@ -1,4 +1,5 @@
 var sql = require('mssql');
+var fs = require("fs-extra");
 var async = require('async');
 var config = require('../config')();
 var logger = require('../helpers/log');
@@ -8,6 +9,8 @@ var ProductVariantModel = require("../models/ProductVariant");
 var baseDal = require("./baseDal");
 // product attributes dal
 var ProductAttributeDal = require("./productAttributeDal");
+// client product configurations.
+var clientProductCfg = fs.readJsonSync("../module_config.json").module_product_autoupload.configs;
 
 function productDal() {
 	/**
@@ -70,7 +73,13 @@ function productDal() {
 		insertProduct(product).then(function(newProduct) {
 			// step2. add product to manufactuer
 			if (newProduct.Id) {
-				addProductIntoManufacturer(newProduct.Id, )
+				
+				var default_manufacturerids = clientProductCfg.defaultManufacturerId.value;
+
+				addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
+
+				});
+
 			} else {
 
 			}
