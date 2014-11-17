@@ -9,6 +9,7 @@ var remoteServerCfg = fs.readJsonSync("../server_config.json").remote_server_con
 
 var clothesgate_conn = remoteServerCfg.sqlserver_clothesgate_conn;
 
+logger.debug("DB Config: ", clothesgate_conn.value);
 // https://github.com/kriskowal/q
 var Q = require("q");
 
