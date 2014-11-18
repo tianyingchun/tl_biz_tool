@@ -270,23 +270,23 @@ function ProductSpiderService(httpUrl) {
 		fetchSkuColorStyleContent(function(result) {
 			if (!result.body) {
 				logger.error("pre load sku color style failed!", result.url);
-				_this.__error({
-					message: "preload sku color style failed! url: " + result.url
-				});
+                _this.__error({
+                    message: "preload sku color style failed! url: " + result.url
+                });
 			} else {
 				utility.loadHtmlDocument(_this.url, function(body) {
-					// now we have the whole body, parse it and select the nodes we want...
-					var $ = cheerio.load(body, {
-						normalizeWhitespace: true,
-						xmlMode: true
-					});
 
 					_this.__finished();
 
-					if ($.failed === true) {
-						debug("utility.loadHtmlDocument failed!");
-						_this.__error($);
-					} else {
+					if (body.failed === true) {
+                        logger.debug("utility.loadHtmlDocument failed!");
+                        _this.__error(body.error);
+                    } else {
+                    	 // now we have the whole body, parse it and select the nodes we want...
+                        var $ = cheerio.load(body, {
+                            normalizeWhitespace: true,
+                            xmlMode: true
+                        }); 
 						// save current all dom html codes.
 						_this.$dom = $;
 						// fetch all sorted categories.

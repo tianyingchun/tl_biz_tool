@@ -26,7 +26,7 @@ router.post("/auto_extract_upload_products", function(req, res) {
 			if (base.hasPassed(result)) {
 				base.apiOkOutput(res, result);
 			} else {
-				base.apiErrorOutput(res, result.error);
+				base.apiErrorOutput(res, result);
 			}
 		});
 	} else {

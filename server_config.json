@@ -5,7 +5,7 @@
     "configs": {
       "logdir": {
         "description": "用来存储本地错误日志的目录路径",
-        "value": "D:\\Github_Works\\tl_biz_tool\\server\\logs",
+        "value": "./logs",
         "type": "textbox"
       }
     }
