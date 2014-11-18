@@ -146,10 +146,13 @@ function downloadPicture(productId, url, callback) {
 /**
  * extractProductId description
  * @param  {string} url product http absolute url.
+ * http://www.aliexpress.com/item/Wholesale-2014-New-Fashion-Jewelry-Exquisite-925-Silver-Ring-Inlay-Pink-Topaz-Gift-For-Women-Size/2047185104.html
+ * http://www.aliexpress.com/store/product/Man-spring-2014-long-sleeve-slim-fit-casual-shirt-desigual-men-long-sleeve-peaked-collar-dudalina/342250_1827547993.html?spm=5261.1471527.1998272370.7&promotionId=256239020
+
  */
 function extractProductId(url) {
 	if (url) {
-		return url.match(/[^/]*$/)[0].replace(/.html.*$/, "");
+		return url.match(/[^_/]*$/)[0].replace(/.html.*$/, "");
 	}
 	return "";
 };

@@ -414,7 +414,7 @@ _.extend(ProductSpiderService.prototype, {
 		logger.debug("filter to get product description...");
 		var _this = this;
 		fetchProductDescriptions(this.productId, function(result) {
-			var desc = result.body;
+			var desc = result.body||"";
 			var $desc = _this.$dom(desc);
 			// remove a link.
 			$desc.find("a").remove();
