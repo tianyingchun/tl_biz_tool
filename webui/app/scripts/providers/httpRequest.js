@@ -88,8 +88,8 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
                                 // customized defered.
                                 var defered = $q.defer();
 
-                                // alwasy defined dto here.
-                                var dto = angular.noop;
+                                // defined dto here.
+                                var dto; 
 
                                 if (config) {
                                     if (angular.isFunction(config)) {
@@ -114,8 +114,8 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
                             this["postRequest"] = function(url, requestData, config) {
                                 // customized defered.
                                 var defered = $q.defer();
-                                // alwasy defined dto here.
-                                var dto = angular.noop;
+                                //defined dto here.
+                                var dto;
 
                                 if (config) {
                                     if (angular.isFunction(config)) {
