@@ -14,13 +14,6 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
         // $http.defaults.headers.post
         // $http.defaults.headers.get
 
-        // get current api async request data object.
-        function getRequestData(data) {
-            // default request data
-            var defaultRequestData = {};
-
-            return angular.extend(defaultRequestData, data);
-        };
         // get current api request url full path string.
         function getRequestUrl(url) {
 
@@ -42,13 +35,13 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
          */
         var promisecb = {
 
-            success: function(defered, dto, requestData, customizedData, resp) {
+            success: function(defered, dto, requestData, resp) {
                 // converted raw data.
                 var result = utility.httpRespDataConverter(resp.data, resp.status);
                 // customized dto if available.
                 if (dto && angular.isFunction(dto)) {
-                    // DTO(result, requestData, customizedData)
-                    result = dto(result, requestData, customizedData);
+                    // DTO(result, requestData)
+                    result = dto.call(this, result, requestData);
                 }
                 $log.debug(this.logKey(), utility.stringFormat("success -> converted data {0} ", result));
 
@@ -68,7 +61,7 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
         function BaseHttpRequest() {
             // log key
             this.logKey = function() {
-                return this.logAPIUniqueKey || "Not Defined Log Key!"
+                return this.logAPIUniqueKey || "Not Defined Log Key!";
             };
             /**
              * provider short cut to create multi methods.
@@ -83,20 +76,33 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
                         case "GET":
                             /**
                              * the get request
-                             * @param  {string} url            [description]
+                             * @param  {string} url            api request url.
                              * @param  {object} requestData    {name:'username', password:''}
-                             * @param  {function} dto          optional
-                             * @param  {object} customizedData passed to dto
-                             * @param  {object} config    configJson {headers:{},xxxx}
+                             * @param  {object/Function} config required, configJson {dto:fn, headers:{},cache:true}
+                             * usage: if config is function, it will use as dto, we can also define dto in config: {dto:fn}
+                             * dto:function(result, reqData)();
                              */
-                            this["getRequest"] = function(url, requestData, dto, customizedData, config) {
+                            this["getRequest"] = function(url, requestData, config) {
                                 // get serialized data Url for get request.
                                 url = getSerializedUrl(getRequestUrl(url), requestData);
                                 // customized defered.
                                 var defered = $q.defer();
-                                
+
+                                // alwasy defined dto here.
+                                var dto = angular.noop;
+
+                                if (config) {
+                                    if (angular.isFunction(config)) {
+                                        dto = config;
+                                        config = null;
+                                    } else if (angular.isFunction(config.dto)) {
+                                        dto = config.dto;
+                                        delete config.dto;
+                                    }
+                                }
+
                                 $http.get(url, config).then(
-                                    angular.bind(this, promisecb.success, defered, dto, requestData, customizedData),
+                                    angular.bind(this, promisecb.success, defered, dto, requestData),
                                     angular.bind(this, promisecb.failed, defered)
                                 );
                                 return defered.promise;
@@ -104,13 +110,26 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
                             break;
 
                         case "POST":
-                            this["postRequest"] = function(url, requestData, dto, customizedData, config) {
+
+                            this["postRequest"] = function(url, requestData, config) {
                                 // customized defered.
                                 var defered = $q.defer();
+                                // alwasy defined dto here.
+                                var dto = angular.noop;
 
-                                $http.post(getRequestUrl(url), getRequestData(requestData), config)
+                                if (config) {
+                                    if (angular.isFunction(config)) {
+                                        dto = config;
+                                        config = null;
+                                    } else if (angular.isFunction(config.dto)) {
+                                        dto = config.dto;
+                                        delete config.dto;
+                                    }
+                                }
+
+                                $http.post(getRequestUrl(url), requestData || {}, config)
                                     .then(
-                                        angular.bind(this, promisecb.success, defered, dto, requestData, customizedData),
+                                        angular.bind(this, promisecb.success, defered, dto, requestData),
                                         angular.bind(this, promisecb.failed, defered)
                                     );
                                 return defered.promise;
