@@ -8,6 +8,18 @@
   vertical-align: middle;
 }
 .auto-upload .search-bar {
-  width: 300px;
+  width: 250px;
   display: inline-block;
+  vertical-align: middle;
+}
+.auto-upload .search-query {
+  border-radius: 15px;
+}
+.auto-upload .catalog-list {
+  width: 150px;
+  text-align: center;
+}
+.auto-upload .catalog-list .catalog-list-content {
+  height: 400px;
+  overflow-x: auto;
 }

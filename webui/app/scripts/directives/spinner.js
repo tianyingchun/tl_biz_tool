@@ -31,7 +31,7 @@ app.directive("xSpinner", ["$log", function($log) {
                 }
             });
             $scope.$watch('counter', function(newCounter) {
-                if ($scope.counter <= 0) {
+                if ($scope.counter <= 0 || $scope.counter === undefined) {
                     $scope.counter = 0;
                     $scope.hide();
                 } else {

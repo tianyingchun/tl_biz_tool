@@ -1,7 +1,7 @@
 <div class="panel panel-default auto-upload">
 	<div class="panel-body">
 		<div class="pull-right">
-			<input ng-model="searchFilter" class="search-bar form-control" ng-change="doFilter()">
+			<div class="search-bar"><input ng-model="searchFilter" class="form-control search-query" ng-change="doFilter()"></div>
 			<button class="btn btn-primary" ng-click="controller.uploadFile()">上传</button>
 			<button class="btn btn-primary" ng-click="controller.doBatch()">批量处理</button>
 		</div>
@@ -22,8 +22,16 @@
 					<td class="url-content">
 						<div>{{item.url}}</div>
 					</td>
-					<td>
-						
+					<td class="catalog-list">
+						<div>
+							<div class="btn-group" dropdown>
+            					<button class="btn btn-primary dropdown-toggle">选择分类 <span class="caret"></span></button>
+            					<ul class="dropdown-menu catalog-list-content" role="menu">
+            						<li><input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter"></li>
+                					<li ng-repeat='item in catalogList | filter: catalogFilter' ng-click='controller.selectCatalog(item)'><a href>{{item.displayName}}</a></li>
+                				</ul>
+                			</div>
+						</div>
 					</td>
 					<td class="status">
 						<div>{{item.status}}</div>

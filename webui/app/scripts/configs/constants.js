@@ -9,7 +9,7 @@ app.factory("remoteApi", ["$location", "$log", function($location, $log) {
     // envionment resource definitions here.
     var env = {
         // we can specificed api baseurl here, if not use current web server root path.
-        apiBaseUrl: ""
+        apiBaseUrl: "http://localhost:3000"
     };
     var protocol = $location.protocol(),
         currHost = $location.host(), // $location.port();

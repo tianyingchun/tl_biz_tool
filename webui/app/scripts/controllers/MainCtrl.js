@@ -28,7 +28,6 @@ app.controller("MainCtrl", ["$scope", "$log", "$sce", "$timeout",
         $scope.$on("$routeChangeStart", function() {
             // alwasy disable spinner first.
             $scope.spinnerCounter = 0;
-            $scope.showLoading = false;
             // set spinner counter ++;
             $scope.spinnerCounter++;
             $log.debug("scope view content is loading");
@@ -38,11 +37,6 @@ app.controller("MainCtrl", ["$scope", "$log", "$sce", "$timeout",
         $scope.$on('$viewContentLoaded', function() {
             //Here your view content is fully loaded !!
             $scope.spinnerCounter--;
-            // spinnerTimer = $timeout(function() {
-            //     $scope.showLoading = false;
-            //     // cancel
-            //     $timeout.cancel(spinnerTimer);
-            // }, 10000);
             $log.debug("scope view content loaded");
         });
 

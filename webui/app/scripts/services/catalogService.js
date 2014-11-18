@@ -15,12 +15,17 @@
         // Expose service request apis to consumer.
     angular.extend(CatalogService.prototype, {
         //上传产品
-        addProducts2Category: function(product, categoryId, sucess_cb, failed_cb) {
+        addProducts2Category: function(product, categoryId) {
             var promise = this.postRequest("/catalog/add_products", {
                 product: product,
                 categoryId: categoryId
             });
-            promise.then(sucess_cb, failed_cb || sucess_cb);
+            return promise;
+        },
+
+        getAllCatalog: function () {
+            var promise = this.postRequest("/utility/get_all_categoris", {}, {cache: true});
+            return promise;
         }
     });
 
