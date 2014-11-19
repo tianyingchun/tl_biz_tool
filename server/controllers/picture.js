@@ -10,42 +10,44 @@ var dataProvider = require("../services/dataProvider");
 // remote request.
 var request = require("../helpers/remoteRequest");
 
-// picture service
-var pictureService = dataProvider.get("picture");
+// picture spider service
+var pictureSpiderService = dataProvider.get("spider", "picture");
+
+// picture sql server service.
+var pictureSqlService = dataProvider.get("picture");
+
 
 // authenticating api security.
 // router.route("*").all(base.setResponseHeaders, base.securityVerify);
 
 // send customized message to user.
 router.post("/auto_extract_product_pictures", function(req, res) {
-	logger.debug('controller: auto_extract_product_pictures...');
-	var reqBody = req.body;
-	var url = reqBody && reqBody.url || "";
-	if (url) {
-		pictureService.autoExtractProductPictures(url, function(result) {
-			if (base.hasPassed(result)) {
-				base.apiOkOutput(res, result);
-			} else {
-				base.apiErrorOutput(res, result);
-			}
-		});
-	} else {
-		base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
-	}
+    logger.debug('controller: auto_extract_product_pictures...');
+    var reqBody = req.body;
+    var url = reqBody && reqBody.url || "";
+    if (url) {
+        pictureSpiderService.start(url).then(function(result) {
+            base.apiOkOutput(res, result);
+        }, function error(err) {
+            base.apiErrorOutput(res, err);
+        });
+    } else {
+        base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
+    }
 });
 
 router.get("/sql_server_connection_test", function(req, res) {
-	var pictureId = 10;
-	pictureService.getPictureById(pictureId, function(result) {
+    var pictureId = 10;
+    pictureSqlService.getPictureById(pictureId, function(result) {
 
-		logger.debug("picture controller success: ", result);
-		base.apiOkOutput(res, result);
+        logger.debug("picture controller success: ", result);
+        base.apiOkOutput(res, result);
 
-	}, function(err) {
+    }, function(err) {
 
-		logger.debug("picture controller error: ", err);
-		base.apiErrorOutput(res, err);
+        logger.debug("picture controller error: ", err);
+        base.apiErrorOutput(res, err);
 
-	});
+    });
 })
 module.exports = router;

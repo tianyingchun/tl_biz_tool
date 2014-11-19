@@ -3,7 +3,6 @@ var _ = require('underscore');
 var logger = require('../../helpers/log');
 var exception = require('../../helpers/exception');
 var pictureDataSchema = require("../../models/Picture");
-var PictureSpider = require("../spider/pictureService");
 var PictureDal = require("../../datalayer/pictureDal");
 // picture data model.
 
@@ -23,12 +22,6 @@ function PictureDataProvider() {
 				callback(result);
 			}
 		}
-	};
-	this.autoExtractProductPictures = function(httpUrl, callback) {
-		var spider = new PictureSpider(httpUrl);
-		spider.addHandler('success', _.bind(extractDataDetailHandler, this, callback));
-		spider.addHandler('error', _.bind(extractDataDetailHandler, this, callback));
-		spider.start();
 	};
 
 	// picture Dal instance.
