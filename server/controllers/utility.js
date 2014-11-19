@@ -19,7 +19,7 @@ var utilityService = dataProvider.get("utility");
 /**
  * 返回所有的 产品Attribute对应的Control Types
  */
-router.post("/get_attribute_controltypes", function(req, res) {
+router.get("/get_attribute_controltypes", function(req, res) {
 	utilityService.getAttributControlTypeIds().then(function success(result) {
 		base.apiOkOutput(res, result);
 	}, function error(error) {
@@ -29,7 +29,7 @@ router.post("/get_attribute_controltypes", function(req, res) {
 /**
  * 返回所有的 Product Attributes 列表
  */
-router.post("/get_all_product_attributes", function(req, res) {
+router.get("/get_all_product_attributes", function(req, res) {
 	utilityService.getAllProductAttributes().then(function success(result) {
 		base.apiOkOutput(res, result);
 	}, function error(error) {
@@ -40,7 +40,7 @@ router.post("/get_all_product_attributes", function(req, res) {
 /**
  * 增加新的ProductAttributes
  */
-router.post("/add_new_product_attribute", function(req, res) {
+router.get("/add_new_product_attribute", function(req, res) {
 	var productAttribute = req.body;
 	utilityService.addNewProductAttribute(productAttribute).then(function success(result) {
 		base.apiOkOutput(res, result);
@@ -53,7 +53,7 @@ router.post("/add_new_product_attribute", function(req, res) {
  * 获取系统所有的品牌Manufacturer 
  * @return  List<Manufacturer>
  */
-router.post("/get_all_manufacturers", function(req, res) {
+router.get("/get_all_manufacturers", function(req, res) {
 	utilityService.getAllManufacturers().then(function success(result) {
 		base.apiOkOutput(res, result);
 	}, function error(error) {
@@ -65,7 +65,7 @@ router.post("/get_all_manufacturers", function(req, res) {
  * 获取系统所有的品牌Manufacturer 
  * @return  List<Manufacturer>
  */
-router.post("/get_all_categoris", function(req, res) {
+router.get("/get_all_categoris", function(req, res) {
 	utilityService.getAllCatagory().then(function success(result) {
 		base.apiOkOutput(res, result);
 	}, function error(error) {
