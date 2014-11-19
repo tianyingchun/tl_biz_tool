@@ -18,20 +18,18 @@ var productService = dataProvider.get("product");
 
 // send customized message to user.
 router.post("/auto_extract_upload_products", function(req, res) {
-	logger.debug('controller: auto_extract_upload_products...');
-	var reqBody = req.body;
-	var url = reqBody && reqBody.url || "";
-	if (url) {
-		productService.extractOnlineProductDetail(url, function(result) {
-			if (base.hasPassed(result)) {
-				base.apiOkOutput(res, result);
-			} else {
-				base.apiErrorOutput(res, result);
-			}
-		});
-	} else {
-		base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
-	}
+    logger.debug('controller: auto_extract_upload_products...');
+    var reqBody = req.body;
+    var url = reqBody && reqBody.url || "";
+    if (url) {
+        productService.extractOnlineProductDetail(url).then(function(result) {
+            base.apiOkOutput(res, result);
+        }, function(err) {
+            base.apiErrorOutput(res, err);
+        });
+    } else {
+        base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
+    }
 });
 
 module.exports = router;

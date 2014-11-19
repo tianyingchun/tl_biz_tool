@@ -3,34 +3,25 @@ var _ = require('underscore');
 var exception = require('../../helpers/exception');
 var productDataSchema = require("../../models/Product");
 var logger = require('../../helpers/log');
-var ProductSpider = require("../spider/productService");
+
+// data provider singleton.
+var dataProvider = require("../dataProvider");
+
+
+var productSpiderService = dataProvider.get("spider", "product");
 // product data model.
 
 function ProductDataProvider() {
-	// handler
-	var extractDataDetailHandler = function(callback, result) {
-		if (callback) {
-			// remove event target.
-			delete result.target;
-			// if failed occur for spider biz logics 
-			if (result.type == "error") {
-				callback(exception.getErrorModel({
-					status: 400,
-					message: result.message
-				}));
-			} else {
-				callback(result);
-			}
-		}
-	};
-	this.extractOnlineProductDetail = function(httpUrl, callback) {
-		var spider = new ProductSpider(httpUrl);
-		spider.addHandler('success', _.bind(extractDataDetailHandler, this, callback));
-		spider.addHandler('error', _.bind(extractDataDetailHandler, this, callback));
-		spider.start();
-	};
+    /**
+     * Crawl product basic information from specificed http url.
+     * @param  {string} httpUrl http absolute url
+     * @return {promise}
+     */
+    this.extractOnlineProductDetail = function(httpUrl) {
+        return productSpiderService.start(httpUrl);
+    };
 };
 
 module.exports = function() {
-	return new ProductDataProvider();
+    return new ProductDataProvider();
 };
