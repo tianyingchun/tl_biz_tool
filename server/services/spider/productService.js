@@ -254,7 +254,6 @@ function ProductSpiderService() {
                     // and we will waiting for all description has been downloaded, then flush success event to consumer.
                     _this.fetchDescription().then(function(desc) {
                         _this.description = desc;
-
                         // return result to client.
                         deferred.resolve(_this.getResult());
 
@@ -378,7 +377,6 @@ _.extend(ProductSpiderService.prototype, {
         });
     }
 });
-
 
 module.exports = function() {
     return new ProductSpiderService();

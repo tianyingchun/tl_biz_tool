@@ -8,19 +8,16 @@ var _ = require('underscore'),
 var module_product_extract_cfg = fs.readJsonSync("../module_config.json").module_product_extract.configs;
 
 function PictureSpiderService() {
-    // the product http absolute url.
-    this.url = "";
-
-    // current product id.
-    this.productId = 0;
 
     /**
      * start to crawl all pictures of speicifced product url.
-     * @return {[type]} [description]
+     * @return {promise}
      */
     this.start = function(httpUrl) {
+
+        // the product http absolute url.
         this.url = httpUrl;
-        
+
         // current product id.
         this.productId = utility.extractProductId(this.url);
 
