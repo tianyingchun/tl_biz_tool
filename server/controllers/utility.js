@@ -40,7 +40,7 @@ router.get("/get_all_product_attributes", function(req, res) {
 /**
  * 增加新的ProductAttributes
  */
-router.get("/add_new_product_attribute", function(req, res) {
+router.post("/add_new_product_attribute", function(req, res) {
 	var productAttribute = req.body;
 	utilityService.addNewProductAttribute(productAttribute).then(function success(result) {
 		base.apiOkOutput(res, result);
