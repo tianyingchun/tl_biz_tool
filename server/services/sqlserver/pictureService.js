@@ -7,22 +7,6 @@ var PictureDal = require("../../datalayer/pictureDal");
 // picture data model.
 
 function PictureDataProvider() {
-	// handler
-	var extractDataDetailHandler = function(callback, result) {
-		if (callback) {
-			// remove event target.
-			delete result.target;
-			// if failed occur for spider biz logics 
-			if (result.type == "error") {
-				callback(exception.getErrorModel({
-					status: 400,
-					message: result.message
-				}));
-			} else {
-				callback(result);
-			}
-		}
-	};
 
 	// picture Dal instance.
 	var pictureDal = new PictureDal();

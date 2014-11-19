@@ -7,7 +7,6 @@ var logger = require('../../helpers/log');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
-
 var productSpiderService = dataProvider.get("spider", "product");
 // product data model.
 
