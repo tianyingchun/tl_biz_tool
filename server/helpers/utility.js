@@ -127,7 +127,7 @@ function downloadPicture(productId, url) {
             var destDir = path.join(module_picture_extract_cfg.saveto_dir.value, dateFormat(new Date(), "YYYY-MM-DD"));
             // make sure has distination directory.
             fs.ensureDirSync(destDir);
- 
+
             var tasks = [];
             $("img").each(function(i, item) {
                 var src = $(item).attr("src");
@@ -164,7 +164,7 @@ function downloadPicture(productId, url) {
             deferred.reject("can't find any <img /> tag within providered product detail page!");
         }
     });
-return deferred.promise;
+    return deferred.promise;
 };
 
 /**
@@ -172,7 +172,7 @@ return deferred.promise;
  * @param  {string} url product http absolute url.
  * http://www.aliexpress.com/item/Wholesale-2014-New-Fashion-Jewelry-Exquisite-925-Silver-Ring-Inlay-Pink-Topaz-Gift-For-Women-Size/2047185104.html
  * http://www.aliexpress.com/store/product/Man-spring-2014-long-sleeve-slim-fit-casual-shirt-desigual-men-long-sleeve-peaked-collar-dudalina/342250_1827547993.html?spm=5261.1471527.1998272370.7&promotionId=256239020
-
+ 
  */
 function extractProductId(url) {
     if (url) {
