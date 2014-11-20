@@ -26,8 +26,8 @@ function catalogDal() {
 		var sql = "SELECT Id,ProductId,Name,Sku,Price,OldPrice,WithDeliveryFee,ProductCost as SourcePrice,[Weight],IsFreeShipping,SourceUrl,StockQuantity,UpdatedOnUtc,CreatedOnUtc,Published FROM dbo.ProductVariant where ProductId IN (SELECT ProductId FROM dbo.Product p INNER JOIN  [dbo].[Product_Category_Mapping] pm ON p.Id=pm.ProductId WHERE pm.CategoryId={0} And p.Deleted=0)";
 		var params = [sql, categoryId];
 		if (categoryId == -1) {
-			params = [sql];
 			sql = "SELECT Id,ProductId,Name,Sku,Price,OldPrice,WithDeliveryFee,ProductCost as SourcePrice,[Weight],IsFreeShipping,SourceUrl,StockQuantity,UpdatedOnUtc,CreatedOnUtc,Published FROM dbo.ProductVariant where ProductId IN (SELECT ProductId FROM dbo.Product p INNER JOIN  [dbo].[Product_Category_Mapping] pm ON p.Id=pm.ProductId WHERE p.Deleted=0)";
+			params = [sql];
 		}
 		return baseDal.executeList(CatalogModel, params);
 	};

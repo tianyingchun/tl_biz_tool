@@ -11,6 +11,9 @@ var factory = function(providerType, serviceName) {
         case "sqlserver":
             service = require([".", "sqlserver", serviceName + "Service"].join("/"))();
             break;
+        case "spider":
+            service = require([".", "spider", "aliexpress", serviceName + "Service"].join("/"))();
+            break;
         default:
             service = require([".", providerType, serviceName + "Service"].join("/"))();
             break;

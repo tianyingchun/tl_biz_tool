@@ -10,8 +10,11 @@ var dataProvider = require("../services/dataProvider");
 // remote request.
 var request = require("../helpers/remoteRequest");
 
-// product service
-var productService = dataProvider.get("product");
+// product sql service
+var productSqlService = dataProvider.get("product");
+
+// product spider service.
+var productSpiderService = dataProvider("spider", "product");
 
 // authenticating api security.
 // router.route("*").all(base.setResponseHeaders, base.securityVerify);
@@ -22,8 +25,15 @@ router.post("/auto_extract_upload_products", function(req, res) {
     var reqBody = req.body;
     var url = reqBody && reqBody.url || "";
     if (url) {
-        productService.extractOnlineProductDetail(url).then(function(result) {
-            base.apiOkOutput(res, result);
+        // crawl product information.
+        productSpiderService.start(url).then(function(result) {
+            // invoke sqlserver databse service to add new product into databse.
+            productSqlService.addNewProduct(result).then(function(result) {
+                base.apiOkOutput(res, result);
+            }, function(err) {
+                base.apiErrorOutput(res, err);
+            });
+
         }, function(err) {
             base.apiErrorOutput(res, err);
         });

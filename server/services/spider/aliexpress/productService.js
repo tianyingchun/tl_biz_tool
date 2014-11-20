@@ -203,6 +203,7 @@ function ProductSpiderService() {
     this.getResult = function() {
         var result = {
             title: this.title,
+            productId this.productId,
             categories: this.categories,
             oldPrice: this.oldPrice,
             nowPrice: this.nowPrice,
@@ -212,7 +213,11 @@ function ProductSpiderService() {
         };
         return result;
     };
-    // protected method
+    /**
+     * Crawl product basic information from specificed http url.
+     * @param  {string} httpUrl httpUrl http absolute url
+     * @return {promise}
+     */
     this.start = function(httpUrl) {
         this.url = httpUrl;
         // current product id.
