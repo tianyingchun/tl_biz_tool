@@ -1,4 +1,4 @@
-app.factory('configService', ['FileService', function(FileService){
+app.factory('configService', ['FileService', 'CatalogService', function(FileService, CatalogService){
 	var configService = {};
 
 	configService.getClientConfigData = function (path) {
@@ -13,6 +13,9 @@ app.factory('configService', ['FileService', function(FileService){
 	configService.saveServerConfigData = function (path, data) {
 		return FileService.writeJson(path, data);	
 	};
+	configService.getConfigData = function (url) {
+		return CatalogService.getConfigData(url);
+	}
 	return configService;
 		
 }])

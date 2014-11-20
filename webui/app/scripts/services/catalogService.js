@@ -24,8 +24,12 @@
         },
 
         getAllCatalog: function () {
-            var promise = this.postRequest("/utility/get_all_categoris", {}, {cache: true});
+            var promise = this.getRequest("/utility/get_all_categoris", {}, {cache: true});
             return promise;
+        },
+
+        getConfigData: function (url) {
+            return this.getRequest(url, {}, {cache: true});
         }
     });
 

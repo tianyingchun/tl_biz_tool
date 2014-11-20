@@ -57,9 +57,9 @@ app.run(['$templateCache', function($templateCache){
 	                			"<div class=\"col-sm-10\">"+
 	                				"<input ng-if=\"isTextBox(configValue.type)\" type=\"text\" ng-model=\"configValue.value\" class=\"form-control\">"+
 	                				"<div ng-if=\"isDropdown(configValue.type)\" class='btn-group pull-left' dropdown>"+
-	                					"<button class=\"btn btn-primary dropdown-toggle\">{{configValue.items[configValue.value][configValue.api.displayTextNode]}}<span class='caret'></span></button>"+
+	                					"<button class=\"btn btn-primary dropdown-toggle\">{{configValue.items[configValue.index][configValue.api.displayTextNode]}}<span class='caret'></span></button>"+
 	                					"<ul class='dropdown-menu' role='menu'>"+
-	                						"<li ng-repeat='item in configValue.items' ng-click='configValue.value=$index'><a href>{{item[configValue.api.displayTextNode]}}</a></li>"+
+	                						"<li ng-repeat='item in configValue.items' ng-click='configValue.index=$index'><a href>{{item[configValue.api.displayTextNode]}}</a></li>"+
 	                					"</ul>"+
 	                				"</div>"+
 	                			"</div>"+

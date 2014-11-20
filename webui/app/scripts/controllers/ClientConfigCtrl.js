@@ -1,5 +1,6 @@
-app.controller('ClientConfigCtrl', ['$scope', 'configService', 'configPath', '$http', function($scope, configService, configPath, $http) {
+app.controller('ClientConfigCtrl', ['$scope', 'configService', 'configPath', function($scope, configService, configPath) {
 
+	$scope.$emit("changeSpinnerStatus", true);
 	var promise = configService.getClientConfigData(configPath.client);
 	console.log(configPath.client);
 	promise.then(function (data) {
@@ -10,14 +11,23 @@ app.controller('ClientConfigCtrl', ['$scope', 'configService', 'configPath', '$h
 			var configKeys = Object.keys(data[key].configs);
 			async.eachSeries(configKeys, function (configKey, callback) {
 				if(data[key].configs[configKey].api) {
-					$http.get('./mockdata.json').then(function (resp) {
-						data[key].configs[configKey].items = resp.data.info;
+					var url = data[key].configs[configKey].api.url;
+					configService.getConfigData(url).then(function (resp) {
+						var items = resp.data;
+						data[key].configs[configKey].items = items;
+						for (var i = 0; i < items.length; i++) {
+							if (data[key].configs[configKey].value == items[i][data[key].configs[configKey].api.valueTextNode]) {
+								data[key].configs[configKey].index = i;
+								break;
+							}
+						};
 						callback();
 					});
 				}
 			}, function (err) {
 				if (!err) {
 					$scope.configData = data;
+					$scope.$emit("changeSpinnerStatus", false);
 				}
 			})
 		})
@@ -32,13 +42,19 @@ app.controller('ClientConfigCtrl', ['$scope', 'configService', 'configPath', '$h
 		angular.forEach(keys, function (key) {
 			var configKeys = Object.keys(data[key].configs);
 			angular.forEach(configKeys, function (configKey) {
-				if (data[key].configs[configKey].items) {
-					delete data[key].configs[configKey].items;
+				var config = data[key].configs[configKey];
+				var items = config.items;
+				if (items) {
+					if (config.index >= 0) {
+						config.value = items[config.index][config.api.valueTextNode];
+						delete config.index;
+					}
+					delete config.items;
 				} 
 			});
 		});
 
-    	configService.saveClientConfigData(configPath.client, $scope.configData);
+    	configService.saveClientConfigData(configPath.client, data);
     }
 
 }])

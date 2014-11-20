@@ -29,7 +29,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             $scope.$emit("changeSpinnerStatus", false);
         });
 
-        var list = ['ww.baidu.com'];
+        var list = [];
         this.uploadFile = function() {
             helper.file_upload.click();
             helper.file_upload.change(function() {
