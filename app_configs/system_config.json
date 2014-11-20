@@ -1,0 +1,66 @@
+{
+    "sqlserver_db_config": {
+        "title": "SqlServer DB配置",
+        "description": "用来保存所有的与Sql Server数据库相关的配置参数",
+        "configs": {
+            "testEnv": {
+                "title": "测试环境连接",
+                "description": "Sqlserver db测试环境连接",
+                "value": {
+                    "user": "clothesgate_test",
+                    "password": "clothesgate_test",
+                    "server": "calantha.arvixe.com",
+                    "database": "clothesgate_test"
+                }
+            },
+            "productionEnv": {
+                "title": "正式环境连接",
+                "description": "Sqlserver db正式环境连接",
+                "value": {
+                    "user": "clothesgate_test",
+                    "password": "clothesgate_test",
+                    "server": "calantha.arvixe.com",
+                    "database": "clothesgate_test"
+                }
+            }
+        }
+    },
+    "mongo_db_config": {
+        "title": "Mongo DB配置",
+        "description": "用来保存所有与Mongo相关的配置参数",
+        "configs": {
+            "testEnv": {
+                "title": "测试环境连接",
+                "description": "Mongo db测试环境连接",
+                "value": {
+                    "user": "clothesgate_test",
+                    "password": "clothesgate_test",
+                    "server": "calantha.arvixe.com",
+                    "database": "clothesgate_test"
+                }
+            },
+            "productionEnv": {
+                "title": "正式环境连接",
+                "description": "Mongo db正式环境连接",
+                "value": {
+                    "user": "clothesgate_test",
+                    "password": "clothesgate_test",
+                    "server": "calantha.arvixe.com",
+                    "database": "clothesgate_test"
+                }
+            }
+        }
+    },
+    "log_config": {
+        "title": "日志相关配置",
+        "description": "日志相关配置",
+        "configs": {
+            "logDir": {
+                "title": "日志保存目录",
+                "description": "日志保存目录",
+                "value": "./logs",
+                "type": "textbox"
+            }
+        }
+    }
+}

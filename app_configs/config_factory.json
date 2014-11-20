@@ -1,0 +1,17 @@
+{
+	"system_config": {
+		"title": "系统相关配置",
+		"description": "归纳所有与系统相关的配置参数",
+		"path": "./system_config.json"
+	},
+	"product_config": {
+		"title": "产品相关配置",
+		"description": "归纳所有与产品相关的配置参数",
+		"path": "./product_config.json"
+	},
+	"picture_config": {
+		"title": "图片相关配置",
+		"description": "归纳所有与图片相关的配置参数",
+		"path": "./picture_config.json"
+	}
+}

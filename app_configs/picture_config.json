@@ -1,0 +1,20 @@
+{
+	"crawl_config": {
+		"title": "图片模块配置",
+		"description": "图片模块相关配置信息管理",
+		"configs": {
+			"picture_source_url": {
+				"title": "产品图片数据源",
+				"description": "产品描述数据来源API地址",
+				"value": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
+				"type": "textbox"
+			},
+			"saveto_dir": {
+				"title": "图片抓取到哪儿?",
+				"description": "用来保存图片抓取后临到保存到当前电脑的指定目录",
+				"value": "D:\\Github_Works\\extract_dir",
+				"type": "textbox"
+			}
+		}
+	}
+}

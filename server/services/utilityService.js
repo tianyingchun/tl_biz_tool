@@ -9,7 +9,7 @@ var CatalogDal = require("../../datalayer/catalogDal");
 // product attributes data access instance.
 var productAttribtsDal = new ProductAttributeDal();
 var manufacturerDal = new ManufacturerDal();
-var categoryDal =new CatalogDal();
+var categoryDal = new CatalogDal();
 // product data model.
 function UtilityDataProvider() {
 	/**
@@ -49,6 +49,4 @@ function UtilityDataProvider() {
 		return categoryDal.getAllCatagory();
 	};
 };
-module.exports = function() {
-	return new UtilityDataProvider();
-};
+module.exports = UtilityDataProvider;

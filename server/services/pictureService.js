@@ -31,6 +31,4 @@ function PictureDataProvider() {
 	};
 
 };
-module.exports = function() {
-	return new PictureDataProvider();
-};
+module.exports = PictureDataProvider;

@@ -41,6 +41,4 @@ function ProductDataProvider() {
     };
 };
 
-module.exports = function() {
-    return new ProductDataProvider();
-};
+module.exports = ProductDataProvider;

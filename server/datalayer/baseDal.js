@@ -1,9 +1,12 @@
 var sql = require('mssql');
 var fs = require("fs-extra");
 var _ = require("underscore");
-var BaseModel = require("../models/BaseModel");
+var dataProvider = require("../dataProvider");
 var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
+
+var BaseModel = dataProvider.getModel("BaseModel");
+
 // remote configs
 var remoteServerCfg = fs.readJsonSync("../server_config.json").remote_server_config.configs;
 

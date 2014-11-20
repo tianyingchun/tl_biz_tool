@@ -11,6 +11,4 @@ function CatalogDataProvider() {
 	
 }
 
-module.exports = function() {
-    return new CatalogDataProvider();
-};
+module.exports = CatalogDataProvider;
