@@ -11,7 +11,7 @@ var ProductVariantModel = require('../../models/ProductVariant');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
-var productSqlDal= require（"../../datalayer/productDal");
+var ProductSqlDal = require("../../datalayer/productDal");
 // product data model.
 
 function ProductDataProvider() {
@@ -36,6 +36,7 @@ function ProductDataProvider() {
         productVariant.ProductAttribts = crawlProduct.productAttribts || {};
         productVariant.SpecAttribts = crawlProduct.specAttribts || [];
 
+        var productSqlDalService = new ProductSqlDal();
         return productSqlDalService.addNewProduct(productModel, productVariant);
     };
 };

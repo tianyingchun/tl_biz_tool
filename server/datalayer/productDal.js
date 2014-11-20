@@ -102,7 +102,7 @@ function productDal() {
                                     }, function(err) {
                                         callback(err);
                                     });
-                                }, function(err) P {
+                                }, function(err) {
                                     callback(err);
                                 });
                             }, function(err) {
@@ -131,7 +131,7 @@ function productDal() {
         //Short Description.
         product.ShortDescription = preFix + product.ShortDescription;
         //Insert Product
-        string sql = "INSERT INTO Product ( Name , ShortDescription ,  FullDescription , AdminComment , ProductTemplateId ," +
+        var sql = "INSERT INTO Product ( Name , ShortDescription ,  FullDescription , AdminComment , ProductTemplateId ," +
             " ShowOnHomePage , MetaKeywords , MetaDescription , MetaTitle ," +
             " AllowCustomerReviews , ApprovedRatingSum , NotApprovedRatingSum ," +
             " ApprovedTotalReviews , NotApprovedTotalReviews ,SubjectToAcl, Published , Deleted , CreatedOnUtc , UpdatedOnUtc )" +
@@ -271,7 +271,7 @@ function productDal() {
                             var colorSqureRgb = key.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
                             sql.push(utility.stringFormatSql(_productVariantAttribute_values_sql, pvaMapping.Id, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0));
                         }
-                        baseDal.executeNoneQuery([sql.join(";")]), .then(function() {
+                        baseDal.executeNoneQuery([sql.join(";")]).then(function() {
                             callback();
                         }, function(err) {
                             logger.error("insert ProductVariantAttributeValue table error: ", err);

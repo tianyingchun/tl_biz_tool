@@ -7,14 +7,11 @@ var logger = require("../helpers/log");
 // data provider singleton.
 var dataProvider = require("../services/dataProvider");
 
-// remote request.
-var request = require("../helpers/remoteRequest");
-
 // product sql service
 var productSqlService = dataProvider.get("product");
 
 // product spider service.
-var productSpiderService = dataProvider("spider", "product");
+var productSpiderService = dataProvider.get("spider", "product");
 
 // authenticating api security.
 // router.route("*").all(base.setResponseHeaders, base.securityVerify);

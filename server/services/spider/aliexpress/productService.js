@@ -5,10 +5,10 @@ var cheerio = require('cheerio'),
     _ = require('underscore'),
     http = require('http'),
     fs = require("fs-extra");
-var logger = require('../../helpers/log');
+var logger = require('../../../helpers/log');
 // getting parser module
 var cssparser = require("cssparser");
-var utility = require("../../helpers/utility");
+var utility = require("../../../helpers/utility");
 var Q = require("q");
 
 var skuStyleContent = "";
@@ -203,7 +203,7 @@ function ProductSpiderService() {
     this.getResult = function() {
         var result = {
             title: this.title,
-            productId this.productId,
+            productId: this.productId,
             categories: this.categories,
             oldPrice: this.oldPrice,
             nowPrice: this.nowPrice,
@@ -282,6 +282,9 @@ function ProductSpiderService() {
     }
 };
 
+/**
+ * Note. we must make sure that  this.$dom has been loaded product documents.
+ */
 _.extend(ProductSpiderService.prototype, {
 
     fetchCategories: function() {

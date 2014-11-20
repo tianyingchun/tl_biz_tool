@@ -1,5 +1,5 @@
-var utility = require("../../helpers/utility");
-var exception = require("../../helpers/exception");
+var utility = require("../../../helpers/utility");
+var exception = require("../../../helpers/exception");
 var _ = require('underscore'),
     http = require('http'),
     fs = require("fs-extra");
