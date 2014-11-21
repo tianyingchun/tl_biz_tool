@@ -18,7 +18,6 @@ module.exports = {
             message: err.message || '',
             stack: err.stack || JSON.stringify(err)
         };
-
         return {
             failed: true,
             error: _error

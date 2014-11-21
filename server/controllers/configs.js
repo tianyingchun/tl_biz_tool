@@ -1,17 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var _ = require("underscore");
-var config = require("../config")();
 var base = require("./base");
-var debug = require('debug')(config.appName);
+var logger = require("../helpers/log");
 
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 // utility service.
 var utilityService = new dataProvider.getService("utility")();
-
-// authenticating api security.
-// router.route("*").all(base.setResponseHeaders, base.securityVerify);
 
 // all dynamic configurations public api.
 // 

@@ -35,6 +35,4 @@ function PictureSpiderService() {
         });
     };
 };
-module.exports = function() {
-    return new PictureSpiderService();
-};
+module.exports = PictureSpiderService;

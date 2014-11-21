@@ -5,7 +5,7 @@ var utility = require('../helpers/utility');
 var PictureModel = require("../models/Picture");
 var baseDal = require("./baseDal");
 
-function pictureDal() {
+function PictureDal() {
 	/**
 	 * 添加新图片记录到数据库并返回当前带当前图片ID 的实体
 	 * @param  {picture} picture picture entity
@@ -62,4 +62,4 @@ function pictureDal() {
 };
 
 
-module.exports = pictureDal;
+module.exports = PictureDal;

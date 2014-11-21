@@ -31,9 +31,14 @@ function getConfig(type) {
  */
 function getCurrentSpiderRepository(dalName) {
     var config = getConfig("context");
-    var spiderProvider = config.crawl_provider;
-    spiderProvider.value;
-
+    var spiderProvider = "aliexpress";
+    try {
+        var spiderProvider = config.crawl_config.configs.crawl_provider.value;
+    } catch (e) {
+        logger.error("get current spider repository failed!: ", e);
+        spiderProvider = "aliexpress";
+    }
+    return spiderProvider + "/" + dalName;
 };
 module.exports = {
     /**

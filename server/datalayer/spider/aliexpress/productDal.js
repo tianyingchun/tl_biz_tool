@@ -386,6 +386,4 @@ _.extend(ProductSpiderService.prototype, {
     }
 });
 
-module.exports = function() {
-    return new ProductSpiderService();
-};
+module.exports = ProductSpiderService;

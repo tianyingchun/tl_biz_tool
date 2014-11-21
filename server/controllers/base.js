@@ -5,10 +5,8 @@
 var _ = require("underscore");
 var path = require('path');
 var exception = require("../helpers/exception");
-var config = require("../config")();
-//  set project debug facade.
-var debug = require('debug')(config.appName);
-
+var config = require("../config/index")();
+var logger = require("../helpers/log");
 /**
  * Get application base url
  * @param  {request} req       http request
@@ -34,7 +32,7 @@ var getBaseUrl = function(req, queryPath) {
     }
     // return
     var baseUrl = req.protocol + "://" + path.normalize(rootPath.join(""));
-    debug("getBaseUrl(): ", baseUrl);
+    logger.debug("getBaseUrl(): ", baseUrl);
     return baseUrl;
 };
 var base = {
@@ -67,6 +65,13 @@ var base = {
             this.apiErrorOutput(res, info.error);
         }
     },
+    hasPassed: function(result) {
+        // has error information.
+        if (result && result.failed === true) {
+            return false;
+        }
+        return true;
+    },
     /**
      * capture all api request, and attach response content-Type:'application/json' and other headers
      * @param  {object}   req  http request
@@ -79,42 +84,18 @@ var base = {
         });
         next();
     },
-    /**
-     * for all server page error
-     * @param  {string} message the error message
-     * @param  {object} err     the error object
-     * @return {object}         the error.html page.
-     */
-    errorPageModel: function(message, err) {
-        return {
-            message: err.message || message,
-            error: err
-        };
-    },
     getErrorModel: function(code, message) {
         var _error = {
             status: code || 500,
             message: message || ''
         };
-        return _error;
+        return exception.getErrorModel(_error);
     },
     /**
      * Get root url of current website.
      */
     getBaseUrl: function(req, queryPath) {
         return getBaseUrl(req, queryPath);
-    },
-    /**
-     * Check if service invoke callback has contains error.
-     * true: no error.
-     *
-     */
-    hasPassed: function(result) {
-        // has error information.
-        if (result && result.failed === true) {
-            return false;
-        }
-        return true;
     }
 };
 module.exports = base;

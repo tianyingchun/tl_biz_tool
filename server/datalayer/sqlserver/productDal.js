@@ -15,7 +15,7 @@ var ProductAttributeModel = require("../models/ProductAttribute");
 // client product configurations.
 var clientProductCfg = fs.readJsonSync("../module_config.json").module_product_autoupload.configs;
 
-function productDal() {
+function ProductDal() {
     /**
      * 获取指定产品的信息
      * @param  {number} productId 获取指定产品的信息
@@ -295,4 +295,4 @@ function productDal() {
         return deferred.promise;
     };
 }
-module.exports = productDal;
+module.exports = ProductDal;

@@ -5,7 +5,7 @@ var utility = require('../helpers/utility');
 var CatalogModel = require("../models/Catalog");
 var baseDal = require("./baseDal");
 
-function catalogDal() {
+function CatalogDal() {
 	// 返回所有的分类
 	this.getAllCatagory = function() {
 		var sql = "SELECT Id,Name,ParentCategoryId,DisplayOrder FROM Category";
@@ -53,4 +53,4 @@ function catalogDal() {
 };
 
 
-module.exports = catalogDal;
+module.exports = CatalogDal;

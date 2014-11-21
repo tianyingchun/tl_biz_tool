@@ -1,20 +1,27 @@
 var util = require('util');
-var _ = require('underscore');
-var exception = require('../../helpers/exception');
-var productDataSchema = require("../../models/Product");
-var logger = require('../../helpers/log');
-
-var ProductModel = require('../../models/Product');
-var ProductVariantModel = require('../../models/ProductVariant');
-
-
+var logger = require('../helpers/log');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
-var ProductSqlDal = require("../../datalayer/productDal");
+// product model.
+var ProductModel = dataProvider.getModel('Product');
+// product variant model.
+var ProductVariantModel = dataProvider.getModel('ProductVariant');
+
+var productSpiderDal = dataProvider.getDataAccess("spider", "product");
+
+var ProductDal = dataProvider.getDataAccess("product");
 // product data model.
 
 function ProductDataProvider() {
+    /**
+     * Crawl product basic information from specificed spider repository
+     * @param  {string} httpUrl product url.
+     * @return {promise}
+     */
+    this.crawlProductInfo = function(httpUrl) {
+        return productSpiderDal.start(httpUrl);
+    };
     /**
      * Add new product information to database.
      * @param product the ProductModel.
@@ -35,9 +42,8 @@ function ProductDataProvider() {
 
         productVariant.ProductAttribts = crawlProduct.productAttribts || {};
         productVariant.SpecAttribts = crawlProduct.specAttribts || [];
-
-        var productSqlDalService = new ProductSqlDal();
-        return productSqlDalService.addNewProduct(productModel, productVariant);
+ 
+        return new ProductDal().addNewProduct(productModel, productVariant);
     };
 };
 

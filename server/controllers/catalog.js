@@ -1,21 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var _ = require("underscore");
-var config = require("../config")();
 var base = require("./base");
-var debug = require('debug')(config.appName);
-
+var logger = require("../helpers/log");
 // data provider singleton.
-var dataProvider = require("../services/dataProvider");
-
-// remote request.
-var request = require("../helpers/remoteRequest");
+var dataProvider = require("../dataProvider");
 
 // catalog service
-var catalogService = dataProvider.get("catalog");
-
-// authenticating api security.
-// router.route("*").all(base.setResponseHeaders, base.securityVerify);
+var catalogService = dataProvider.getService("catalog")();
 
 // send customized message to user.
 router.post("/addProducts2Category", function(req, res) {
