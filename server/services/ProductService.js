@@ -2,7 +2,6 @@ var util = require('util');
 var logger = require('../helpers/log');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
-
 // product model.
 var ProductModel = dataProvider.getModel('Product');
 // product variant model.
@@ -10,7 +9,7 @@ var ProductVariantModel = dataProvider.getModel('ProductVariant');
 
 var productSpiderDal = dataProvider.getDataAccess("spider", "Product");
 
-var ProductDal = dataProvider.getDataAccess("Product");
+var productDal = dataProvider.getDataAccess("Product");
 // product data model.
 
 function ProductDataProvider() {
@@ -42,8 +41,8 @@ function ProductDataProvider() {
 
         productVariant.ProductAttribts = crawlProduct.productAttribts || {};
         productVariant.SpecAttribts = crawlProduct.specAttribts || [];
- 
-        return new ProductDal().addNewProduct(productModel, productVariant);
+
+        return productDal.addNewProduct(productModel, productVariant);
     };
 };
 

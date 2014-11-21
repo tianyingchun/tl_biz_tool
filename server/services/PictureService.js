@@ -2,16 +2,12 @@ var logger = require('../helpers/log');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
-var PictureDal = dataProvider.getDataAccess("Picture");
+var pictureDal = dataProvider.getDataAccess("Picture");
 
 // picture spider service.
-var pictureSpiderDal = dataProvider.getDataAccess("spider", "Picture")();
+var pictureSpiderDal = dataProvider.getDataAccess("spider", "Picture");
 
 function PictureDataProvider() {
-
-    // picture Dal instance.
-    var pictureDal = new PictureDal();
-
     // 更新图片信息
     this.updatePicture = function(picture, sucessedCb, failedCb) {
         // promise update picture 
@@ -36,7 +32,7 @@ function PictureDataProvider() {
      * @return {promise}
      */
     this.crawlPictures = function(httpUrl) {
-    	return pictureSpiderDal.crawlPictures(httpUrl);
+        return pictureSpiderDal.crawlPictures(httpUrl);
     };
 
 };

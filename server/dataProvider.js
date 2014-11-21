@@ -49,7 +49,8 @@ module.exports = {
     getService: function(serviceName) {
         if (serviceName) {
             serviceName = serviceName.replace(/Service$/ig, "") + "Service";
-            return require("./services/" + serviceName);
+            var ServiceClass = require("./services/" + serviceName);
+            return new ServiceClass();
         } else {
             logger.error("We must provider a service name to auto fecth service constructor!");
         }
@@ -75,8 +76,9 @@ module.exports = {
                 dalName = getCurrentSpiderRepository(dalName);
                 break;
         }
-
-        return require(["./datalayer", provider, dalName].join('/'));
+        var DataAccessClass = require(["./datalayer", provider, dalName].join('/'));
+        
+        return new DataAccessClass();
     },
     /**
      * Get model entity constructor

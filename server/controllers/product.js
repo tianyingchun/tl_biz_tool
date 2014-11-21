@@ -7,9 +7,7 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 
 //  product service.
-var ProductService = dataProvider.getService("Product");
-
-var productService = new ProductService();
+var productService = dataProvider.getService("Product"); 
 /**
  * API: /product/auto_extract_upload_products
  * auto crawl product information and then add new product info to database.

@@ -1,14 +1,9 @@
 var logger = require('../helpers/log');
 var dataProvider = require("../dataProvider");
 
-var ProductAttributeDal = dataProvider.getDataAccess("ProductAttribute");
-var ManufacturerDal = dataProvider.getDataAccess("Manufacturer");
-var CatalogDal = dataProvider.getDataAccess("Catalog");
-
-// product attributes data access instance.
-var productAttribtsDal = new ProductAttributeDal();
-var manufacturerDal = new ManufacturerDal();
-var categoryDal = new CatalogDal();
+var productAttribtsDal = dataProvider.getDataAccess("ProductAttribute");
+var manufacturerDal = dataProvider.getDataAccess("Manufacturer");
+var catalogDal = dataProvider.getDataAccess("Catalog");
 
 // product data model.
 function UtilityDataProvider() {
@@ -46,7 +41,7 @@ function UtilityDataProvider() {
      * 返回所有的产品分类列表
      */
     this.getAllCatagory = function() {
-        return categoryDal.getAllCatagory();
+        return catalogDal.getAllCatagory();
     };
 };
 module.exports = UtilityDataProvider;

@@ -7,7 +7,7 @@ var ProductModel = dataProvider.getModel("Product");
 var ProductVariantModel = dataProvider.getModel("ProductVariant");
 var baseDal = require("../baseDal");
 // product attributes dal
-var ProductAttributeDal = dataProvider.getDataAccess("ProductAttributeDal");
+var productAttribtsDal = dataProvider.getDataAccess("ProductAttributeDal");
 
 var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
 
@@ -234,9 +234,6 @@ function ProductDal() {
         var sqlStr = "INSERT INTO dbo.ProductVariant_ProductAttribute_Mapping " +
             "(ProductVariantId , ProductAttributeId ,TextPrompt,IsRequired ,AttributeControlTypeId , DisplayOrder)" +
             " VALUES ({0},{1},{2},{3},{4},{5}); SELECT SCOPE_IDENTITY() AS Id; ";
-        // create instance.
-        var productAttribtsDal = new ProductAttributeDal();
-
         var deferred = Q.defer();
 
         productAttribtsDal.getAttributControlTypeIds().then(function(paIds) {

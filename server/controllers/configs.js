@@ -6,7 +6,7 @@ var logger = require("../helpers/log");
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 // utility service.
-var utilityService = new dataProvider.getService("Utility")();
+var utilityService = dataProvider.getService("Utility");
 
 // all dynamic configurations public api.
 // -----------------------------------------------------------

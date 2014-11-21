@@ -6,7 +6,7 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 
 // utility service
-var utilityService = new dataProvider.getService("Utility")();
+var utilityService = dataProvider.getService("Utility");
 
 /**
  * API: /utility/get_attribute_controltypes
@@ -30,7 +30,17 @@ router.get("/get_all_product_attributes", function(req, res) {
 		base.apiErrorOutput(res, error);
 	});
 });
-
+/**
+ * API: /utility/get_all_manufacturers
+ * 返回所有的产品品牌
+ */
+router.get("/get_all_manufacturers", function(req, res) {
+	utilityService.getAllManufacturers().then(function success(result) {
+		base.apiOkOutput(res, result);
+	}, function error(error) {
+		base.apiErrorOutput(res, error);
+	});
+});
 /**
  * API:/utility/add_new_product_attribute
  * 增加新的ProductAttributes
@@ -47,7 +57,7 @@ router.post("/add_new_product_attribute", function(req, res) {
 
 /**
  * API:/utility/get_all_categoris
- * 获取系统所有的品牌Manufacturer 
+ * 获取系统所有的品牌Manufacturer
  * @return  List<Manufacturer>
  */
 router.get("/get_all_categoris", function(req, res) {
