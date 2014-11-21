@@ -1,0 +1,45 @@
+{
+    "db_config": {
+        "title": "数据库当前环境配置",
+        "description": "设置当前服务器正在使用的数据库环境",
+        "configs": {
+            "sqlserver_db_clothesgate": {
+                "title": "数据库名称[Clothesgate]",
+                "description": "SqlServer Clothesgate数据库连接配置",
+                "value": {
+                    "user": "clothesgate_test",
+                    "password": "clothesgate_test",
+                    "server": "calantha.arvixe.com",
+                    "database": "clothesgate_test"
+                },
+                "type": "dropdown",
+                "api": {
+                    "url": "/utility/get_sqlserver_envs_clothesgate"
+                }
+            },
+            "sqlserver_db_docs": {
+                "title": "数据库名称[Docs]",
+                "description": "SqlServer Docs数据库连接配置",
+                "value": {
+                    "user": "clothesgate_test",
+                    "password": "clothesgate_test",
+                    "server": "calantha.arvixe.com",
+                    "database": "clothesgate_test"
+                },
+                "type": "dropdown",
+                "api": {
+                    "url": "/utility/get_sqlserver_envs_docs"
+                }
+            },
+            "mongo_db_tracking": {
+                "title": "数据库名称[Tracking]",
+                "description": "Mongo数据库连接配置",
+                "value": "mongodb://12.0.0.1:27017/tracking'",
+                "type": "dropdown",
+                "api": {
+                    "url": "/utility/get_mongo_envs_tracking"
+                }
+            },
+        }
+    }
+}
