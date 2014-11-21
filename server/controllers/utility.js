@@ -1,22 +1,15 @@
 var express = require('express');
 var router = express.Router();
-var _ = require("underscore");
-var config = require("../config")();
 var base = require("./base");
 var logger = require("../helpers/log");
 // data provider singleton.
-var dataProvider = require("../services/dataProvider");
-
-// remote request.
-var request = require("../helpers/remoteRequest");
+var dataProvider = require("../dataProvider");
 
 // utility service
-var utilityService = dataProvider.get("utility");
+var utilityService = dataProvider.get("Utility")();
 
-// authenticating api security.
-// router.route("*").all(base.setResponseHeaders, base.securityVerify);
-// 
 /**
+ * API: /utility/get_attribute_controltypes
  * 返回所有的 产品Attribute对应的Control Types
  */
 router.get("/get_attribute_controltypes", function(req, res) {
@@ -27,6 +20,7 @@ router.get("/get_attribute_controltypes", function(req, res) {
 	});
 });
 /**
+ * API:/utility/get_all_product_attributes
  * 返回所有的 Product Attributes 列表
  */
 router.get("/get_all_product_attributes", function(req, res) {
@@ -38,6 +32,7 @@ router.get("/get_all_product_attributes", function(req, res) {
 });
 
 /**
+ * API:/utility/add_new_product_attribute
  * 增加新的ProductAttributes
  */
 router.post("/add_new_product_attribute", function(req, res) {
@@ -51,6 +46,7 @@ router.post("/add_new_product_attribute", function(req, res) {
 
 
 /**
+ * API:/utility/get_all_categoris
  * 获取系统所有的品牌Manufacturer 
  * @return  List<Manufacturer>
  */

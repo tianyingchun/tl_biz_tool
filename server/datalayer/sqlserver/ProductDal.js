@@ -1,19 +1,19 @@
-var sql = require('mssql');
-var fs = require("fs-extra");
 var async = require('async');
-var config = require('../config')();
-var logger = require('../helpers/log');
-var utility = require('../helpers/utility');
-var ProductModel = require("../models/Product");
-var ProductVariantModel = require("../models/ProductVariant");
-var baseDal = require("./baseDal");
-// product attributes dal
-var ProductAttributeDal = require("./productAttributeDal");
+var logger = require('../../helpers/log');
+var utility = require('../../helpers/utility');
+var dataProvider = require("../../dataProvider");
 
-var ProductAttributeModel = require("../models/ProductAttribute");
+var ProductModel = dataProvider.getModel("Product");
+var ProductVariantModel = dataProvider.getModel("ProductVariant");
+var baseDal = require("../baseDal");
+// product attributes dal
+var ProductAttributeDal = dataProvider.getDataAccess("ProductAttributeDal");
+
+var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
 
 // client product configurations.
-var clientProductCfg = fs.readJsonSync("../module_config.json").module_product_autoupload.configs;
+var clientProductCfg = dataProvider.getConfig("product").autoupload_config.configs;
+
 
 function ProductDal() {
     /**

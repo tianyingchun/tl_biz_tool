@@ -30,10 +30,10 @@ function getConfig(type) {
  * @param  {string} dalName data access name
  */
 function getCurrentSpiderRepository(dalName) {
-    var config = getConfig("context");
+    var contextCfg = getConfig("context");
     var spiderProvider = "aliexpress";
     try {
-        var spiderProvider = config.crawl_config.configs.crawl_provider.value;
+        var spiderProvider = contextCfg.crawl_config.configs.crawl_provider.value;
     } catch (e) {
         logger.error("get current spider repository failed!: ", e);
         spiderProvider = "aliexpress";
@@ -96,5 +96,25 @@ module.exports = {
      */
     getConfig: function(type) {
         return getConfig(type);
+    },
+    /**
+     * The short cut method to fetch specificed last config node value.
+     * e.g. system_config.json
+     *
+     * (system_config, "db_clothesgate_config", "testEnv")
+     * it will try to get system_config.db_clothesgate_config.configs.testEnv.value.
+     * @param  {object} configRoot via invoke getConfig("system");
+     * @param  {string} nodeName   'db_clothesgate_config'
+     * @param  {string} keyName    'testEnv'
+     * @return {any}    string | object
+     */
+    getConfigNode: function(configRoot, nodeName, keyName) {
+        var cfgValue = "";
+        try {
+            cfgValue = configRoot["nodeName"].configs[keyName].value;
+        } catch (e) {
+            logger.error("get config node failed!", e);
+        }
+        return cfgValue;
     }
 };

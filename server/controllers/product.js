@@ -1,17 +1,18 @@
 var express = require('express');
 var router = express.Router();
-var _ = require("underscore");
 var base = require("./base");
 var logger = require("../helpers/log");
-
 
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
 // instance product service.
-var productService = dataProvider.getService("product")();
+var productService = dataProvider.getService("roduct")();
 
-// send customized message to user.
+/**
+ * API: /product/auto_extract_upload_products
+ * auto crawl product information and then add new product info to database.
+ */
 router.post("/auto_extract_upload_products", function(req, res) {
     logger.debug('controller: auto_extract_upload_products...');
     var reqBody = req.body;

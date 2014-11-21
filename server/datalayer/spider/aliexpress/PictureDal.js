@@ -1,38 +1,43 @@
 var utility = require("../../../helpers/utility");
 var exception = require("../../../helpers/exception");
-var _ = require('underscore'),
-    http = require('http'),
-    fs = require("fs-extra");
+var logger = require("../../../helpers/log");
+var Q = require("q");
+// data provider singleton.
+var dataProvider = require("../../../dataProvider");
 
-// product module config.
-var module_product_extract_cfg = fs.readJsonSync("../module_config.json").module_product_extract.configs;
+// picture configurations.
+var pictureCfg = dataProvider.getConfig("picture");
 
 function PictureSpiderService() {
-
     /**
      * start to crawl all pictures of speicifced product url.
      * @return {promise}
      */
-    this.start = function(httpUrl) {
-
-        // the product http absolute url.
-        this.url = httpUrl;
-
+    this.crawlPictures = function(httpUrl) {
         // current product id.
-        this.productId = utility.extractProductId(this.url);
+        this.productId = utility.extractProductId(this.httpUrl);
 
-        // download product pictures
-        var product_description_url = module_product_extract_cfg.product_description_url.value.replace("{pid}", this.productId);
-        // run picture spider.
-        var _this = this;
+        var picture_source_url = dataProvider.getConfigNode(pictureCfg, crawl_config, picture_source_url);
 
-        return utility.downloadPicture(this.productId, product_description_url).then(function(result) {
-            // flush cached result to client.
-            return result;
+        if (!picture_source_url) {
+            logger.error("can't fetch picture source url from picture_config.json!");
+            var deferred = Q.defer();
+            deferred.reject("can't fetch picture source url from picture_config.json!");
+            return deferred.promise();
+        } else {
+            // download product pictures
+            picture_source_url = picture_source_url.replace("{pid}", this.productId);
+            // run picture spider.
+            var _this = this;
 
-        }, function(err) {
-            return err;
-        });
+            return utility.downloadPicture(this.productId, picture_source_url).then(function(result) {
+                // flush cached result to client.
+                return result;
+
+            }, function(err) {
+                return err;
+            });
+        }
     };
 };
 module.exports = PictureSpiderService;

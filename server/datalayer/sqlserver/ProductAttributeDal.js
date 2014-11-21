@@ -1,12 +1,9 @@
-var sql = require('mssql');
 // https://github.com/kriskowal/q
 var Q = require("q");
-
-var config = require('../config')();
-var logger = require('../helpers/log');
-var utility = require('../helpers/utility');
-var ProductAttributeModel = require("../models/ProductAttribute");
-var baseDal = require("./baseDal");
+var logger = require('../../helpers/log');
+var dataProvider = require("../../dataProvider");
+var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
+var baseDal = require("../baseDal");
 
 function ProductAttributeDal() {
 	/**

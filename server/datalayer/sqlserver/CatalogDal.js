@@ -1,9 +1,9 @@
-var sql = require('mssql');
-var config = require('../config')();
-var logger = require('../helpers/log');
-var utility = require('../helpers/utility');
-var CatalogModel = require("../models/Catalog");
-var baseDal = require("./baseDal");
+var logger = require('../../helpers/log');
+var dataProvider = require("../../dataProvider");
+
+var CatalogModel = dataProvider.getModel("Catalog");
+
+var baseDal = require("../baseDal");
 
 function CatalogDal() {
 	// 返回所有的分类
@@ -51,6 +51,5 @@ function CatalogDal() {
 	};
 
 };
-
 
 module.exports = CatalogDal;

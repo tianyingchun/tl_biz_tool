@@ -1,9 +1,9 @@
-var sql = require('mssql');
-var config = require('../config')();
-var logger = require('../helpers/log');
-var utility = require('../helpers/utility');
-var ManufacturerModel = require("../models/Manufacturer");
-var baseDal = require("./baseDal");
+var logger = require('../../helpers/log'); 
+var dataProvider = require("../../dataProvider");
+
+var ManufacturerModel = dataProvider.getModel("Manufacturer");
+
+var baseDal = require("../baseDal");
 
 function ManufacturerDal() {
 

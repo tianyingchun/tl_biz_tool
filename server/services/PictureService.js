@@ -36,7 +36,7 @@ function PictureDataProvider() {
      * @return {promise}
      */
     this.crawlPictures = function(httpUrl) {
-    	return pictureSpiderDal.start(httpUrl);
+    	return pictureSpiderDal.crawlPictures(httpUrl);
     };
 
 };

@@ -1,18 +1,18 @@
 var express = require('express');
 var router = express.Router();
-var _ = require("underscore");
 var base = require("./base");
 var logger = require("../helpers/log");
-
 
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
 // picture sql server service.
-var pictureService = dataProvider.getService("picture");
+var pictureService = dataProvider.getService("Picture")();
 
-
-// send customized message to user.
+/**
+ * API: /picture/auto_extract_product_pictures
+ * Crawl all pictures from provider spider repository.
+ */
 router.post("/auto_extract_product_pictures", function(req, res) {
     logger.debug('controller: auto_extract_product_pictures...');
     var reqBody = req.body;

@@ -1,19 +1,23 @@
 // var select = require('soupselect').select,
 // htmlparser = require("htmlparser"),
 // https://github.com/cheeriojs/cheerio
-var cheerio = require('cheerio'),
-    _ = require('underscore'),
-    http = require('http'),
-    fs = require("fs-extra");
-var logger = require('../../../helpers/log');
-// getting parser module
+var cheerio = require('cheerio');
+var _ = require('underscore');
 var cssparser = require("cssparser");
+
+var logger = require('../../../helpers/log');
+
+// getting parser module
 var utility = require("../../../helpers/utility");
+
+var dataProvider = require("../../../dataProvider");
+
 var Q = require("q");
 
 var skuStyleContent = "";
+
 // module product extract config.
-var module_product_extract_cfg = fs.readJsonSync("../module_config.json").module_product_extract.configs;
+var productCfg = dataProvider.getConfig("product").crawl_config.configs;
 
 function rgbConvert2Hex(rgb) {
     if (!rgb) return "";
@@ -41,7 +45,7 @@ function rgbConvert2Hex(rgb) {
 function fetchSkuColorStyleContent() {
     var deferred = Q.defer();
     if (!skuStyleContent) {
-        var sku_color_url = module_product_extract_cfg.sku_color_css_url.value;
+        var sku_color_url = productCfg.sku_color_css_url.value;
         utility.loadHtmlDocument(sku_color_url).then(function(body) {
             skuStyleContent = body;
             deferred.resolve({
@@ -161,7 +165,7 @@ function fetchProductSpecOther($, $lis) {
  * @return promise.
  */
 function fetchProductDescriptions(productId) {
-    var product_description_url = module_product_extract_cfg.product_description_url.value.replace("{pid}", productId);
+    var product_description_url = productCfg.product_description_url.value.replace("{pid}", productId);
     var deferred = Q.defer();
 
     utility.loadHtmlDocument(product_description_url).then(function(desc) {
