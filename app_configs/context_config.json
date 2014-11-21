@@ -3,17 +3,6 @@
         "title": "数据库当前环境配置",
         "description": "设置当前服务器正在使用的数据库环境",
         "configs": {
-            "crawl_provider": {
-                "title": "蜘蛛抓取数据源提供商",
-                "description": "蜘蛛抓取的数据源提供商",
-                "value": "aliexpress",
-                "type": "dropdown",
-                "api": {
-                    "url": "/configs/context/get_crawl_provider",
-                    "valueTextNode": "key",
-                    "displayTextNode": "name"
-                }
-            },
             "db_clothesgate_config": {
                 "title": "数据库名称[Clothesgate]",
                 "description": "SqlServer Clothesgate数据库连接配置",
@@ -28,6 +17,23 @@
                     "url": "/configs/context/db_clothesgate_envs",
                     "valueTextNode": "value",
                     "displayTextNode": "title"
+                }
+            }
+        }
+    },
+    "crawl_config": {
+        "title": "蜘蛛抓取数据源提供商",
+        "description": "蜘蛛抓取的数据源提供商相关配置信息",
+        "configs": {
+            "crawl_provider": {
+                "title": "蜘蛛抓取数据源提供商",
+                "description": "蜘蛛抓取的数据源提供商[aliexpress, ebay,..]",
+                "value": "aliexpress",
+                "type": "dropdown",
+                "api": {
+                    "url": "/configs/context/get_crawl_provider",
+                    "valueTextNode": "key",
+                    "displayTextNode": "name"
                 }
             }
         }

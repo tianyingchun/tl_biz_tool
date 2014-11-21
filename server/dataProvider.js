@@ -31,7 +31,8 @@ function getConfig(type) {
  */
 function getCurrentSpiderRepository(dalName) {
     var config = getConfig("context");
-    var spiderProvider = config;
+    var spiderProvider = config.crawl_provider;
+    spiderProvider.value;
 
 };
 module.exports = {
