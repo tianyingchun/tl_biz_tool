@@ -18,7 +18,15 @@ var utilityService = new dataProvider.getService("utility")();
 // 
 // Get current crawl provider , default is "aliexpress".
 router.get("/context/get_crawl_provider", function(req, res) {
-    base.apiOkOutput(res, ["aliexpress", "ebay"]);
+    var aliexpress = {
+        name: "aliexpress",
+        key: "aliexpress"
+    };
+    var ebay = {
+        key: "ebay",
+        name: "ebay"
+    };
+    base.apiOkOutput(res, [aliexpress, ebay]);
 });
 
 // Get clothesgate database connection configs for sqlserver.

@@ -9,7 +9,9 @@
                 "value": "aliexpress",
                 "type": "dropdown",
                 "api": {
-                    "url": "/configs/context/get_crawl_provider"
+                    "url": "/configs/context/get_crawl_provider",
+                    "valueTextNode": "key",
+                    "displayTextNode": "name"
                 }
             },
             "db_clothesgate_config": {
@@ -23,7 +25,9 @@
                 },
                 "type": "dropdown",
                 "api": {
-                    "url": "/configs/context/db_clothesgate_envs"
+                    "url": "/configs/context/db_clothesgate_envs",
+                    "valueTextNode": "value",
+                    "displayTextNode": "title"
                 }
             }
         }

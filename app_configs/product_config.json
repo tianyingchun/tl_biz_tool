@@ -34,8 +34,8 @@
                 "type": "dropdown",
                 "api": {
                     "url": "/configs/product/get_all_manufacturers",
-                    "displayTextNode": "Name",
-                    "valueTextNode": "Id"
+                    "valueTextNode": "Id",
+                    "displayTextNode": "Name"
                 }
             }
         }
