@@ -6,7 +6,7 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 
 // catalog service
-var catalogService = dataProvider.getService("Catalog")();
+var catalogService = new dataProvider.getService("Catalog")();
 
 // send customized message to user.
 

@@ -7,7 +7,7 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 
 // picture sql server service.
-var pictureService = dataProvider.getService("Picture")();
+var pictureService = new dataProvider.getService("Picture")();
 
 /**
  * API: /picture/auto_extract_product_pictures

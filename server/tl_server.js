@@ -13,7 +13,6 @@ var cons = require('consolidate');
 var config = require("./config")();
 var route = require("./config/route");
 var debug = require('debug')(config.appName);
-
 var app = express();
 
 // debug version.
@@ -31,6 +30,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 
+
 // express.static.mime.define({
 // 	'text/xml': ['plist']
 // });
@@ -40,9 +40,9 @@ app.use("/static", express.static(path.join(__dirname, 'public')));
 // initialize application route config.
 route.init(app);
 https.createServer(app).listen(config.port, function() {
-	debug(
-		'Sql server connection successfully! Express server listening on port ' + config.port
-	);
+    debug(
+        'Sql server connection successfully! Express server listening on port ' + config.port
+    );
 });
 // });
 

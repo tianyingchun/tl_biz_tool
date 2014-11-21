@@ -6,9 +6,10 @@ var logger = require("../helpers/log");
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
-// instance product service.
-var productService = dataProvider.getService("Product")();
+//  product service.
+var ProductService = dataProvider.getService("Product");
 
+var productService = new ProductService();
 /**
  * API: /product/auto_extract_upload_products
  * auto crawl product information and then add new product info to database.

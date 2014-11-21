@@ -6,7 +6,7 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 
 // utility service
-var utilityService = dataProvider.getService("Utility")();
+var utilityService = new dataProvider.getService("Utility")();
 
 /**
  * API: /utility/get_attribute_controltypes
