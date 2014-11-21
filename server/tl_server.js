@@ -36,16 +36,14 @@ app.use(cookieParser());
 // });
 // the default is "/" capture the static dir as all static resource root.
 app.use("/static", express.static(path.join(__dirname, 'public')));
-// sql.connect(config.sqlserver, function(err) {
+
 // initialize application route config.
 route.init(app);
 https.createServer(app).listen(config.port, function() {
-    debug(
-        'Sql server connection successfully! Express server listening on port ' + config.port
-    );
+	debug(
+		'Sql server connection successfully! Express server listening on port ' + config.port
+	);
 });
-// });
-
 
 // command line $>> npm start
 module.exports = app;

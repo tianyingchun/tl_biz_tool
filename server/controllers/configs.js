@@ -44,7 +44,7 @@ router.get("/context/db_clothesgate_envs", function(req, res) {
  * API:/configs/product/get_all_manufacturers
  * Get all brands for product configurations.
  */
-router.get("/product/get_all_manufacturers", function(req, res) {
+router.get("/get_all_manufacturers", function(req, res) {
     utilityService.getAllManufacturers().then(function success(result) {
         base.apiOkOutput(res, result);
     }, function error(error) {

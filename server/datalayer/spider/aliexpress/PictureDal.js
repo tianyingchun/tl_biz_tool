@@ -15,9 +15,9 @@ function PictureSpiderService() {
      */
     this.crawlPictures = function(httpUrl) {
         // current product id.
-        this.productId = utility.extractProductId(this.httpUrl);
+        this.productId = utility.extractProductId(httpUrl);
 
-        var picture_source_url = dataProvider.getConfigNode(pictureCfg, crawl_config, picture_source_url);
+        var picture_source_url = dataProvider.getConfigNode(pictureCfg, "crawl_config", "picture_source_url");
 
         if (!picture_source_url) {
             logger.error("can't fetch picture source url from picture_config.json!");
