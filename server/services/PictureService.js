@@ -2,10 +2,10 @@ var logger = require('../helpers/log');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
-var PictureDal = dataProvider.getDataAccess("picture");
+var PictureDal = dataProvider.getDataAccess("Picture");
 
 // picture spider service.
-var pictureSpiderDal = dataProvider.getDataAccess("spider", "picture")();
+var pictureSpiderDal = dataProvider.getDataAccess("spider", "Picture")();
 
 function PictureDataProvider() {
 

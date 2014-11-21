@@ -1,9 +1,8 @@
 var util = require('util');
-
-var config = require("../../config")();
-var exception = require('../../helpers/exception');
-var catalogDataSchema = require("../../models/Catalog");
-var debug = require('debug')(config.appName);
+var logger = require('../helpers/log');
+var dataProvider = require("../dataProvider");
+var exception = require('../helpers/exception');
+var CatalogModel = dataProvider.getModel("Catalog");
 
 // catalog data model.
 

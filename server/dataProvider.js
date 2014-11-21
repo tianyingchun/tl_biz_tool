@@ -48,6 +48,7 @@ module.exports = {
      */
     getService: function(serviceName) {
         if (serviceName) {
+            serviceName = serviceName.replace(/Service$/ig, "") + "Service";
             return require("services/" + serviceName);
         } else {
             logger.error("We must provider a service name to auto fecth service constructor!");

@@ -7,7 +7,7 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 
 // instance product service.
-var productService = dataProvider.getService("roduct")();
+var productService = dataProvider.getService("Product")();
 
 /**
  * API: /product/auto_extract_upload_products

@@ -8,9 +8,9 @@ var ProductModel = dataProvider.getModel('Product');
 // product variant model.
 var ProductVariantModel = dataProvider.getModel('ProductVariant');
 
-var productSpiderDal = dataProvider.getDataAccess("spider", "product");
+var productSpiderDal = dataProvider.getDataAccess("spider", "Product");
 
-var ProductDal = dataProvider.getDataAccess("product");
+var ProductDal = dataProvider.getDataAccess("Product");
 // product data model.
 
 function ProductDataProvider() {
