@@ -49,17 +49,6 @@ router.post("/add_new_product_attribute", function(req, res) {
 	});
 });
 
-/**
- * 获取系统所有的品牌Manufacturer 
- * @return  List<Manufacturer>
- */
-router.get("/get_all_manufacturers", function(req, res) {
-	utilityService.getAllManufacturers().then(function success(result) {
-		base.apiOkOutput(res, result);
-	}, function error(error) {
-		base.apiErrorOutput(res, error);
-	});
-});
 
 /**
  * 获取系统所有的品牌Manufacturer 

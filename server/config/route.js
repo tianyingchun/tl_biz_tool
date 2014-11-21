@@ -3,6 +3,7 @@ var product = require('../controllers/product');
 var catalog = require('../controllers/catalog');
 var picture = require('../controllers/picture');
 var utility = require('../controllers/utility');
+var configs = require('../controllers/configs');
 var _app = null;
 /// error handlers
 var errorHandler404 = function(req, res, next) {
@@ -33,6 +34,7 @@ module.exports = {
         _app = app;
 
         // 
+        _app.use('/configs', configs);
         _app.use('/product', product);
         _app.use('/catalog', catalog);
         _app.use('/picture', picture);

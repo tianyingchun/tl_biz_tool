@@ -2,12 +2,37 @@ var fs = require("fs-extra");
 var config = require("./config/index")();
 var logger = require("./helpers/log");
 
+function getConfig(type) {
+    var config = {};
+    if (!type) {
+        logger.error("We must provider type name to get specifie config node!");
+        return config;
+    }
+    switch (type) {
+        case "product":
+            config = fs.readJsonSync("app_configs/product_config.json");
+            break;
+        case "picture":
+            config = fs.readJsonSync("app_configs/picture_config.json");
+            break;
+        case "system":
+            config = fs.readJsonSync("app_configs/system_config.json");
+            break;
+        case "context":
+            config = fs.readJsonSync("app_configs/context_config.json");
+            break;
+    }
+    logger.debug("current config info: ", config);
+    return config;
+};
 /**
  * in order to support multi data spider source.
  * @param  {string} dalName data access name
  */
-function getCurrentSpiderRepository(dalName){
-    
+function getCurrentSpiderRepository(dalName) {
+    var config = getConfig("context");
+    var spiderProvider = config;
+
 };
 module.exports = {
     /**
@@ -58,9 +83,12 @@ module.exports = {
             logger.error("We must provider a model name to fetch model constructor!");
         }
     },
-    getConfig: function() {
-        return {
-
-        }
+    /**
+     * Get configurations for specificed type
+     * @param  {string} type  config node type.
+     * @return {object}       return config nodes.
+     */
+    getConfig: function(type) {
+        return getConfig(type);
     }
 };
