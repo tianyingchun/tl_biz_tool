@@ -10,19 +10,19 @@ function getConfig(type) {
     }
     switch (type) {
         case "product":
-            config = fs.readJsonSync("app_configs/product_config.json");
+            config = fs.readJsonSync("../app_configs/product_config.json");
             break;
         case "picture":
-            config = fs.readJsonSync("app_configs/picture_config.json");
+            config = fs.readJsonSync("../app_configs/picture_config.json");
             break;
         case "system":
-            config = fs.readJsonSync("app_configs/system_config.json");
+            config = fs.readJsonSync("../app_configs/system_config.json");
             break;
         case "context":
-            config = fs.readJsonSync("app_configs/context_config.json");
+            config = fs.readJsonSync("../app_configs/context_config.json");
             break;
     }
-    logger.debug("current config info: ", config);
+    // logger.debug("current config info: ", config);
     return config;
 };
 /**
@@ -49,7 +49,7 @@ module.exports = {
     getService: function(serviceName) {
         if (serviceName) {
             serviceName = serviceName.replace(/Service$/ig, "") + "Service";
-            return require("services/" + serviceName);
+            return require("./services/" + serviceName);
         } else {
             logger.error("We must provider a service name to auto fecth service constructor!");
         }
@@ -76,7 +76,7 @@ module.exports = {
                 break;
         }
 
-        return require(["datalayer", provider, dalName].join('/'));
+        return require(["./datalayer", provider, dalName].join('/'));
     },
     /**
      * Get model entity constructor
@@ -85,7 +85,7 @@ module.exports = {
      */
     getModel: function(modelName) {
         if (modelName) {
-            return require("models/" + modelName);
+            return require("./models/" + modelName);
         } else {
             logger.error("We must provider a model name to fetch model constructor!");
         }
@@ -112,7 +112,7 @@ module.exports = {
     getConfigNode: function(configRoot, nodeName, keyName) {
         var cfgValue = "";
         try {
-            cfgValue = configRoot["nodeName"].configs[keyName].value;
+            cfgValue = configRoot[nodeName].configs[keyName].value;
         } catch (e) {
             logger.error("get config node failed!", e);
         }

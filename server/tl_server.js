@@ -14,10 +14,6 @@ var config = require("./config")();
 var route = require("./config/route");
 var debug = require('debug')(config.appName);
 
-// sql server connection.
-var sql = require('mssql');
-
-
 var app = express();
 
 // debug version.
