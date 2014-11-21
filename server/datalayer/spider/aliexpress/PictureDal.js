@@ -28,7 +28,6 @@ function PictureSpiderService() {
             // download product pictures
             picture_source_url = picture_source_url.replace("{pid}", this.productId);
             // run picture spider.
-            var _this = this;
 
             return utility.downloadPicture(this.productId, picture_source_url).then(function(result) {
                 // flush cached result to client.
