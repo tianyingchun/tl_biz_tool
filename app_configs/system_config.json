@@ -29,7 +29,7 @@
         "title": "日志相关配置",
         "description": "日志相关配置",
         "configs": {
-            "logDir": {
+            "logdir": {
                 "title": "日志保存目录",
                 "description": "日志保存目录",
                 "value": "./logs",

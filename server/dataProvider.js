@@ -77,7 +77,7 @@ module.exports = {
                 break;
         }
         var DataAccessClass = require(["./datalayer", provider, dalName].join('/'));
-        
+
         return new DataAccessClass();
     },
     /**
@@ -108,13 +108,17 @@ module.exports = {
      * it will try to get system_config.db_clothesgate_config.configs.testEnv.value.
      * @param  {object} configRoot via invoke getConfig("system");
      * @param  {string} nodeName   'db_clothesgate_config'
-     * @param  {string} keyName    'testEnv'
+     * @param  {string} keyName    'testEnv' if not give keyName, directly return `configs`
      * @return {any}    string | object
      */
     getConfigNode: function(configRoot, nodeName, keyName) {
         var cfgValue = "";
         try {
-            cfgValue = configRoot[nodeName].configs[keyName].value;
+            if (keyName) {
+                cfgValue = configRoot[nodeName].configs[keyName].value;
+            } else {
+                cfgValue = configRoot[nodeName].configs;
+            }
         } catch (e) {
             logger.error("get config node failed!", e);
         }

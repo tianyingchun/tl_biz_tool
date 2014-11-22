@@ -4,8 +4,12 @@ var fs = require("fs-extra");
 var dateFormat = require("./dateformat");
 var path = require("path");
 winston.emitErrs = true;
+// data provider singleton.
+var dataProvider = require("../dataProvider");
 
-var localServerCfg = fs.readJsonSync("../server_config.json").local_server_config.configs;
+var serverCfg = dataProvider.getConfig("system");
+
+var localServerCfg = dataProvider.getConfigNode(serverCfg, "log_config");
 
 var logdir = localServerCfg.logdir && localServerCfg.logdir.value || "./logs";
 

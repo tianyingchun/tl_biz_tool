@@ -48,6 +48,7 @@ function fetchSkuColorStyleContent() {
         var sku_color_url = productCfg.sku_color_css_url.value;
         utility.loadHtmlDocument(sku_color_url).then(function(body) {
             skuStyleContent = body;
+            logger.debug("download color style content completed!");
             deferred.resolve({
                 body: skuStyleContent,
                 url: sku_color_url
@@ -56,6 +57,7 @@ function fetchSkuColorStyleContent() {
             deferred.reject(err);
         });
     } else {
+        logger.debug("use cached color style content!");
         // do some fetch operations.
         deferred.resolve({
             body: skuStyleContent,

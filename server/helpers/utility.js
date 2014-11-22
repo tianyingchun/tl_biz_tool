@@ -8,9 +8,11 @@ var exception = require("./exception");
 var dateFormat = require("./dateformat");
 var Q = require("q");
 var async = require("async");
+// data provider singleton.
+var dataProvider = require("../dataProvider");
 
-// module product extract config.
-var module_picture_extract_cfg = fs.readJsonSync("../module_config.json").module_picture_extract.configs;
+var pictureCfg = dataProvider.getConfig("picture");
+var pictureCrawlCfg = dataProvider.getConfigNode(pictureCfg, "crawl_config");
 
 /**
  * Escape sql query string
@@ -124,7 +126,7 @@ function downloadPicture(productId, url) {
                 normalizeWhitespace: true,
                 xmlMode: true
             });
-            var destDir = path.join(module_picture_extract_cfg.saveto_dir.value, dateFormat(new Date(), "YYYY-MM-DD"));
+            var destDir = path.join(pictureCrawlCfg.saveto_dir.value, dateFormat(new Date(), "YYYY-MM-DD"));
             // make sure has distination directory.
             fs.ensureDirSync(destDir);
 
