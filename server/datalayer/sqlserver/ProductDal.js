@@ -88,7 +88,7 @@ function ProductDal() {
                             addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
                                 callback();
                             }, function(err) {
-                                callback(err);
+                                callback();
                             });
                         },
                         function(callback) {
@@ -100,24 +100,26 @@ function ProductDal() {
                                     insertProductVariantAttributes(newProductVariant).then(function() {
                                         callback();
                                     }, function(err) {
-                                        callback(err);
+                                        callback();
                                     });
                                 }, function(err) {
-                                    callback(err);
+                                    callback();
                                 });
                             }, function(err) {
-                                callback(err);
+                                callback();
                             });
                         }
                     ],
                     function(err, results) {
                         logger.debug("addNewProduct async series completed!");
-                        deferred.resove("success");
+                        deferred.resolve("success");
                     });
 
             } else {
                 deferred.reject("failed,can't find the new uploaded product id !");
             }
+        }, function(err) {
+            deferred.reject("failed, add new product basic info to `product` table failed !");
         });
         return deferred.promise;
     };
@@ -137,7 +139,7 @@ function ProductDal() {
             " ApprovedTotalReviews , NotApprovedTotalReviews ,SubjectToAcl, Published , Deleted , CreatedOnUtc , UpdatedOnUtc )" +
             " VALUES  ( {0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18} );SELECT SCOPE_IDENTITY() AS Id;";
 
-        return base.executeEntity(ProductModel, [sql, product.Name, product.ShortDescription, product.FullDescription, product.AdminComment, product.ProductTemplateId,
+        return baseDal.executeEntity(ProductModel, [sql, product.Name, product.ShortDescription, product.FullDescription, product.AdminComment, product.ProductTemplateId,
             product.ShowOnHomePage, product.MetaKeywords, product.MetaDescription, product.MetaTitle,
             product.AllowCustomerReviews, product.ApprovedRatingSum, product.NotApprovedRatingSum,
             product.ApprovedTotalReviews, product.NotApprovedTotalReviews, product.SubjectToAcl, product.Published, product.Deleted, product.CreatedOnUtc, product.UpdatedOnUtc
