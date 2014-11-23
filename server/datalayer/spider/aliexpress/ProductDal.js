@@ -208,6 +208,8 @@ function ProductSpiderService() {
 
     this.getResult = function() {
         var result = {
+            sku: this.productId,
+            providerUrl: this.url,
             title: this.title,
             productId: this.productId,
             categories: this.categories,

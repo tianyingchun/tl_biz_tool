@@ -1,8 +1,8 @@
 var async = require('async');
+var Q = require("q");
 var logger = require('../../helpers/log');
 var utility = require('../../helpers/utility');
 var dataProvider = require("../../dataProvider");
-
 var ProductModel = dataProvider.getModel("Product");
 var ProductVariantModel = dataProvider.getModel("ProductVariant");
 var baseDal = require("../baseDal");

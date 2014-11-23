@@ -19,7 +19,6 @@ router.post("/auto_extract_upload_products", function(req, res) {
     if (url) {
         // crawl product information.
         productService.crawlProductInfo(url).then(function(result) {
-            base.apiOkOutput(res, result);
             // to add new product into databse.
             productService.addNewProduct(result).then(function(result) {
                 base.apiOkOutput(res, result);

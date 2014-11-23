@@ -16,7 +16,6 @@ var clothesgate_conn = dataProvider.getConfigNode(contextCfg, "db_config", "db_c
 
 logger.debug("DB Config: ", clothesgate_conn);
 
-
 /**
  * Define proxy to connect sqlserver db,
  * @param  {string} sqlStr        sql Str
@@ -86,35 +85,36 @@ function executeQuery(sqlParams) {
 };
 
 function executeEntity(Constructor, sqlParams) {
-
     return executeQuery(sqlParams).then(function success(result) {
+        var _instance = null;
         // make sure that the consturcto inherits from BaseModel
-        if (Constructor.prototype instanceof BaseModel) {
+        if (result && Constructor.prototype instanceof BaseModel) {
             if (_.isArray(result) && result.length) {
                 _instance = cast2Entity(result[0], Constructor);
             } else {
                 _instance = cast2Entity(result, Constructor);
             }
-            return _instance;
         } else {
             logger.warn("the model constructor `%s` must be inherits from BaseModel", Constructor.name);
         }
+        return _instance;
     });
 };
 
 function executeList(Constructor, sqlParams) {
     return executeQuery(sqlParams).then(function success(result) {
+        var _instance = null;
         // make sure that the consturcto inherits from BaseModel
-        if (Constructor.prototype instanceof BaseModel) {
+        if (result && Constructor.prototype instanceof BaseModel) {
             if (_.isArray(result) && result.length) {
                 _instance = cast2EntityList(result, Constructor);
             } else {
                 _instance = cast2EntityList([result], Constructor);
             }
-            return _instance;
         } else {
             logger.warn("the model constructor `%s` must be inherits from BaseModel", Constructor.name);
         }
+        return _instance;
     });
 };
 

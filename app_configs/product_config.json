@@ -20,6 +20,12 @@
                 "description": "当前产品价格制定比率 = 当前抓取价格的倍率",
                 "value": 1.4,
                 "type": "textbox"
+            },
+            "old_price_rate": {
+                "title": "产品卖价上浮比率",
+                "description": "当前产品显示价格 = 当前产品卖价*比率",
+                "value": 1.8,
+                "type": "textbox"
             }
         }
     },

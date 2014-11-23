@@ -1,4 +1,5 @@
 var util = require('util');
+var Q = require("q");
 var logger = require('../helpers/log');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
@@ -11,6 +12,10 @@ var productSpiderDal = dataProvider.getDataAccess("spider", "Product");
 
 var productDal = dataProvider.getDataAccess("Product");
 // product data model.
+
+var productCfg = dataProvider.getConfig("product");
+// crawl configuration.
+var productCrawlCfg = dataProvider.getConfigNode(productCfg, "crawl_config");
 
 function ProductDataProvider() {
     /**
@@ -28,22 +33,58 @@ function ProductDataProvider() {
      */
     this.addNewProduct = function(crawlProduct) {
 
-        var productModel = new ProductModel();
+        // first we need to check if existed the same product with provider sku(productId).
+        var sku = crawlProduct.sku;
+        var deferred = Q.defer();
+        productDal.getProductVariantBySku(sku).then(function(testProductVariant) {
+            // logger.debug("getProductVariantBySku: ", testProductVariant);
+            if (!testProductVariant.Id) {
+                // product name.
+                var name = crawlProduct.title;
 
-        productModel.Name = crawlProduct.Name;
+                var productModel = new ProductModel();
 
-        productModel.ShortDescription = crawlProduct.Name;
+                productModel.Name = name;
 
-        productModel.FullDescription = crawlProduct.description;
+                productModel.ShortDescription = name;
 
-        //productId, name, sku, description
-        var productVariant = new ProductVariantModel(0, crawlProduct.Name, crawlProduct.productId, crawlProduct.Name);
+                productModel.FullDescription = crawlProduct.description;
 
-        productVariant.ProductAttribts = crawlProduct.productAttribts || {};
-        productVariant.SpecAttribts = crawlProduct.specAttribts || [];
+                //productId, name, sku, description
+                var productVariant = new ProductVariantModel(0, name, sku, name);
+                // make sure that if now price eqauls 0 we need to throw error.
+                var _price = crawlProduct.nowPrice.length ? crawlProduct.nowPrice[0] : 0;
+                _price = _price * productCrawlCfg.price_rate.value;
 
-        return productDal.addNewProduct(productModel, productVariant);
+                productVariant.Price = _price;
+                // the price we need paid!
+                productVariant.SourcePrice = crawlProduct.nowPrice[0];
+                // show the old price to customer.
+                productVariant.OldPrice = _price * productCrawlCfg.old_price_rate.value;
+                productVariant.ProductCost = productVariant.SourcePrice;
+                productVariant.SourceUrl = crawlProduct.providerUrl;
+                productVariant.SourceInfoComment = crawlProduct.title;
+
+                productVariant.ProductAttribts = crawlProduct.productAttribts || {};
+                productVariant.SpecAttribts = crawlProduct.specAttribts || [];
+
+                // logger.debug("Product Info: ", productModel, "product Variant Info: ", productVariant);
+                // go to add new product.
+                productDal.addNewProduct(productModel, productVariant).then(function(result) {
+                    deferred.resolve(result);
+                }, function(err) {
+                    deferred.reject(err);
+                });
+            } else {
+                deferred.reject(new Error("不能添加重复的产品SKU: " + sku + ", url:" + crawlProduct.providerUrl));
+            }
+
+        }).then(function(err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
     };
+
 };
 
 module.exports = ProductDataProvider;
