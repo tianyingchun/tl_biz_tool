@@ -116,10 +116,11 @@ function ProductDal() {
                     });
 
             } else {
-                deferred.reject("failed,can't find the new uploaded product id !");
+                deferred.reject(new Error("failed,can't find the new uploaded product id !"));
             }
         }, function(err) {
-            deferred.reject("failed, add new product basic info to `product` table failed !");
+            logger.debug("failed, add new product basic info to `product` table failed !");
+            deferred.reject(err);
         });
         return deferred.promise;
     };

@@ -79,7 +79,7 @@ function ProductDataProvider() {
                 deferred.reject(new Error("不能添加重复的产品SKU: " + sku + ", url:" + crawlProduct.providerUrl));
             }
 
-        }).then(function(err) {
+        }, function(err) {
             deferred.reject(err);
         });
         return deferred.promise;

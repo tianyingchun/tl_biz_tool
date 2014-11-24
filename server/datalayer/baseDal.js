@@ -28,13 +28,13 @@ function _executeSql(sqlStr, connectionCfg) {
     var connection = sql.connect(connectionCfg || clothesgate_conn, function(err) {
         if (err) {
             logger.error("sql connection excetion: ", err);
-            deferred.reject(new Error(err));
+            deferred.reject(err);
         } else {
             var request = new sql.Request(connection); // or: var request = connection.request();
 
             request.query(sqlStr, function(err, recordset) {
                 if (err) {
-                    deferred.reject(new Error(err));
+                    deferred.reject(err);
                 } else {
                     deferred.resolve(recordset);
                 }
