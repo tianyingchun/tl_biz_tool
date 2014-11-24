@@ -44,13 +44,20 @@ function stringFormat() {
     // return the formatted string
     return fmt;
 };
-
-function stringFormatSql() {
+/**
+ * interator sql parameters.
+ * @param  {function} iteratorFn each sql parameter
+ * @param  {object} scope    scope of iterfator fn
+ * @param  {array}  sqlAndParameters [sqlstring,parameters]
+ * @return {string}            prepared command sql string.
+ */
+function stringFormatSql(iteratorFn, scope, sqlAndParameters) {
     // use this string as the format,Note {x},x start from 0,1,2,3
     // walk through each argument passed in
-    for (var fmt = arguments[0], ndx = 1; ndx < arguments.length; ++ndx) {
+    for (var fmt = sqlAndParameters[0], ndx = 1; ndx < sqlAndParameters.length; ++ndx) {
+        var param = iteratorFn.call(scope || this, ndx, sqlAndParameters[ndx]);
         // replace {1} with argument[1], {2} with argument[2], etc.
-        fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), escapeSqlField(arguments[ndx]));
+        fmt = fmt.replace(new RegExp('\\{' + (ndx - 1) + '\\}', "g"), param);
     }
     // return the formatted string
     return fmt;

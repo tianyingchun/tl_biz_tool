@@ -17,20 +17,47 @@ var clothesgate_conn = dataProvider.getConfigNode(contextCfg, "db_config", "db_c
 logger.debug("DB Config: ", clothesgate_conn);
 
 /**
+ * Parepare sql parameters using built-in with SQL injection protection.
+ * @param  {object} request new sql.Request()
+ * @param  {array} sqlData  [sqlstring, parameters]
+ * @return {string}         serilized sql command string.
+ */
+function _prepareSqlParameters(request, sqlData) {
+    // get prepared sql command string.
+    var preparedSql = utility.stringFormatSql(function(idx, item) {
+        var _paramKey = "param" + idx;
+        this.input(_paramKey, item);
+        return "@" + _paramKey;
+    }, request, sqlData);
+
+    return preparedSql;
+};
+/**
  * Define proxy to connect sqlserver db,
- * @param  {string} sqlStr        sql Str
- * @param  {object} connectionCfg sql connection cfg object.
+ * @param  {array} sqlParams  required [sqlstring, parameters]
+ * @param  {string} queryType required sql query type: [executeNoneQuery, executeQuery, executeEntity,executeList]
+ * @param  {object} connectionCfg optional: sql connection cfg object.
  * @return {promise}
  */
-function _executeSql(sqlStr, connectionCfg) {
+function _executeSql(sqlParams, queryType, connectionCfg) {
     var deferred = Q.defer();
-    logger.debug("request sql string: `%s`", sqlStr);
     var connection = sql.connect(connectionCfg || clothesgate_conn, function(err) {
         if (err) {
             logger.error("sql connection excetion: ", err);
             deferred.reject(err);
         } else {
             var request = new sql.Request(connection); // or: var request = connection.request();
+
+            var sqlStr = _prepareSqlParameters(request, sqlParams);
+            // special deal for specificed query type.
+            switch (queryType) {
+                // for `executeNoneQuery` we add ROWCOUNT as return affectedRows.
+                case "executeNoneQuery":
+                    sqlStr = sqlStr + ";select @@ROWCOUNT as affectedRows;";
+                    break;
+            }
+
+            logger.debug("request sql string: `%s`", sqlStr);
 
             request.query(sqlStr, function(err, recordset) {
                 if (err) {
@@ -53,13 +80,9 @@ function executeNoneQuery(sqlParams) {
     if (!_.isArray(sqlParams)) {
         logger.error("executeNoneQuery sqlParams must be array type!");
     }
-    // serialized the arguments to sql string.
-    var sqlStr = utility.stringFormatSql.apply(this, sqlParams);
-    // we need to get effectedrow while exec update, delete, add.
-    sqlStr = sqlStr + ";select @@ROWCOUNT as affectedRows;";
-
     // return promise.
-    return _executeSql(sqlStr).then(function success(result) {
+    return _executeSql(sqlParams, "executeNoneQuery").then(function success(result) {
+
         var affectedRows = result[0].affectedRows || 0;
         //delete from picture where id=4;select @@ROWCOUNT as effectRow;
         logger.debug("base dal query result: ", affectedRows);
@@ -75,16 +98,16 @@ function executeNoneQuery(sqlParams) {
  * @return {number} return effectRow
  */
 function executeQuery(sqlParams) {
+
     if (!_.isArray(sqlParams)) {
         logger.error("executeNoneQuery sqlParams must be array type!");
     }
-    // serialized the arguments to sql string.
-    var sqlStr = utility.stringFormatSql.apply(this, sqlParams);
     // return promise.
-    return _executeSql(sqlStr);
+    return _executeSql(sqlParams, "executeQuery");
 };
 
 function executeEntity(Constructor, sqlParams) {
+
     return executeQuery(sqlParams).then(function success(result) {
         var _instance = null;
         // make sure that the consturcto inherits from BaseModel
@@ -102,6 +125,7 @@ function executeEntity(Constructor, sqlParams) {
 };
 
 function executeList(Constructor, sqlParams) {
+
     return executeQuery(sqlParams).then(function success(result) {
         var _instance = null;
         // make sure that the consturcto inherits from BaseModel
