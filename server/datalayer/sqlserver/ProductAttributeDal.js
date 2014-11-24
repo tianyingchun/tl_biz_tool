@@ -25,19 +25,26 @@ function ProductAttributeDal() {
 	 * @param  {object} productAttribute ProductAttribute Model
 	 */
 	this.autoCreatedIfNotExist = function(productAttribute) {
+		var deferred = Q.defer();
 		// find all product attributes.
 		var _this = this;
-		this.getAllProductAttributes().then(function(all) {
-			var find = null;
-			for (var i = 0; i < all.length; i++) {
-				var item = all[i];
-				if (item.Name.toLowerCase() == productAttribute.Name.toLowerCase()) {
-					find = item;
-					break;
-				}
-			};
-			return find || _this.addNewProductAttribute(productAttribute);
+		var name = productAttribute.Name.toLowerCase();
+		this.getProductAttributeByName(name).then(function(find) {
+			if (find.Id) {
+				logger.debug("found exist product attribute..", name);
+				deferred.resolve(find);
+			} else {
+				_this.addNewProductAttribute(productAttribute).then(function(newAttribute) {
+					logger.debug("add new product attribute..", name);
+					deferred.resolve(newAttribute);
+				}, function(err) {
+					deferred.reject(err);
+				});
+			}
+		}, function(err) {
+			deferred.reject(err);
 		});
+		return deferred.promise;
 	};
 	/**
 	 * 返回所有的ProductAttributes.
@@ -45,6 +52,14 @@ function ProductAttributeDal() {
 	this.getAllProductAttributes = function() {
 		var sql = "SELECT Id, Name, Description FROM ProductAttribute;";
 		return baseDal.executeList(ProductAttributeModel, [sql]);
+	};
+	/**
+	 * Get product attribute by product attribute name.
+	 * @param  {string} name product attribute name
+	 */
+	this.getProductAttributeByName = function(name) {
+		var sql = "SELECT Id, Name, Description FROM ProductAttribute WHERE Name={0};";
+		return baseDal.executeEntity(ProductAttributeModel, [sql, name]);
 	};
 
 	/**

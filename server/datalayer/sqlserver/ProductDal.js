@@ -43,7 +43,7 @@ function ProductDal() {
             " SpecialPriceEndDateTimeUtc,CustomerEntersPrice,MinimumCustomerEnteredPrice,MaximumCustomerEnteredPrice," +
             " [Weight],[Length],Width,Height,PictureId,AvailableStartDateTimeUtc,AvailableEndDateTimeUtc," +
             " Published,Deleted,DisplayOrder,CreatedOnUtc,UpdatedOnUtc,AvailableForPreOrder,SourceUrl,SourceInfoComment" +
-            " FROM dbo.ProductVariant  WHERE Deleted=0 AND Published=1 AND Sku={0}";
+            " FROM dbo.ProductVariant WHERE Sku={0}";
         return baseDal.executeEntity(ProductVariantModel, [sql, sku])
     };
     /**
@@ -64,7 +64,7 @@ function ProductDal() {
             " SpecialPriceEndDateTimeUtc,CustomerEntersPrice,MinimumCustomerEnteredPrice,MaximumCustomerEnteredPrice," +
             " [Weight],[Length],Width,Height,PictureId,AvailableStartDateTimeUtc,AvailableEndDateTimeUtc," +
             " Published,Deleted,DisplayOrder,CreatedOnUtc,UpdatedOnUtc,AvailableForPreOrder,SourceUrl,SourceInfoComment" +
-            " FROM dbo.ProductVariant  WHERE Deleted=0 AND Published=1 AND Id={0}";
+            " FROM dbo.ProductVariant  WHERE Id={0}";
         return baseDal.executeEntity(ProductVariantModel, [sql, productVariantId]);
     };
     /**
@@ -77,46 +77,54 @@ function ProductDal() {
         insertProduct(product).then(function(newProduct) {
 
             if (newProduct.Id) {
-                async.series(
-                    [
-                        function(callback) {
-                            var default_manufacturerids = clientProductCfg.defaultManufacturerId.value;
+                var seriesTasks = [];
+                // add products to manafactureres
+                seriesTasks.push(function(callback) {
+                    var default_manufacturerids = clientProductCfg.defaultManufacturerId.value;
 
-                            logger.debug("default_manufacturerids: ", default_manufacturerids);
+                    logger.debug("default_manufacturerids: ", default_manufacturerids);
 
-                            // step2. add product to manufactuer.
-                            addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
-                                callback();
-                            }, function(err) {
-                                callback();
-                            });
-                        },
-                        function(callback) {
-                            // step3. add product variant.
-                            insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
-                                // add tier price.
-                                insertProductVariantTierPrice(newProductVariant).then(function() {
-                                    // add tier product variant attributes.
-                                    insertProductVariantAttributes(newProductVariant).then(function() {
-                                        callback();
-                                    }, function(err) {
-                                        callback();
-                                    });
-                                }, function(err) {
-                                    callback();
-                                });
-                            }, function(err) {
-                                callback();
-                            });
-                        }
-                    ],
-                    function(err, results) {
-                        logger.debug("addNewProduct async series completed!");
-                        deferred.resolve("success");
+                    addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
+                        callback();
+                    }, function(err) {
+                        callback();
                     });
+                });
 
+                // add product variant.
+                seriesTasks.push(function(callback) {
+                    // step3. add product variant.
+                    insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
+                        // run
+                        async.parallel([
+                            function(callback) {
+                                insertProductVariantTierPrice(newProductVariant).then(function() {
+                                    callback(null, "insertProductVariantTierPrice success!");
+                                }, function(err) {
+                                    callback(err);
+                                });
+                            },
+                            function(callback) {
+                                insertProductVariantAttributes(newProductVariant).then(function() {
+                                    callback(null, "insertProductVariantAttributes success!");
+                                }, function(err) {
+                                    callback(err);
+                                });
+                            }
+                        ], function(err, results) {
+                            logger.debug("async.parallel within addNewProduct finished!", results);
+                            callback();
+                        });
+                    }, function(err) {
+                        callback(err);
+                    });
+                });
+                // run all tasks.
+                async.series(seriesTasks, function(err, results) {
+                    deferred.resolve("task has been done success");
+                });
             } else {
-                deferred.reject(new Error("failed,can't find the new uploaded product id !"));
+                deferred.reject(new Error("insertProduct(product) failed,can't find the new uploaded product id !"));
             }
         }, function(err) {
             logger.debug("failed, add new product basic info to `product` table failed !");
@@ -225,7 +233,8 @@ function ProductDal() {
         var sql = [];
         for (var i = 0; i < newVariant.TierPrices.length; i++) {
             var item = newVariant.TierPrices[i];
-            sql.push(utility.stringFormatSql.apply(this, [sqlTierPrice, newVariant.Id, null, item.Quantity, item.Price]));
+            // TODO...
+            // sql.push(utility.stringFormatSql.apply(this, [sqlTierPrice, newVariant.Id, null, item.Quantity, item.Price]));
         };
         return baseDal.executeNoneQuery([sql.join(";")]);
     };
@@ -254,29 +263,32 @@ function ProductDal() {
                 // create product attribute item.
                 productAttribtsDal.autoCreatedIfNotExist(_productAttribute).then(function success(newProductAttribute) {
                     // 执行DB EXEC.
-                    // 
-                    var PVAMapping = require("../models/PVAMapping");
+                    logger.debug("current product attribute: ", newProductAttribute);
+
+                    var PVAMapping = dataProvider.getModel("PVAMapping");
                     // add new record to [ProductVariant_ProductAttribute_Mapping]
                     baseDal.executeEntity(PVAMapping, [sqlStr, newVariant.Id, newProductAttribute.Id, promptText, true, controlTypeId, 0]).then(function(pvaMapping) {
-
+                        // TODO...
                         // color:[{ "title": "Black", "value": "000" }]
-                        var sql = [];
+                        // var sql = [];
 
-                        var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
+                        // var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
 
-                        for (var i = 0; i < productAttribts[key].length; i++) {
-                            // color|size...
-                            var _productVariantOption = productAttribts[key][i];
-                            // speical deal with color option.
-                            var colorSqureRgb = key.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
-                            sql.push(utility.stringFormatSql(_productVariantAttribute_values_sql, pvaMapping.Id, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0));
-                        }
-                        baseDal.executeNoneQuery([sql.join(";")]).then(function() {
-                            callback();
-                        }, function(err) {
-                            logger.error("insert ProductVariantAttributeValue table error: ", err);
-                            callback();
-                        });
+                        // for (var i = 0; i < productAttribts[key].length; i++) {
+                        //     // color|size...
+                        //     var _productVariantOption = productAttribts[key][i];
+                        //     // speical deal with color option.
+                        //     var colorSqureRgb = key.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
+
+                        //     sql.push(utility.stringFormatSql(_productVariantAttribute_values_sql, pvaMapping.Id, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0));
+                        // }
+                        // baseDal.executeNoneQuery([sql.join(";")]).then(function() {
+                        //     callback();
+                        // }, function(err) {
+                        //     logger.error("insert ProductVariantAttributeValue table error: ", err);
+                        //     callback();
+                        // });
+                        callback();
                     }, function(err) {
                         logger.error("PVAMapping error: ", err);
                         callback();

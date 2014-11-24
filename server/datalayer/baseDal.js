@@ -49,6 +49,12 @@ function _executeSql(sqlParams, queryType, connectionCfg) {
             var request = new sql.Request(connection); // or: var request = connection.request();
 
             var sqlStr = _prepareSqlParameters(request, sqlParams);
+            // remove last `;`
+            var _len = sqlStr.length - 1;
+            
+            if (sqlStr[_len] == ";") {
+                sqlStr = sqlStr.slice(0, _len);
+            }
             // special deal for specificed query type.
             switch (queryType) {
                 // for `executeNoneQuery` we add ROWCOUNT as return affectedRows.
@@ -97,18 +103,18 @@ function executeNoneQuery(sqlParams) {
  * // the arguments like: e.g.  [sqlStr, parameters]
  * @return {number} return effectRow
  */
-function executeQuery(sqlParams) {
+function executeQuery(sqlParams, queryType) {
 
     if (!_.isArray(sqlParams)) {
         logger.error("executeNoneQuery sqlParams must be array type!");
     }
     // return promise.
-    return _executeSql(sqlParams, "executeQuery");
+    return _executeSql(sqlParams, queryType || "executeQuery");
 };
 
 function executeEntity(Constructor, sqlParams) {
 
-    return executeQuery(sqlParams).then(function success(result) {
+    return executeQuery(sqlParams, "executeEntity").then(function success(result) {
         var _instance = null;
         // make sure that the consturcto inherits from BaseModel
         if (result && Constructor.prototype instanceof BaseModel) {
@@ -126,7 +132,7 @@ function executeEntity(Constructor, sqlParams) {
 
 function executeList(Constructor, sqlParams) {
 
-    return executeQuery(sqlParams).then(function success(result) {
+    return executeQuery(sqlParams, "executeList").then(function success(result) {
         var _instance = null;
         // make sure that the consturcto inherits from BaseModel
         if (result && Constructor.prototype instanceof BaseModel) {

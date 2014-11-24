@@ -19,4 +19,7 @@ function PVAMapping() {
 	this.DisplayOrder = 0;
 	
 };
+
+util.inherits(PVAMapping, BaseModel);
+
 module.exports = PVAMapping;
