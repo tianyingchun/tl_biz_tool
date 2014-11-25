@@ -63,7 +63,7 @@ function _executeSql(sqlParams, queryType, connectionCfg) {
                     break;
             }
 
-            logger.debug("request sql string: `%s` | parameter counts: `%s`", sqlStr, sqlParams.length - 1);
+            logger.debug("sql command string: `%s` | parameter counts: `%s`", sqlStr, sqlParams.length - 1);
 
             request.query(sqlStr, function(err, recordset) {
                 if (err) {
@@ -91,7 +91,7 @@ function executeNoneQuery(sqlParams) {
 
         var affectedRows = result[0].affectedRows || 0;
         //delete from picture where id=4;select @@ROWCOUNT as effectRow;
-        logger.debug("base dal query result: ", affectedRows);
+        logger.debug("executeNoneQuery() affectedRows: ", affectedRows);
 
         return affectedRows;
     });

@@ -228,16 +228,15 @@ function ProductDal() {
      * @param  {object} newVariant ProductVariantModel instance.
      */
     function insertProductVariantTierPrice(newVariant) {
-        var sqlTierPrice = "INSERT INTO dbo.TierPrice" +
-            "(ProductVariantId ,CustomerRoleId,Quantity,Price) " +
-            "VALUES({0},{1},{2},{3})";
+        var sqlTierPrice = "INSERT INTO dbo.TierPrice (ProductVariantId ,CustomerRoleId,Quantity,Price) VALUES({0},{1},{2},{3})";
+
         var tierPrice = newVariant.TierPrices;
+        var sql = [];
+        var params = [];
+        var seed = 4;
 
         logger.debug("tierPrice:", tierPrice);
 
-        var sql = [],
-            params = [],
-            seed = 4;
         for (var i = 0; i < tierPrice.length; i++) {
             var item = tierPrice[i];
             if (i == 0) {
@@ -276,6 +275,7 @@ function ProductDal() {
             async.eachSeries(productAttribtsKeys, function(key, callback) {
                 var controlTypeId = productAttributeIds[key.toLowerCase()] || productAttributeIds["other"];
                 var promptText = utility.capitalize(key);
+
                 var _productAttribute = new ProductAttributeModel(promptText, "auto created by tool");
                 // create product attribute item.
                 productAttribtsDal.autoCreatedIfNotExist(_productAttribute).then(function success(newProductAttribute) {
@@ -290,9 +290,10 @@ function ProductDal() {
                         var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
                         // product attributes.
                         var productAttribtsList = productAttribts[key];
-                        var sql = [],
-                            params = [],
-                            seed = 7;
+                        var sql = [];
+                        var params = [];
+                        var seed = 7;
+
                         for (var i = 0; i < productAttribtsList.length; i++) {
                             // color|size...
                             var _productVariantOption = productAttribtsList[i];
@@ -313,21 +314,21 @@ function ProductDal() {
                         params.unshift(sql.join(";"));
 
                         baseDal.executeNoneQuery(params).then(function() {
-                            callback();
+                            callback(null, "Insert ProductVariant Attribute ok!");
                         }, function(err) {
-                            logger.error("insert ProductVariantAttributeValue table error: ", err);
-                            callback();
+                            logger.error("Invoke Insert ProductVariantAttributeValue table Error: ", err);
+                            callback("Insert ProductVariantAttributeValue failed!");
                         });
                     }, function(err) {
-                        logger.error("PVAMapping error: ", err);
-                        callback();
+                        logger.error("Inoke Insert ProductVariant_ProductAttribute_Mapping Error: ", err);
+                        callback("Inoke Insert ProductVariant_ProductAttribute_Mapping failed!");
                     });
                 }, function(err) {
-                    logger.error("autoCreatedIfNotExist error: ", err);
-                    callback();
+                    logger.error("Invoke AutoCreatedIfNotExist Error: ", err);
+                    callback("Insert ProductVariant Attribute failed!" + key);
                 });
             }, function finnaly(err, results) {
-                // 
+                logger.debug("InsertProductVariantAttributes finished!", results);
                 deferred.resolve(results);
             });
         }, function(err) {
@@ -338,10 +339,10 @@ function ProductDal() {
     /**
      * Add specification attributes of current product.
      * @param  {object}   newProduct Product instance.
-     * @return {promise} 
+     * @return {promise}
      */
     function insertProductSpecificationAttributes(newProduct) {
-        
+
     };
 }
 module.exports = ProductDal;
