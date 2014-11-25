@@ -71,7 +71,8 @@ function ProductDataProvider() {
                 productVariant.SpecAttribts = crawlProduct.specAttribts || [];
                 // prepare tier price.
                 productVariant.TierPrices = prepareProductTierPrice(productVariant.Price);
-                // logger.debug("Product Info: ", productModel, "product Variant Info: ", productVariant);
+
+                logger.debug("Product Vairant Info: priceRate: `%s`, nowPrice: `%s`, oldPrice:`%s`, producCost:`%s` ", productCrawlCfg.price_rate.value, _price, productVariant.OldPrice, productVariant.ProductCost);
                 // go to add new product.
                 productDal.addNewProduct(productModel, productVariant).then(function(result) {
                     deferred.resolve(result);

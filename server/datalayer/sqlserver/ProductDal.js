@@ -245,7 +245,7 @@ function ProductDal() {
             } else {
                 var _tmp = sqlTierPrice;
                 for (var j = 0; j < seed; j++) {
-                    _tmp = _tmp.replace("{" + j + "}", ("{" + i * seed + j + "}"));
+                    _tmp = _tmp.replace("{" + j + "}", "{" + (i * seed + j) + "}");
                 };
                 sql.push(_tmp);
             }
@@ -304,7 +304,7 @@ function ProductDal() {
                             } else {
                                 var _tmp = _productVariantAttribute_values_sql;
                                 for (var j = 0; j < seed; j++) {
-                                    _tmp = _tmp.replace("{" + j + "}", ("{" + i * seed + j + "}"));
+                                    _tmp = _tmp.replace("{" + j + "}", "{" + (i * seed + j) + "}");
                                 };
                                 sql.push(_tmp);
                             }
