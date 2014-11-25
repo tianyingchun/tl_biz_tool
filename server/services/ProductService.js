@@ -51,6 +51,8 @@ function ProductDataProvider() {
                 productModel.ShortDescription = name;
 
                 productModel.FullDescription = crawlProduct.description;
+                // asign product spec attributes
+                productModel.SpecAttribts = crawlProduct.specAttribts || [];
 
                 //productId, name, sku, description
                 var productVariant = new ProductVariantModel(0, name, sku, name);
@@ -68,7 +70,6 @@ function ProductDataProvider() {
                 productVariant.SourceInfoComment = crawlProduct.title;
 
                 productVariant.ProductAttribts = crawlProduct.productAttribts || {};
-                productVariant.SpecAttribts = crawlProduct.specAttribts || [];
                 // prepare tier price.
                 productVariant.TierPrices = prepareProductTierPrice(productVariant.Price);
 

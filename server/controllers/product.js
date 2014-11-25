@@ -7,7 +7,27 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 
 //  product service.
-var productService = dataProvider.getService("Product"); 
+var productService = dataProvider.getService("Product");
+
+/**
+ * API: /product/auto_extract_products
+ * auto crawl product information.
+ */
+router.post("/auto_extract_products", function(req, res) {
+    logger.debug('controller: auto_extract_products...');
+    var reqBody = req.body;
+    var url = reqBody && reqBody.url || "";
+    if (url) {
+        // crawl product information.
+        productService.crawlProductInfo(url).then(function(result) {
+            base.apiOkOutput(res, result);
+        }, function(err) {
+            base.apiErrorOutput(res, err);
+        });
+    } else {
+        base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
+    }
+});
 /**
  * API: /product/auto_extract_upload_products
  * auto crawl product information and then add new product info to database.

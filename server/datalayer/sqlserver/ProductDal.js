@@ -77,25 +77,36 @@ function ProductDal() {
         insertProduct(product).then(function(newProduct) {
 
             if (newProduct.Id) {
-                var seriesTasks = [];
+                // save all related product information tasks.
+                var productRelatedInfoTasks = [];
                 // add products to manafactureres
-                seriesTasks.push(function(callback) {
+                productRelatedInfoTasks.push(function(callback) {
                     var default_manufacturerids = clientProductCfg.defaultManufacturerId.value;
 
                     logger.debug("default_manufacturerids: ", default_manufacturerids);
 
                     addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
-                        callback();
+                        callback(null, "addProductIntoManufacturer->success");
                     }, function(err) {
-                        callback();
+                        logger.error("addProductIntoManufacturer error:", err);
+                        callback(err);
                     });
                 });
+                // add product specification attributes.
+                // productRelatedInfoTasks.push(function(callback) {
 
-                // add product variant.
-                seriesTasks.push(function(callback) {
+                //     insertProductSpecificationAttributes(newProduct).then(function(result) {
+                //         callback(null, "insertProductSpecificationAttributes->success");
+                //     }, function(err) {
+                //         logger.error("insertProductSpecificationAttributes error:", err);
+                //         callback(err);
+                //     });
+                // });
+                // add product variant information and its' related information.
+                productRelatedInfoTasks.push(function(callback) {
                     // step3. add product variant.
                     insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
-                        // run
+                        // run product variant related info tasks.
                         async.parallel([
                             function(callback) {
                                 insertProductVariantTierPrice(newProductVariant).then(function() {
@@ -116,13 +127,19 @@ function ProductDal() {
                             callback();
                         });
                     }, function(err) {
+                        logger.error("insertProductVariant error:", err);
                         callback(err);
                     });
                 });
                 // run all tasks.
-                async.series(seriesTasks, function(err, results) {
-                    logger.debug("addNewProduct() all tasks has been done success");
-                    deferred.resolve("task has been done success");
+                async.parallel(productRelatedInfoTasks, function(err, results) {
+                    // if has error here, throw it.
+                    if (err) {
+                        deferred.reject(err);
+                    } else {
+                        logger.debug("addNewProduct() all tasks has been done success");
+                        deferred.resolve(results);
+                    }
                 });
             } else {
                 deferred.reject(new Error("insertProduct(product) failed,can't find the new uploaded product id !"));
@@ -342,7 +359,7 @@ function ProductDal() {
      * @return {promise}
      */
     function insertProductSpecificationAttributes(newProduct) {
-
+        
     };
 }
 module.exports = ProductDal;

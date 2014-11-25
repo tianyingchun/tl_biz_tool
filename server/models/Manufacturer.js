@@ -5,7 +5,6 @@ var BaseModel = require("./BaseModel");
  */
 function Manufacturer(i) {
 	BaseModel.call(this, "Manufacturer");
-	this.Id = 0;
 	this.Name = "";
 	this.Description = "";
 	this.ManufacturerTemplateId = 1;

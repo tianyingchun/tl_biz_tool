@@ -3,11 +3,7 @@ var BaseModel = require("./BaseModel");
 
 function ProductAttribute(name, description) {
 	BaseModel.call(this, "ProductAttribute");
-	/// <summary>
-	/// Gets or sets the ProductAttribute identifier
-	/// </summary>
-	this.Id = 0;
-
+	
 	/// <summary>
 	/// Gets or sets the picture identifier
 	/// </summary>

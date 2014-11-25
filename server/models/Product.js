@@ -4,10 +4,6 @@ var BaseModel = require("./BaseModel");
 function Product(name, fullDescription) {
 	BaseModel.call(this, "Product");
 	/// <summary>
-	/// Gets or sets the Id
-	/// </summary>
-	this.Id = "";
-	/// <summary>
 	/// Gets or sets the name
 	/// </summary>
 	this.Name = name;
@@ -82,6 +78,12 @@ function Product(name, fullDescription) {
 	/// Gets or sets the date and time of product update
 	/// </summary>
 	this.UpdatedOnUtc = new Date();
+
+	/// <summary>
+	/// Gets or set the product specification list
+	/// [{title:'', value:''}]
+	/// </summary>
+	this.SpecAttribts = specAttribts || [];
 };
 
 util.inherits(Product, BaseModel);

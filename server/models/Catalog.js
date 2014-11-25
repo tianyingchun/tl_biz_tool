@@ -9,7 +9,6 @@ var BaseModel = require("./BaseModel");
  */
 function Catalog(id, name, parentCategoryId, displayOrder) {
 	BaseModel.call(this, "Catalog");
-	this.Id = id;
 	this.Name = name;
 	this.ParentCategoryId = parentCategoryId;
 	this.DisplayOrder = displayOrder;

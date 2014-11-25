@@ -4,10 +4,6 @@ var BaseModel = require("./BaseModel");
 function ProductVariant(productId, name, sku, description, price, oldPrice, sourcePrice, costPrice, sourceUrl, sourceInfoComment, productAttribts, specAttribts) {
     BaseModel.call(this, "ProductVariant");
     /// <summary>
-    /// Gets or sets the productVariant identifier
-    /// </summary>
-    this.Id = "";
-    /// <summary>
     /// Gets or sets the product identifier
     /// </summary>
     this.ProductId = productId;
@@ -365,12 +361,6 @@ function ProductVariant(productId, name, sku, description, price, oldPrice, sour
     /// {"color": [  { "title": "Black", "value": "000" }],"size"...}
     /// </summary>
     this.ProductAttribts = productAttribts || {};
-
-    /// <summary>
-    /// Gets or set the product specification list
-    /// [{title:'', value:''}]
-    /// </summary>
-    this.SpecAttribts = specAttribts || [];
 
     /// <summary>
     /// Gets or set the product variant tiePrices.
