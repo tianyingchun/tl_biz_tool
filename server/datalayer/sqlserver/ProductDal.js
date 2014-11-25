@@ -121,6 +121,7 @@ function ProductDal() {
                 });
                 // run all tasks.
                 async.series(seriesTasks, function(err, results) {
+                    logger.debug("addNewProduct() all tasks has been done success");
                     deferred.resolve("task has been done success");
                 });
             } else {
@@ -230,13 +231,29 @@ function ProductDal() {
         var sqlTierPrice = "INSERT INTO dbo.TierPrice" +
             "(ProductVariantId ,CustomerRoleId,Quantity,Price) " +
             "VALUES({0},{1},{2},{3})";
-        var sql = [];
-        for (var i = 0; i < newVariant.TierPrices.length; i++) {
-            var item = newVariant.TierPrices[i];
-            // TODO...
-            // sql.push(utility.stringFormatSql.apply(this, [sqlTierPrice, newVariant.Id, null, item.Quantity, item.Price]));
+        var tierPrice = newVariant.TierPrices;
+
+        logger.debug("tierPrice:", tierPrice);
+
+        var sql = [],
+            params = [],
+            seed = 4;
+        for (var i = 0; i < tierPrice.length; i++) {
+            var item = tierPrice[i];
+            if (i == 0) {
+                sql.push(sqlTierPrice);
+            } else {
+                var _tmp = sqlTierPrice;
+                for (var j = 0; j < seed; j++) {
+                    _tmp = _tmp.replace("{" + j + "}", ("{" + i * seed + j + "}"));
+                };
+                sql.push(_tmp);
+            }
+            params.push(newVariant.Id, null, item.Quantity, item.Price);
         };
-        return baseDal.executeNoneQuery([sql.join(";")]);
+        params.unshift(sql.join(";"));
+
+        return baseDal.executeNoneQuery(params);
     };
     /**
      * 添加ProductVariant 的attributes 信息,e.g. colorList, sizeList.
@@ -268,27 +285,39 @@ function ProductDal() {
                     var PVAMapping = dataProvider.getModel("PVAMapping");
                     // add new record to [ProductVariant_ProductAttribute_Mapping]
                     baseDal.executeEntity(PVAMapping, [sqlStr, newVariant.Id, newProductAttribute.Id, promptText, true, controlTypeId, 0]).then(function(pvaMapping) {
-                        // TODO...
+
                         // color:[{ "title": "Black", "value": "000" }]
-                        // var sql = [];
+                        var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
+                        // product attributes.
+                        var productAttribtsList = productAttribts[key];
+                        var sql = [],
+                            params = [],
+                            seed = 7;
+                        for (var i = 0; i < productAttribtsList.length; i++) {
+                            // color|size...
+                            var _productVariantOption = productAttribtsList[i];
+                            // speical deal with color option.
+                            var colorSqureRgb = key.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
 
-                        // var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
+                            if (i == 0) {
+                                sql.push(_productVariantAttribute_values_sql);
+                            } else {
+                                var _tmp = _productVariantAttribute_values_sql;
+                                for (var j = 0; j < seed; j++) {
+                                    _tmp = _tmp.replace("{" + j + "}", ("{" + i * seed + j + "}"));
+                                };
+                                sql.push(_tmp);
+                            }
+                            params.push(pvaMapping.Id, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0);
+                        };
+                        params.unshift(sql.join(";"));
 
-                        // for (var i = 0; i < productAttribts[key].length; i++) {
-                        //     // color|size...
-                        //     var _productVariantOption = productAttribts[key][i];
-                        //     // speical deal with color option.
-                        //     var colorSqureRgb = key.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
-
-                        //     sql.push(utility.stringFormatSql(_productVariantAttribute_values_sql, pvaMapping.Id, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0));
-                        // }
-                        // baseDal.executeNoneQuery([sql.join(";")]).then(function() {
-                        //     callback();
-                        // }, function(err) {
-                        //     logger.error("insert ProductVariantAttributeValue table error: ", err);
-                        //     callback();
-                        // });
-                        callback();
+                        baseDal.executeNoneQuery(params).then(function() {
+                            callback();
+                        }, function(err) {
+                            logger.error("insert ProductVariantAttributeValue table error: ", err);
+                            callback();
+                        });
                     }, function(err) {
                         logger.error("PVAMapping error: ", err);
                         callback();

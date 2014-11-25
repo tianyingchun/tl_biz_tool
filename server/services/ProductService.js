@@ -5,6 +5,8 @@ var logger = require('../helpers/log');
 var dataProvider = require("../dataProvider");
 // product model.
 var ProductModel = dataProvider.getModel('Product');
+// tier price model.
+var TierPriceModel = dataProvider.getModel("TierPrice");
 // product variant model.
 var ProductVariantModel = dataProvider.getModel('ProductVariant');
 
@@ -67,7 +69,8 @@ function ProductDataProvider() {
 
                 productVariant.ProductAttribts = crawlProduct.productAttribts || {};
                 productVariant.SpecAttribts = crawlProduct.specAttribts || [];
-
+                // prepare tier price.
+                productVariant.TierPrices = prepareProductTierPrice(productVariant.Price);
                 // logger.debug("Product Info: ", productModel, "product Variant Info: ", productVariant);
                 // go to add new product.
                 productDal.addNewProduct(productModel, productVariant).then(function(result) {
@@ -83,6 +86,22 @@ function ProductDataProvider() {
             deferred.reject(err);
         });
         return deferred.promise;
+    };
+
+    //
+    // helper methods: prepareProductTierPrice
+    // ------------------------------------------------------------------------
+    function prepareProductTierPrice(nowPrice) {
+        // tier price list.
+        var values = productCrawlCfg.tier_price_rate.value;
+        var result = [];
+        for (var tier in values) {
+            var tierPriceModel = new TierPriceModel();
+            tierPriceModel.Quantity = parseInt(tier.split("_")[1]);
+            tierPriceModel.Price = values[tier] * nowPrice;
+            result.push(tierPriceModel);
+        }
+        return result;
     };
 
 };

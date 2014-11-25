@@ -10,7 +10,9 @@
                     "user": "clothesgate_test",
                     "password": "clothesgate_test",
                     "server": "calantha.arvixe.com",
-                    "database": "clothesgate_test"
+                    "database": "clothesgate_test",
+                    "connectionTimeout":300000,
+                    "requestTimeout":300000
                 },
                 "type": "dropdown",
                 "api": {

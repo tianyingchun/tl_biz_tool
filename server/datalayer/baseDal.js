@@ -51,7 +51,7 @@ function _executeSql(sqlParams, queryType, connectionCfg) {
             var sqlStr = _prepareSqlParameters(request, sqlParams);
             // remove last `;`
             var _len = sqlStr.length - 1;
-            
+
             if (sqlStr[_len] == ";") {
                 sqlStr = sqlStr.slice(0, _len);
             }
@@ -63,7 +63,7 @@ function _executeSql(sqlParams, queryType, connectionCfg) {
                     break;
             }
 
-            logger.debug("request sql string: `%s`", sqlStr);
+            logger.debug("request sql string: `%s` | parameter counts: `%s`", sqlStr, sqlParams.length - 1);
 
             request.query(sqlStr, function(err, recordset) {
                 if (err) {
