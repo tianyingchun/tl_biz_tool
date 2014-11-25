@@ -1,20 +1,72 @@
-.header .header-wrap {
-  padding: 11px;
+.header {
+  margin-bottom: 0px;
+  height: 60px;
 }
-.header .icon-fix {
+.header .header-wrap .header-group {
+  text-align: center;
+}
+.header .header-wrap .logo {
+  position: absolute;
+  width: 300px;
+  height: 100%;
+  color: white;
+}
+.header .header-wrap .logo .logo-icon {
+  background: url(../../images/logo.png) no-repeat;
+  height: 50px;
+  width: 50px;
+  top: 5px;
+  position: absolute;
+  left: 20px;
+}
+.header .header-wrap .logo .logo-text {
+  font-size: 18px;
+  top: 5px;
+  line-height: 50px;
+  position: absolute;
+  left: 85px;
+}
+.header .header-wrap .logo .icon-fix {
   color: gray;
   font-size: 25px;
+  vertical-align: middle;
 }
 .container-fluid {
   margin-top: 60px;
-  margin-bottom: 31px;
+  margin-bottom: 40px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border: 3px solid gray;
+}
+.container-fluid .left-container {
+  width: 300px;
+  float: left;
+}
+.container-fluid .left-container .navbar {
+  height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-bottom: 0px;
+}
+.container-fluid .right-container {
+  width: 1272px;
+  float: left;
+  height: 300px;
+  background: blue;
+}
+.container-fluid .split {
+  cursor: w-resize;
+  float: left;
+  width: 5px;
+  height: 300px;
+  background: gray;
 }
 .footer {
   position: fixed;
   left: 0;
   bottom: 0;
   right: 0;
-  height: 30px;
+  height: 40px;
   background-color: red;
 }
 .panel-title a {

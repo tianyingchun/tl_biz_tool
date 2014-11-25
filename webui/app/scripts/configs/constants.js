@@ -56,6 +56,19 @@ app.constant("configPath", {
     "client": "./tl_biz_tool/module_config.json"
 });
 
+app.constant('appModules', {
+    modules: [{
+        title: "配置管理",
+        value: "config"
+    }, {
+        title: "产品管理",
+        value: "product"
+    }, {
+        title: "图片管理",
+        value: "picture"
+    }]
+})
+
 app.constant("navigationConfig", {
     categories: [{
         name: "产品管理",

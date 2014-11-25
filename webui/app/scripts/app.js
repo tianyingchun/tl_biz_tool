@@ -22,9 +22,44 @@ var app = angular.module('tl_biz_tools', [
     "ngDialog"
 ]);
 
-(function (window) {
+(function(window) {
     window.helper = {};
 
     helper.file_upload = $("#file_upload");
     helper.fr = new FileReader();
+
+    var split = $('#split');
+    var left = $('#left');
+    var right = $('#right');
+    var footer = $('#footer');
+    var header = $('#header');
+    split.mousedown(function() {
+        split.on("mousemove", function(e) {
+            var width = e.pageX;
+        })
+    });
+    split.mouseup(function() {
+        split.off("mousemove", function () {
+            console.log("release mousemove");
+        });
+    })
+    $(window).resize(function(e) {
+        var left = $('#left');
+        var right = $('#right');
+        var height = $(this).height() - header.outerHeight() - footer.outerHeight() - 8;
+        left.height(height);
+        right.height(height);
+        split.height(height + 2);
+    });
+
+    $(window).on("load", function () {
+        var left = $('#left');
+        var right = $('#right');
+        var height = $(this).height() - header.outerHeight() - footer.outerHeight() - 8;
+        left.height(height);
+        right.height(height);
+        split.height(height + 2);
+    })
+
+
 })(window)
