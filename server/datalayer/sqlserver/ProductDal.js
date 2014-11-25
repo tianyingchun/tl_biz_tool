@@ -335,5 +335,13 @@ function ProductDal() {
         });
         return deferred.promise;
     };
+    /**
+     * Add specification attributes of current product.
+     * @param  {object}   newProduct Product instance.
+     * @return {promise} 
+     */
+    function insertProductSpecificationAttributes(newProduct) {
+        
+    };
 }
 module.exports = ProductDal;
