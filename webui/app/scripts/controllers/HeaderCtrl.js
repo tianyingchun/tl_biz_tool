@@ -5,4 +5,7 @@ app.controller('HeaderCtrl', ['$scope', 'appModules', function($scope, appModule
         selected: ""
     };
 
+    $scope.click = function (item) {
+    	$scope.$emit("navigationChange", item);
+    }
 }])

@@ -1,4 +1,4 @@
-app.directive('ngNavigation', ['$log', 'navigationConfig', '$location', function($log, navigationConfig, $location){
+app.directive('ngNavigation', ['$log', '$location', function($log, $location){
 	// Runs during compile
 	return {
 		// name: '',
@@ -6,10 +6,10 @@ app.directive('ngNavigation', ['$log', 'navigationConfig', '$location', function
 		// terminal: true,
 		scope: {
 			'close-others': '=?',
+			'categories': '='
 			// categories: navigationConfig.categories
 		}, // {} = isolate, true = child, false/undefined = no change
 		controller: function($scope, $element, $attrs, $transclude) {
-			$scope.categories = navigationConfig.categories;
 			var current = $location.path();
 
 			if (current !== "") {
@@ -56,7 +56,7 @@ app.run(['$templateCache', function($templateCache){
 		"<div class=\"panel panel-default\">"+
 			"<div class=\"panel-body text-center\">"+
                 "<accordion close-others={{close-others}}>"+
-                    "<accordion-group data-ng-repeat=\"category in categories\" heading=\"{{category.name}}\" is-open=\"category.isOpen\" >"+
+                    "<accordion-group data-ng-repeat=\"(key, value) in categories\" heading=\"{{value.title}}\" is-open=\"value.isOpen\" >"+
                         "<ul class=\"nav nav-pills nav-stacked\">"+
                             "<li data-ng-class=\"{'active':sub.active}\" data-ng-repeat=\"sub in category.subCategories\" ng-click=\"click(sub)\"><a>{{sub.name}}</a></li>"+
                         "</ul>"+

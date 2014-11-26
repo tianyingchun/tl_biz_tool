@@ -42,15 +42,15 @@
                 </div>
                 <div class="header-group">
                     <div class="btn-group">
-                        <label class="btn btn-primary" ng-model="currentModule.selected" ng-repeat="item in modules" btn-radio="item">{{item.title}}</label>
+                        <label class="btn btn-primary" ng-model="currentModule.selected" ng-repeat="item in modules" btn-radio="item" ng-click="click(item)">{{item.title}}</label>
                     </div>
                 </div>
             </div>
         </div>
         <div class="container-fluid">
             <div class="">
-                <div id="left-container" class="left-container" ng-controller="NavCtrl">
-                    <ng-navigation id="left" close-others=false class="navbar"></ng-navigation>
+                <div id="left-container" class="left-container" ng-controller="NavCtrl"> 
+                    <ng-navigation id="left" close-others=false class="navbar" categories="categories"></ng-navigation>
                 </div>
                 <div id="split" class="split"></div>
                 <div id="right" data-ng-view class="view-container right-container"></div>
