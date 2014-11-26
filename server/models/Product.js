@@ -83,7 +83,7 @@ function Product(name, fullDescription) {
 	/// Gets or set the product specification list
 	/// [{title:'', value:''}]
 	/// </summary>
-	this.SpecAttribts = specAttribts || [];
+	this.SpecAttribts = [];
 };
 
 util.inherits(Product, BaseModel);
