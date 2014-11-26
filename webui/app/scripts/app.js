@@ -46,7 +46,7 @@ var app = angular.module('tl_biz_tools', [
 
         $split.mousedown(function(event) {
             if (event.which == 1){
-                $(document).on("selectstart", function () {
+                $(document).on("selectstart dragstart", function () {
                     return false;
                 })
                 $(document).on("mousemove", function(e) {
@@ -62,7 +62,7 @@ var app = angular.module('tl_biz_tools', [
         });
         $(document).mouseup(function() {
 
-            $(this).off("mousemove selectstart");
+            $(this).off("mousemove selectstart dragstart");
         });
 
         $(window).on("load resize", function(e) {
