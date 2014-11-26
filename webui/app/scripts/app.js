@@ -29,36 +29,45 @@ var app = angular.module('tl_biz_tools', [
     helper.fr = new FileReader();
 
     var resizeTimeoutId;
-    var $split = $('#split');
-    var $left = $('#left');
-    var $right = $('#right');
-    var $footer = $('#footer');
-    var $header = $('#header');
 
-    $split.mousedown(function() {
-        $split.on("mousemove", function(e) {
-            var width = e.pageX;
-        })
-    });
-    $split.mouseup(function() {
-        $split.off("mousemove", function() {
-            console.log("release mousemove");
+    // hook dom ready.
+    var domReady = (enyo && enyo.ready) || (jQuery && jQuery.ready) || function(fn) {
+        fn && fn();
+    };
+    domReady(function() {
+
+        console.log("enyo || jquery dom ready....");
+
+        var $split = $('#split');
+        var $left = $('#left');
+        var $right = $('#right');
+        var $footer = $('#footer');
+        var $header = $('#header');
+
+        $split.mousedown(function() {
+            $split.on("mousemove", function(e) {
+                var width = e.pageX;
+            })
+        });
+        $split.mouseup(function() {
+            $split.off("mousemove", function() {
+                console.log("release mousemove");
+            });
+        });
+        $(window).on("load resize", function(e) {
+            // alwasy clear frequent resize event trigger.
+            clearTimeout(resizeTimeoutId);
+            var $window = $(this);
+            resizeTimeoutId = setTimeout(function() {
+                var $left = $('#left');
+                var $right = $('#right');
+                var height = $window.height() - $header.outerHeight() - $footer.outerHeight() - 8;
+                $left.height(height);
+                $right.height(height);
+                $split.height(height + 2);
+            }, 10);
+
         });
     });
-    $(window).on("load resize", function(e) {
-        // alwasy clear frequent resize event trigger.
-        clearTimeout(resizeTimeoutId);
-        var $window = $(this);
-        resizeTimeoutId = setTimeout(function() {
-            var $left = $('#left');
-            var $right = $('#right');
-            var height = $window.height() - $header.outerHeight() - $footer.outerHeight() - 8;
-            $left.height(height);
-            $right.height(height);
-            $split.height(height + 2);
-        }, 10);
-
-    });
-
 
 })(window)
