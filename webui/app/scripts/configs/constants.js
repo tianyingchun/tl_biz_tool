@@ -59,7 +59,8 @@ app.constant("configPath", {
 app.constant('appModules', {
     modules: [{
         title: "配置管理",
-        value: "config"
+        value: "config",
+        path: "./tl_biz_tool/app_configs/config_factory.json"
     }, {
         title: "产品管理",
         value: "product"
