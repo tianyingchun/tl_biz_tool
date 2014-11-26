@@ -4,10 +4,6 @@
 app.controller("MainCtrl", ["$scope", "$log", "appModules",
     function($scope, $log, appModules) {
 
-        $scope.modules = appModules.modules;
-        $scope.currentModule = $scope.modules[0].value;
-        
-
 
 
 

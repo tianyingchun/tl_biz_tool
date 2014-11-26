@@ -4,6 +4,7 @@ enyo.depends(
 	"ImageSpiderCtrl.js",
 	"ImageUploadCtrl.js",
 	"IndexCtrl.js",
+	"HeaderCtrl.js",
 	"ClientConfigCtrl.js",
 	"ServerConfigCtrl.js"
 );

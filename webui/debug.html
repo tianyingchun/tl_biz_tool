@@ -34,7 +34,7 @@
             <input type="file" id="file_upload" />
         </div>
         <!-- <div data-dialog></div> -->
-        <div class="header navbar navbar-inverse navbar-fixed-top" id="header">
+        <div class="header navbar navbar-inverse navbar-fixed-top" id="header" ng-controller="HeaderCtrl">
             <div class="navbar-inner header-wrap">
                 <div class="logo">
                     <span class="logo-icon"></span>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="header-group">
                     <div class="btn-group">
-                        <label class="btn btn-primary" ng-model="currentModule" ng-repeat="item in modules" btn-radio="{{item.value}}">{{item.title}}</label>
+                        <label class="btn btn-primary" ng-model="currentModule.selected" ng-repeat="item in modules" btn-radio="item.value">{{item.title}}</label>
                     </div>
                 </div>
             </div>
