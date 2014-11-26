@@ -176,9 +176,27 @@ function cast2Entity(json, Constructor) {
     return dest;
 };
 
+/**
+ * Directly get simple promise
+ * @param  {object} err  error, if err==null, return correct promise. we ignore second parameter.
+ * @param  {object} results, if err==null, we deal with results.
+ * @return {promise}
+ */
+function promise(err, results) {
+    var deferred = Q.defer();
+    // has error here.
+    if (err) {
+        deferred.reject(err);
+    } else {
+        deferred.resolve(results);
+    }
+    return deferred.promise;
+};
+
 module.exports = {
     executeNoneQuery: executeNoneQuery,
     executeEntity: executeEntity,
     executeList: executeList,
-    cast2Entity: cast2Entity
+    cast2Entity: cast2Entity,
+    promise: promise
 };

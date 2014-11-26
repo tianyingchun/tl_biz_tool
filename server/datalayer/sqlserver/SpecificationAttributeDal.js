@@ -60,7 +60,34 @@ function SpecificationAttributeDal() {
         ]);
     };
 
-    
+    /**
+     * Add Or Update Product Specification Attributes Mapping items
+     * @param {object} ProductSpecificationAttributeMapping instance.
+     * @return {promise}
+     */
+    this.addOrUpdateProductSpecificationAttributesMapping = function(productSpecificationAttributeMapping) {
+        
+        var sql = "";
+        
+        // short cut of passed parameter.
+        var productSAP = productSpecificationAttributeMapping;
+
+        if (!productSAP.ProductId ||
+            !productSAP.SpecificationAttributeOptionId) {
+            logger.warn("We must provider `ProductId`,`SpecificationAttributeOptionId` within `addOrUpdateProductSpecificationAttributesMapping()`");
+            return baseDal.promise("We must provider `ProductId`,`SpecificationAttributeOptionId` within `addOrUpdateProductSpecificationAttributesMapping()`");
+        } else {
+            return baseDal.executeEntity(Product_SpecificationAttribute_MappingModel, [
+                sql,
+                productSAP.ProductId,
+                productSAP.SpecificationAttributeOptionId,
+                productSAP.CustomValue,
+                productSAP.AllowFiltering,
+                productSAP.ShowOnProductPage,
+                productSAP.DisplayOrder
+            ]);
+        }
+    };
 
 
 };
