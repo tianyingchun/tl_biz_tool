@@ -39,11 +39,10 @@
   border: 3px solid gray;
 }
 .container-fluid .left-container {
-  width: 300px;
   float: left;
 }
 .container-fluid .left-container .navbar {
-  height: 300px;
+  width: 300px;
   overflow-x: hidden;
   overflow-y: auto;
   margin-bottom: 0px;
@@ -51,7 +50,6 @@
 .container-fluid .right-container {
   width: 1272px;
   float: left;
-  height: 300px;
   background: blue;
 }
 .container-fluid .split {

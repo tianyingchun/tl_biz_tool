@@ -44,16 +44,23 @@ var app = angular.module('tl_biz_tools', [
         var $footer = $('#footer');
         var $header = $('#header');
 
-        $split.mousedown(function() {
-            $split.on("mousemove", function(e) {
-                var width = e.pageX;
-            })
+        $split.mousedown(function(event) {
+            if (event.which == 1){
+                $(document).on("mousemove", function(e) {
+                    var clientWidth = $(window).outerWidth();
+                    var $left = $('#left');
+                    var $right = $('#right');
+                    var leftWidth = e.pageX - 8;
+                    var rightWidth = clientWidth - leftWidth - $split.width() - 6 - 2;
+                    $left.width(leftWidth);
+                    $right.width(rightWidth);
+                })
+            }
         });
-        $split.mouseup(function() {
-            $split.off("mousemove", function() {
-                console.log("release mousemove");
-            });
+        $(document).mouseup(function() {          
+            $(this).off("mousemove");
         });
+
         $(window).on("load resize", function(e) {
             // alwasy clear frequent resize event trigger.
             clearTimeout(resizeTimeoutId);
@@ -62,10 +69,14 @@ var app = angular.module('tl_biz_tools', [
                 var $left = $('#left');
                 var $right = $('#right');
                 var height = $window.height() - $header.outerHeight() - $footer.outerHeight() - 8;
+                var clientWidth = $window.outerWidth();
+                var leftWidth = $left.outerWidth();
+                var rightWidth = clientWidth - leftWidth - $split.width() - 6;
+                $right.height(height + 2);
                 $left.height(height);
-                $right.height(height);
                 $split.height(height + 2);
-            }, 10);
+                $right.width(rightWidth);
+            }, 50);
 
         });
     });
