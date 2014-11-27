@@ -53,7 +53,7 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
                 controller: 'ImageUploadCtrl',
                 controllerAs: 'controller'
             })
-            .when('/client-config', {
+            .when('/configuration/:config', {
                 templateUrl: appConfig.getTemplateUrl('app/views/client-config.html'),
                 controller: 'ClientConfigCtrl',
                 controllerAs: 'controller'

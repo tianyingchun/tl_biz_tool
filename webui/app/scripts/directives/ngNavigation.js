@@ -1,4 +1,4 @@
-app.directive('ngNavigation', ['$log', '$location', function($log, $location){
+app.directive('ngNavigation', ['$log', '$location', 'FileService', 'Session', function($log, $location, FileService, Session){
 	// Runs during compile
 	return {
 		// name: '',
@@ -37,32 +37,53 @@ app.directive('ngNavigation', ['$log', '$location', function($log, $location){
 		// transclude: true,
 		// compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
 		link: function($scope, iElm, iAttrs, controller) {
-			
-			$scope.click = function (item) {
+			$scope.setContent = function (category) {
+				Session.currentCategory = angular.copy(category);
+				if (category.path) {
+					if (!category.subCategories) {
+						FileService.readJson(category.path).then(function (obj) {
+							Session.currentCategory.subCategories = angular.copy(obj);
+							category.subCategories = obj;
+						})
+					}
+				}
+			}
+
+			$scope.click = function (key, item, $event) {
+				Session.currentCategory = angular.copy(this.value);
 				angular.forEach($scope.categories, function (category) {
 					angular.forEach(category.subCategories, function (sub) {
 						sub.active = false;
 					})
 				})
 				item.active = true;
-				$location.path(item.path);
+				if (Session.currentModule.type === 'config') {
+					var path = 'configuration/' + key;
+					$location.path(path);
+				} else {
+					$location.path(item.path);
+				}
+				$event.stopPropagation();
 			}
 		}
 	};
 }]);
 
 app.run(['$templateCache', function($templateCache){
-	$templateCache.put("template/ngNavigation.html", 
+	$templateCache.put("template/ngNavigation.html",
 		"<div class=\"panel panel-default\">"+
 			"<div class=\"panel-body text-center\">"+
                 "<accordion close-others={{close-others}}>"+
-                    "<accordion-group data-ng-repeat=\"(key, value) in categories\" heading=\"{{value.title}}\" is-open=\"value.isOpen\" >"+
+                    "<accordion-group data-ng-repeat=\"(key, value) in categories\" heading=\"{{value.title}}\" is-open=\"value.isOpen\" ng-click=\"setContent(value)\" >"+
                         "<ul class=\"nav nav-pills nav-stacked\">"+
-                            "<li data-ng-class=\"{'active':sub.active}\" data-ng-repeat=\"sub in category.subCategories\" ng-click=\"click(sub)\"><a>{{sub.name}}</a></li>"+
+                            "<li data-ng-class=\"{'active':subValue.active}\" data-ng-repeat=\"(subKey, subValue) in value.subCategories\" ng-click=\"click(subKey, subValue, $event)\"><a>{{subValue.title}}</a></li>"+
                         "</ul>"+
                     "</accordion-group>"+
-                "</accordion>"+              
+                "</accordion>"+
             "</div>"+
         "</div>"
 	);
 }])
+
+
+

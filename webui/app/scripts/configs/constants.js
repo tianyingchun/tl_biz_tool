@@ -51,22 +51,23 @@ app.constant("statusEnum", {
     "PROCESS_FAILED": "处理失败"
 });
 
-app.constant("configPath", {
-    "server": "./tl_biz_tool/server_config.json",
-    "client": "./tl_biz_tool/module_config.json"
-});
-
 app.constant('appModules', {
     modules: [{
         title: "配置管理",
         value: "config",
-        path: "./tl_biz_tool/app_configs/config_factory.json"
+        path: "./tl_biz_tool/app_configs/config_factory.json",
+        type: "config",
+        default: true
     }, {
         title: "产品管理",
-        value: "product"
+        value: "product",
+        type: "normal",
+        data: ""
     }, {
         title: "图片管理",
-        value: "picture"
+        value: "picture",
+        type: "normal",
+        data: ""
     }]
 })
 

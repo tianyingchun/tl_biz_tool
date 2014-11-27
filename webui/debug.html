@@ -49,11 +49,13 @@
         </div>
         <div class="container-fluid">
             <div class="">
-                <div id="left-container" class="left-container" ng-controller="NavCtrl"> 
+                <div id="left-container" class="left-container" ng-controller="NavCtrl">
                     <ng-navigation id="left" close-others=false class="navbar" categories="categories"></ng-navigation>
                 </div>
                 <div id="split" class="split"></div>
-                <div id="right" data-ng-view class="view-container right-container"></div>
+                <div id="right" class="right-container">
+                    <div data-ng-view class="view-container"></div>
+                </div>
             </div>
         </div>
         <div class="footer" id="footer">

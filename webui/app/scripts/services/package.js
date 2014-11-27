@@ -3,5 +3,6 @@ enyo.depends(
 	"catalogService.js",
 	"pictureService.js",
 	"fileService.js",
-	"configService.js"
+	"configService.js",
+	"Session.js"
 );
