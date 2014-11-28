@@ -1,5 +1,6 @@
 var async = require('async');
 var Q = require("q");
+var _ = require("underscore");
 var logger = require('../../helpers/log');
 var utility = require('../../helpers/utility');
 var dataProvider = require("../../dataProvider");
@@ -66,6 +67,41 @@ function ProductDal() {
             " Published,Deleted,DisplayOrder,CreatedOnUtc,UpdatedOnUtc,AvailableForPreOrder,SourceUrl,SourceInfoComment" +
             " FROM dbo.ProductVariant  WHERE Id={0}";
         return baseDal.executeEntity(ProductVariantModel, [sql, productVariantId]);
+    };
+    /**
+     * add product category mappings.
+     * @param {array} categoryIds required, passed target category id, auto add all category mapping for this product
+     */
+    this.addProductCategoryMappings = function(productId, categoryIds) {
+        var checkExistRecordSql = "SELECT  * FROM  Product_Category_Mapping WHERE ProductId={0} AND CategoryId = {1}";
+        var insertSql = "INSERT INTO Product_Category_Mapping( ProductId ,CategoryId ,IsFeaturedProduct ,DisplayOrder)VALUES ({0},{1},{2},{3})";
+        // finnaly sql command string.
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + "END";
+        var finalSql = [];
+        var params = [];
+        var seed = 4;
+        if (_.isArray(categoryIds)) {
+            for (var i = 0; i < categoryIds.length; i++) {
+                var categoryId = categoryIds[i];
+                if (i == 0) {
+                    finalSql.push(sql);
+                } else {
+                    var _tmp = sql;
+                    for (var j = 0; j < seed; j++) {
+                        _tmp = _tmp.replace(/"{" + j + "}"/g, "{" + (i * seed + j) + "}");
+                    };
+                    finalSql.push(_tmp);
+                }
+                params.push(productId, categoryId, false, 0);
+            };
+            params.unshift(finalSql.join(";"));
+
+            return baseDal.executeNoneQuery(params);
+        } else {
+            logger.error("We must give not empty array with parameter in addProductCategoryMappings!");
+            
+            return baseDal.promise("We must give not empty array with parameter in addProductCategoryMappings()!");
+        }
     };
     /**
      * 添加新产品信息到数据库
@@ -359,7 +395,7 @@ function ProductDal() {
      * @return {promise}
      */
     function insertProductSpecificationAttributes(newProduct) {
-        
+
     };
 }
 module.exports = ProductDal;

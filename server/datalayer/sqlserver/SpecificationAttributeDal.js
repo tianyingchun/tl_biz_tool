@@ -46,10 +46,10 @@ function SpecificationAttributeDal() {
      * @return {promise}
      */
     this.addOrUpdateSpecificationAttributeOption = function(specificationAttributeOption) {
-        var checkExistRecordSql = "SELECT  * FROM  SpecificationAttributeOption WHERE SpecificationAttributeId={0} AND Name = {1};";
-        var insertRecordSql = "INSERT INTO SpecificationAttributeOption( SpecificationAttributeId , Name , Remarks , DisplayOrder ) VALUES ({0},{1},{2},{3});";
+        var checkExistRecordSql = "SELECT  * FROM  SpecificationAttributeOption WHERE SpecificationAttributeId={0} AND Name = {1}";
+        var insertRecordSql = "INSERT INTO SpecificationAttributeOption( SpecificationAttributeId , Name , Remarks , DisplayOrder ) VALUES ({0},{1},{2},{3})";
         // finnaly sql command string.
-        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + checkExistRecordSql + "END ELSE BEGIN" + checkExistRecordSql + "END";
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + checkExistRecordSql + "END ELSE BEGIN" + checkExistRecordSql + "END;";
 
         return baseDal.executeEntity(SpecificationAttributeOptionModel, [
             sql,
@@ -67,7 +67,7 @@ function SpecificationAttributeDal() {
      */
     this.addOrUpdateProductSpecificationAttributesMapping = function(productSpecificationAttributeMapping) {
         
-        var sql = "";
+        var sql = "INSERT INTO Product_SpecificationAttribute_Mapping (ProductId,  SpecificationAttributeOptionId, CustomValue, AllowFiltering, ShowOnProductPage, DisplayOrder ) VALUES  ({0},{1},{2},{3},{4},{5})";
         
         // short cut of passed parameter.
         var productSAP = productSpecificationAttributeMapping;
