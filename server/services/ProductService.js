@@ -37,7 +37,18 @@ function ProductDataProvider() {
         return productSpiderDal.start(httpUrl);
     };
     /**
-     * Add new product information to database.
+     * Add new product information to database. we provider this public api to do below tasks:
+     *
+     *  1. upload product basicinfo to db
+     *  2. upload product variant info to db
+     *  3. upload product variant tier price to db
+     *  4. upload product variant attribute list <color, size,..> to customer.
+     *  5. upload product related tabs information
+     *      5.1 upload product category mappings to db
+     *      5.2 upload product manufactuer mappings to db
+     *      5.3 upload product specification attributes to db.
+     * Note: for our tool, we also provider some single function module upload apis.
+     * this api is short cut for tool automation
      * @param product the ProductModel.
      * @param categoryIds the category ids.
      * @param manufacturerIds the manufacturer ids.

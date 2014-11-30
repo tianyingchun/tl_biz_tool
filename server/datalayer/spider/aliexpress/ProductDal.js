@@ -346,6 +346,8 @@ _.extend(ProductSpiderService.prototype, {
             var $lis = $dlItem.find("ul li");
             var title = $dlItem.find(".pp-dt-ln").text();
 
+            // TODO. BUG< Material:Cashmere,Wool,Polyester,Lycra,Nylon>
+            // WE need to manaully use ',' to split `Material` into multiple spec attribute options.
             title = title && title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
             if (title == "color") {
