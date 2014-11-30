@@ -45,6 +45,7 @@ function ProductDataProvider() {
      */
     this.addNewProduct = function(crawlProduct, categoryIds, manufacturerIds) {
 
+        manufacturerIds = manufacturerIds || [productAutoUploadCfg.defaultManufacturerId.value];
         // first we need to check if existed the same product with provider sku(productId).
         var sku = crawlProduct.sku;
         var deferred = Q.defer();
@@ -120,6 +121,17 @@ function ProductDataProvider() {
                         });
                     });
 
+                    // AddProductSpecificationAttributes
+                    tasks.push(function(callback) {
+                        productDal.addProductSpecificationAttributes(productId, crawlProduct.specAttribts)
+                            .then(function(result) {
+                                logger.debug("AddProductSpecificationAttributes finished!");
+                                callback(null, result);
+                            }, function(err) {
+                                callback(err);
+                            });
+                    });
+
                     async.parallel(tasks, function(err, results) {
                         if (err) {
                             deferred.reject(err);
@@ -147,10 +159,10 @@ function ProductDataProvider() {
     };
     /**
      * add product category mappings
-     * @param {object} product     ProductModel.
+     * @param {number} productId     productId.
      * @param {array} manufacturerIds  all brand manufacturer ids.
      */
-    this.addProductManufacturerMappings = function(product, manufacturerIds) {
+    this.addProductManufacturerMappings = function(productId, manufacturerIds) {
 
         var deferred = Q.defer();
 
@@ -158,7 +170,7 @@ function ProductDataProvider() {
 
         logger.debug("default_manufacturerids: ", default_manufacturerids);
 
-        productDal.addProductManufacturerMappings(product.Id, default_manufacturerids).then(function() {
+        productDal.addProductManufacturerMappings(productId, default_manufacturerids).then(function() {
             deferred.resolve("addProductManufacturerMappings->success");
         }, function(err) {
             logger.error("addProductManufacturerMappings Error:", err);
@@ -170,15 +182,15 @@ function ProductDataProvider() {
 
     /**
      * add product category mappings
-     * @param {object} product     product instance.
+     * @param {number} productId     productId
      * @param {array} categoryIds category ids.
      */
-    this.addProductCategoryMappings = function(product, categoryIds) {
+    this.addProductCategoryMappings = function(productId, categoryIds) {
         var deferred = Q.defer();
 
         logger.debug("insert categoryids: ", categoryIds);
 
-        productDal.addProductCategoryMappings(product.Id, categoryIds).then(function(affectedRows) {
+        productDal.addProductCategoryMappings(productId, categoryIds).then(function(affectedRows) {
             deferred.resolve("addProductCategoryMappings success (" + affectedRows + ")");
         }, function(err) {
             logger.error("addProductCategoryMappings Error:", err);

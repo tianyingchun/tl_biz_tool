@@ -41,15 +41,44 @@ function SpecificationAttributeDal() {
     };
 
     /**
+     * Create short cut to avoid create repeated specification attribute
+     * @param  {object} specificationAttribute SpecificationAttributeModel
+     * @return {promise}
+     */
+    this.autoCreatedSpecificationAttributeIfNotExist = function(specificationAttribute) {
+        var deferred = Q.defer();
+        // find all product attributes.
+        var _this = this;
+        var name = specificationAttribute.Name.toLowerCase();
+
+        this.getSpecificationAttributeByName(name).then(function(find) {
+            if (find.Id) {
+                logger.debug("found exist product specification attribute..", name);
+                deferred.resolve(find);
+            } else {
+                _this.addNewSpecificationAttribute(specificationAttribute).then(function(newSpecificationAttribute) {
+                    logger.debug("add new product specification attribute..", name);
+                    deferred.resolve(newSpecificationAttribute);
+                }, function(err) {
+                    deferred.reject(err);
+                });
+            }
+        }, function(err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    /**
      * Add Or Update SpecificationAttributeOption
      * @param {object} SpecificationAttributeOptionModel instance.
      * @return {promise}
      */
     this.addOrUpdateSpecificationAttributeOption = function(specificationAttributeOption) {
-        var checkExistRecordSql = "SELECT  * FROM  SpecificationAttributeOption WHERE SpecificationAttributeId={0} AND Name = {1}";
+        var checkExistRecordSql = "SELECT  * FROM  SpecificationAttributeOption WHERE SpecificationAttributeId={0} AND Name = {1} ";
         var insertRecordSql = "INSERT INTO SpecificationAttributeOption( SpecificationAttributeId , Name , Remarks , DisplayOrder ) VALUES ({0},{1},{2},{3})";
         // finnaly sql command string.
-        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + checkExistRecordSql + "END ELSE BEGIN" + checkExistRecordSql + "END;";
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " " + checkExistRecordSql + " END ELSE BEGIN " + checkExistRecordSql + " END;";
 
         return baseDal.executeEntity(SpecificationAttributeOptionModel, [
             sql,
@@ -66,9 +95,14 @@ function SpecificationAttributeDal() {
      * @return {promise}
      */
     this.addOrUpdateProductSpecificationAttributesMapping = function(productSpecificationAttributeMapping) {
-        
-        var sql = "INSERT INTO Product_SpecificationAttribute_Mapping (ProductId,  SpecificationAttributeOptionId, CustomValue, AllowFiltering, ShowOnProductPage, DisplayOrder ) VALUES  ({0},{1},{2},{3},{4},{5})";
-        
+
+        var checkExistRecordSql = "SELECT  * FROM  Product_SpecificationAttribute_Mapping WHERE ProductId={0} AND SpecificationAttributeOptionId = {1} ";
+
+        var insertRecordSql = "INSERT INTO Product_SpecificationAttribute_Mapping (ProductId,  SpecificationAttributeOptionId, CustomValue, AllowFiltering, ShowOnProductPage, DisplayOrder ) VALUES  ({0},{1},{2},{3},{4},{5})";
+
+        // finnaly sql command string.
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " " + checkExistRecordSql + " END ELSE BEGIN " + checkExistRecordSql + " END;";
+
         // short cut of passed parameter.
         var productSAP = productSpecificationAttributeMapping;
 

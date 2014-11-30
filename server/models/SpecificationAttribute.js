@@ -1,11 +1,11 @@
 var util = require('util');
 var BaseModel = require("./BaseModel");
 
-function SpecificationAttribute() {
-	
+function SpecificationAttribute(name) {
+
 	BaseModel.call(this, "SpecificationAttribute");
 
-	this.Name = "";
+	this.Name = name || "";
 
 	this.ParticalViewName = "_FilterSpecItemCheckbox";
 

@@ -1,13 +1,13 @@
 var util = require('util');
 var BaseModel = require("./BaseModel");
 
-function Product_SpecificationAttribute_Mapping() {
+function Product_SpecificationAttribute_Mapping(productId, specificationAttributeOptionId) {
 
 	BaseModel.call(this, "Product_SpecificationAttribute_Mapping");
 
-	this.ProductId = 0;
+	this.ProductId = productId || 0;
 
-	this.SpecificationAttributeOptionId = 0;
+	this.SpecificationAttributeOptionId = specificationAttributeOptionId || 0;
 
 	this.CustomValue = null;
 

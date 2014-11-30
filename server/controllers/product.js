@@ -30,6 +30,8 @@ router.post("/auto_extract_products", function(req, res) {
 });
 /**
  * API: /product/auto_extract_upload_products
+ * {url:"",categoryIds:[],manufacturerIds:[]}
+ * manufacturerIds is optional now
  * auto crawl product information and then add new product info to database.
  */
 router.post("/auto_extract_upload_products", function(req, res) {
@@ -43,8 +45,8 @@ router.post("/auto_extract_upload_products", function(req, res) {
         categoryIds = reqBody.categoryIds || [];
         manufacturerIds = reqBody.manufacturerIds || [];
     }
-    if (!url || !categoryIds.length || !manufacturerIds.length) {
-        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `url` or `categoryIds[]`,`manufacturerIds[]` is required!"));
+    if (!url || !categoryIds.length) {
+        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `url` or `categoryIds[]`is required!"));
     } else {
         // crawl product information.
         productService.crawlProductInfo(url).then(function(crawlProductInfo) {

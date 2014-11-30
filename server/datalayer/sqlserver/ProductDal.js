@@ -10,6 +10,11 @@ var baseDal = require("../baseDal");
 // product attributes dal
 var productAttribtsDal = dataProvider.getDataAccess("ProductAttributeDal");
 
+var productSpecificationAttributeDal = dataProvider.getDataAccess("SpecificationAttribute");
+
+var SpecificationAttributeModel = dataProvider.getModel("SpecificationAttribute");
+var SpecificationAttributeOptionModel = dataProvider.getModel("SpecificationAttributeOption");
+var Product_SpecificationAttribute_MappingModel = dataProvider.getModel("Product_SpecificationAttribute_Mapping");
 var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
 
 // client product configurations.
@@ -73,13 +78,13 @@ function ProductDal() {
      * @param {array} categoryIds required, passed target category id, auto add all category mapping for this product
      */
     this.addProductCategoryMappings = function(productId, categoryIds) {
-        var checkExistRecordSql = "SELECT  * FROM  Product_Category_Mapping WHERE ProductId={0} AND CategoryId = {1}";
+        var checkExistRecordSql = "SELECT  * FROM  Product_Category_Mapping WHERE ProductId={0} AND CategoryId = {1} ";
         var insertRecordSql = "INSERT INTO Product_Category_Mapping( ProductId ,CategoryId ,IsFeaturedProduct ,DisplayOrder)VALUES ({0},{1},{2},{3})";
 
         var deferred = Q.defer();
 
         // finnaly sql command string.
-        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + "END";
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END";
         var finalSql = [];
         var params = [];
         var seed = 4;
@@ -121,10 +126,10 @@ function ProductDal() {
      */
     this.addProductManufacturerMappings = function(productId, manufacturerIds) {
         var insertRecordSql = "INSERT INTO Product_Manufacturer_Mapping  ( ProductId , ManufacturerId , IsFeaturedProduct , DisplayOrder)" +
-            "VALUES({0},{1},{2},{3})";
+            "VALUES({0},{1},{2},{3}) ";
         var checkExistRecordSql = "SELECT  * FROM  Product_Manufacturer_Mapping WHERE ProductId={0} AND ManufacturerId = {1}";
         // finnaly sql command string.
-        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + "END";
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END";
 
         var deferred = Q.defer();
 
@@ -165,13 +170,59 @@ function ProductDal() {
 
     /**
      * Add specification attributes of current product.
-     * @param  {object}   newProduct Product instance.
+     * @param  {number}   newProduct.Id productId
      * @param  {object}   specificationAttributes
      * [{ "title": "itemtype", "value": "Gloves & Mittens" }, { "title": "patterntype", "value": "Solid" }]
      * @return {promise}
      */
-    this.insertProductSpecificationAttributes = function(newProduct, specificationAttributes) {
+    this.addProductSpecificationAttributes = function(productId, specificationAttributes) {
 
+        var deferred = Q.defer();
+
+        var resultMessages = [];
+        // loop all specificate attributes.
+        async.eachSeries(specificationAttributes, function(specAttribute, callback) {
+
+            // get spec attribute name.
+            var specAttributeName = specAttribute.title;
+            var specificationAttributeModel = new SpecificationAttributeModel(specAttributeName);
+
+            // get specification attribute instance if not auto insert it into database.
+            productSpecificationAttributeDal.autoCreatedSpecificationAttributeIfNotExist(specificationAttributeModel)
+                .then(function(newSpecificationAttribute) {
+                    // find specification attribute option name.
+                    var specificationAttributeOptionName = specAttribute.value;
+                    var specificationAttributeOption = new SpecificationAttributeOptionModel(newSpecificationAttribute.Id, specificationAttributeOptionName);
+
+                    productSpecificationAttributeDal.addOrUpdateSpecificationAttributeOption(specificationAttributeOption)
+                        .then(function(newSpecificationAttributeOption) {
+
+                            // mapping instance.
+                            var productSpecAttributeMapping = new Product_SpecificationAttribute_MappingModel(productId, newSpecificationAttributeOption.Id);
+
+                            productSpecificationAttributeDal.addOrUpdateProductSpecificationAttributesMapping(productSpecAttributeMapping)
+                                .then(function(newPSAMapping) {
+                                    resultMessages.push(utility.stringFormat("ProductSpecificationAttribute Item Finished -> ProductId: `{0}`,  Name: `{1}`,  SpecificationAttributeOptionName:`{2}`", productId, specAttributeName, specificationAttributeOptionName));
+                                    callback();
+                                }, function(err) {
+                                    callback(err);
+                                });
+                        }, function(err) {
+                            callback(err);
+                        });
+
+                }, function(err) {
+                    callback(err);
+                });
+        }, function(err) {
+            if (err) {
+                deferred.reject(err);
+            } else {
+                var finnalyResultMessage = baseDal.buildResultMessages("AddProductSpecificationAttributes", resultMessages).getResult();
+                deferred.resolve(finnalyResultMessage);
+            }
+        });
+        return deferred.promise;
     };
     /**
      * 添加新产品信息到数据库

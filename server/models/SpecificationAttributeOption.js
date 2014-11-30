@@ -1,13 +1,13 @@
 var util = require('util');
 var BaseModel = require("./BaseModel");
 
-function SpecificationAttributeOption() {
+function SpecificationAttributeOption(specificationAttributeId, name) {
 
 	BaseModel.call(this, "SpecificationAttributeOption");
 
-	this.SpecificationAttributeId = 0;
+	this.SpecificationAttributeId = specificationAttributeId || 0;
 
-	this.Name = "";
+	this.Name = name || "";
 
 	this.Remarks = "工具自动创建";
 
