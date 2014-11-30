@@ -2,7 +2,7 @@
 var Q = require("q");
 var logger = require('../../helpers/log');
 var dataProvider = require("../../dataProvider");
-
+var utility = require("../../helpers/utility");
 // related models.
 var SpecificationAttributeModel = dataProvider.getModel("SpecificationAttribute");
 var SpecificationAttributeOptionModel = dataProvider.getModel("SpecificationAttributeOption");
@@ -30,7 +30,7 @@ function SpecificationAttributeDal() {
         var sql = "INSERT INTO SpecificationAttribute( Name ,ParticalViewName ,Remarks ,DisplayOrder) VALUES ({0},{1},{2},{3});SELECT SCOPE_IDENTITY() AS Id;";
         return baseDal.executeEntity(SpecificationAttributeModel, [
             sql,
-            specificationAttribute.Name,
+            utility.capitalize(specificationAttribute.Name),
             specificationAttribute.ParticalViewName,
             specificationAttribute.Remarks,
             specificationAttribute.DisplayOrder
@@ -83,7 +83,7 @@ function SpecificationAttributeDal() {
         return baseDal.executeEntity(SpecificationAttributeOptionModel, [
             sql,
             specificationAttributeOption.SpecificationAttributeId,
-            specificationAttributeOption.Name,
+            utility.capitalize(specificationAttributeOption.Name),
             specificationAttributeOption.Remarks,
             specificationAttributeOption.DisplayOrder
         ]);

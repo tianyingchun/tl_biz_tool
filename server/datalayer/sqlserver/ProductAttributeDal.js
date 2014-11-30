@@ -13,7 +13,7 @@ function ProductAttributeDal() {
 	 */
 	this.addNewProductAttribute = function(productAttribute) {
 		var sql = " INSERT INTO [dbo].[ProductAttribute] (Name, Description) VALUES({0},{1});SELECT SCOPE_IDENTITY() AS Id;";
-		return baseDal.executeEntity(ProductAttributeModel, [sql, productAttribute.Name, productAttribute.Description])
+		return baseDal.executeEntity(ProductAttributeModel, [sql, utility.capitalize(productAttribute.Name), productAttribute.Description])
 			.then(function success(newEntity) {
 				if (newEntity.Id) {
 					productAttribute.Id = newEntity.Id;
