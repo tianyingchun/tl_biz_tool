@@ -190,10 +190,12 @@ function extractProductId(url) {
     return "";
 };
 /**
- * Capitalize the first letter of string
+ * Automatically Capitalize the first letter of each word in one sentence.
  */
 function capitalize(s) {
-    return s && s[0].toUpperCase() + s.slice(1);
+    return s && s.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
 };
 
 /**
