@@ -23,3 +23,12 @@
   height: 400px;
   overflow-x: auto;
 }
+.auto-upload .tool-bar div {
+  margin-right: 30px;
+}
+.auto-upload .tool-bar .catalog-list-content {
+  height: 500px;
+  overflow-x: auto;
+  right: 0;
+  left: auto;
+}

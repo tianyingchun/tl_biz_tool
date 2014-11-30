@@ -75,10 +75,10 @@ app.constant("navigationConfig", {
             title: '产品分类管理',
             subCategories: [{
                 title: '查看分类列表',
-                path: '',
+                path: ''
             },{
-                title: '查看分类列表',
-                path: '',
+                title: '添加新分类',
+                path: ''
             }]
         }, {
             title: '产品上传管理',

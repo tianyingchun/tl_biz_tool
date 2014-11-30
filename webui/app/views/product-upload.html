@@ -1,49 +1,69 @@
 <div class="panel panel-default auto-upload">
-	<div class="panel-body">
-		<div class="pull-right">
-			<div class="search-bar"><input ng-model="searchFilter" class="form-control search-query" ng-change="doFilter()"></div>
-			<button class="btn btn-primary" ng-click="controller.uploadFile()">上传</button>
-			<button class="btn btn-primary" ng-click="controller.doBatch()">批量处理</button>
-		</div>
-	</div>
-	<div class="panel-body">
-		<table class="table table-bordered table-hover">
-			<thead>
-				<tr>
-					<th>地址</th>
-					<th>分类列表</th>
-					<th>状态</th>
-					<th>操作</th>
-				</tr>
-			</thead>
+    <div class="panel-body tool-bar">
+        <div class="pull-right">
+            <div class="search-bar">
+                <input ng-model="searchFilter" placeholder="过滤上传产品的URL" class="form-control search-query" ng-change="doFilter()">
+            </div>
+            <button class="btn btn-primary" ng-click="controller.uploadFile()">上传产品地址列表</button>
+            <div class="btn-group" dropdown>
+                <button class="btn btn-default dropdown-toggle">选择分类 <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu catalog-list-content" role="menu">
+                    <li>
+                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter">
+                    </li>
+                    <li ng-repeat='item in catalogList | filter: catalogFilter' ng-click='controller.selectCatalog(item)'><a href>{{item.displayName}}</a>
+                    </li>
+                </ul>
+            </div>
+            <button class="btn btn-primary" ng-click="controller.doBatch()">批量自动上传</button>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>地址</th>
+                    <th>分类列表</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
 
-			<tbody>
-				<tr ng-repeat="item in list" ng-class="{success: item.success, danger: item.error}">
-					<td class="url-content">
-						<div>{{item.url}}</div>
-					</td>
-					<td class="catalog-list">
-						<div>
-							<div class="btn-group" dropdown>
-            					<button class="btn btn-primary dropdown-toggle">选择分类 <span class="caret"></span></button>
-            					<ul class="dropdown-menu catalog-list-content" role="menu">
-            						<li><input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter"></li>
-                					<li ng-repeat='item in catalogList | filter: catalogFilter' ng-click='controller.selectCatalog(item)'><a href>{{item.displayName}}</a></li>
-                				</ul>
-                			</div>
-						</div>
-					</td>
-					<td class="status">
-						<div>{{item.status}}</div>
-					</td>
-					<td class="action">
-						<div>
-							<button ng-disabled="doingBatch" ng-click="controller.handle(item)" class="btn btn-default">处理</button>
-							<button ng-disabled="doingBatch" class="btn btn-danger" ng-show="item.error" popover-trigger="click" popover-placement="bottom" popover="{{item.errorMessage}}">错误信息</button>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+            <tbody>
+                <tr ng-repeat="item in list" ng-class="{success: item.success, danger: item.error}">
+                    <td>{{$index + 1}}</td>
+                    <td class="url-content">
+                        <div>{{item.url}}</div>
+                    </td>
+                    <td class="catalog-list">
+                        <div>
+                            <div class="btn-group" dropdown>
+                                <button class="btn btn-primary dropdown-toggle">选择分类 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu catalog-list-content" role="menu">
+                                    <li>
+                                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter">
+                                    </li>
+                                    <li ng-repeat='item in catalogList | filter: catalogFilter' ng-click='controller.selectCatalog(item)'><a href>{{item.displayName}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="btn">{{fjdfjda}}</button>
+                        </div>
+                    </td>
+                    <td class="status">
+                        <div>{{item.status}}</div>
+                    </td>
+                    <td class="action">
+                        <div>
+                            <button ng-disabled="doingBatch" ng-click="controller.handle(item)" class="btn btn-default">处理</button>
+                            <button ng-disabled="doingBatch" class="btn btn-danger" ng-show="item.error" popover-trigger="click" popover-placement="bottom" popover="{{item.errorMessage}}">错误信息</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
