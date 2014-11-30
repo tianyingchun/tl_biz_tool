@@ -346,8 +346,6 @@ _.extend(ProductSpiderService.prototype, {
             var $lis = $dlItem.find("ul li");
             var title = $dlItem.find(".pp-dt-ln").text();
 
-            // TODO. BUG< Material:Cashmere,Wool,Polyester,Lycra,Nylon>
-            // WE need to manaully use ',' to split `Material` into multiple spec attribute options.
             title = title && title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
             if (title == "color") {
@@ -370,11 +368,20 @@ _.extend(ProductSpiderService.prototype, {
             $specItems.each(function(i, item) {
                 var title = $(item).find("dt").text();
                 title = title && title.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+                // TODO. BUG< Material:Cashmere,Wool,Polyester,Lycra,Nylon>
+                // WE need to manaully use ',' to split `Material` into multiple spec attribute options.
+                // 
                 var value = $(item).find("dd").text();
-                result.push({
-                    title: title,
-                    value: value
-                });
+                if (value) {
+                    var allChildSpecOptions = value.split(",");
+                    for (var i = 0; i < allChildSpecOptions.length; i++) {
+                        var option = allChildSpecOptions[i];
+                        result.push({
+                            title: title,
+                            value: option
+                        });
+                    };
+                }
             });
         }
         this.specAttribts = result;
