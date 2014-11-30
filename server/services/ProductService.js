@@ -1,5 +1,11 @@
 var util = require('util');
 var Q = require("q");
+var _ = require("underscore");
+
+var async = require("async");
+
+var utility = require("../helpers/utility");
+
 var logger = require('../helpers/log');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
@@ -79,18 +85,57 @@ function ProductDataProvider() {
 
                 logger.debug("Product Vairant Info: priceRate: `%s`, nowPrice: `%s`, oldPrice:`%s`, producCost:`%s` ", productCrawlCfg.price_rate.value, _price, productVariant.OldPrice, productVariant.ProductCost);
 
+                var finnalResultMessage;
+
                 // Add product basic information and product variant information.
                 productDal.addNewProduct(productModel, productVariant).then(function(result) {
-                    deferred.resolve(result);
+
+                    // temporary save add new product completed result messages.
+                    finnalResultMessage = result;
+                    // get product id.
+                    var productId = result.addNewProduct.productId;
+
+                    var tasks = [];
+
+                    // add product category mappings.
+                    tasks.push(function(callback) {
+                        productDal.addProductManufacturerMappings(productId, manufacturerIds).then(function(result) {
+                            logger.debug("AddProductManufacturerMappings finished!");
+                            callback(null, result);
+                        }, function(err) {
+                            callback(err);
+                        });
+                    });
+
+                    // add product manufactuer mappings.
+                    tasks.push(function(callback) {
+                        productDal.addProductCategoryMappings(productId, categoryIds).then(function(result) {
+
+                            logger.debug("AddProductCategoryMappings finished!");
+
+                            callback(null, result);
+
+                        }, function(err) {
+                            callback(err);
+                        });
+                    });
+
+                    async.parallel(tasks, function(err, results) {
+                        if (err) {
+                            deferred.reject(err);
+                        } else {
+                            var productTabsInfoMsg = utility.buildResultMessages("productTabsInfo", results).getResult();
+
+                            // merge results message from add new product completed result messages.
+                            var resultMessage = _.extend(finnalResultMessage, productTabsInfoMsg);
+
+                            deferred.resolve(resultMessage);
+                        }
+                    });
+
                 }, function(err) {
                     deferred.reject(err);
                 });
-
-                // productDal.addProductCategoryMappings(productId, categoryIds);
-
-                // productDal.addProductManufacturerMappings(productId, manufacturerIds);
-
-
             } else {
                 deferred.reject(new Error("不能添加重复的产品SKU: " + sku + ", url:" + crawlProduct.providerUrl));
             }

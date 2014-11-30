@@ -82,7 +82,8 @@ function ProductAttributeDal() {
 			} else {
 				var _tmp = productVariantAttribute_values_sql;
 				for (var j = 0; j < seed; j++) {
-					_tmp = _tmp.replace("{" + j + "}", "{" + (i * seed + j) + "}");
+					var replaceRegex = new RegExp('\\{' + j + '\\}', "g");
+					_tmp = _tmp.replace(replaceRegex, "{" + (i * seed + j) + "}");
 				};
 				sql.push(_tmp);
 			}

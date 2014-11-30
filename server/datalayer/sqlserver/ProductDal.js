@@ -75,6 +75,9 @@ function ProductDal() {
     this.addProductCategoryMappings = function(productId, categoryIds) {
         var checkExistRecordSql = "SELECT  * FROM  Product_Category_Mapping WHERE ProductId={0} AND CategoryId = {1}";
         var insertRecordSql = "INSERT INTO Product_Category_Mapping( ProductId ,CategoryId ,IsFeaturedProduct ,DisplayOrder)VALUES ({0},{1},{2},{3})";
+
+        var deferred = Q.defer();
+
         // finnaly sql command string.
         var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + "END";
         var finalSql = [];
@@ -88,7 +91,8 @@ function ProductDal() {
                 } else {
                     var _tmp = sql;
                     for (var j = 0; j < seed; j++) {
-                        _tmp = _tmp.replace(/"{" + j + "}"/g, "{" + (i * seed + j) + "}");
+                        var replaceRegex = new RegExp('\\{' + j + '\\}', "g");
+                        _tmp = _tmp.replace(replaceRegex, "{" + (i * seed + j) + "}");
                     };
                     finalSql.push(_tmp);
                 }
@@ -96,12 +100,19 @@ function ProductDal() {
             };
             params.unshift(finalSql.join(";"));
 
-            return baseDal.executeNoneQuery(params);
+            baseDal.executeNoneQuery(params).then(function(result) {
+
+                deferred.resolve("AddProduct Category Mappings success, productId: `" + productId + "`, categoryIds: " + JSON.stringify(categoryIds));
+
+            }, function(err) {
+                deferred.reject(err);
+            });
         } else {
             logger.error("We must give not empty array with parameter in addProductCategoryMappings!");
 
-            return baseDal.promise("We must give not empty array with parameter in addProductCategoryMappings()!");
+            deferred.reject("We must give not empty array with parameter in addProductCategoryMappings()!");
         }
+        return deferred.promise;
     };
     /**
      * 添加当前产品到执行的 manufacturer.
@@ -115,6 +126,8 @@ function ProductDal() {
         // finnaly sql command string.
         var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + "END";
 
+        var deferred = Q.defer();
+
         var finalSql = [];
         var params = [];
         var seed = 4;
@@ -127,7 +140,8 @@ function ProductDal() {
                 } else {
                     var _tmp = sql;
                     for (var j = 0; j < seed; j++) {
-                        _tmp = _tmp.replace(/"{" + j + "}"/g, "{" + (i * seed + j) + "}");
+                        var replaceRegex = new RegExp('\\{' + j + '\\}', "g");
+                        _tmp = _tmp.replace(replaceRegex, "{" + (i * seed + j) + "}");
                     };
                     finalSql.push(_tmp);
                 }
@@ -135,10 +149,18 @@ function ProductDal() {
             };
             params.unshift(finalSql.join(";"));
 
-            return baseDal.executeNoneQuery(params);
+            baseDal.executeNoneQuery(params).then(function(result) {
+
+                deferred.resolve("AddProduct Manufacturer Mappings success, productId: `" + productId + "`, manufactuerIds: " + JSON.stringify(manufacturerIds));
+
+            }, function(err) {
+                deferred.reject(err);
+            });
+
         } else {
-            return baseDal.promise("addProductManufacturerMappings accept `manufacturerIds` must be array");
+            deferred.reject("addProductManufacturerMappings accept `manufacturerIds` must be array");
         }
+        return deferred.promise;
     };
 
     /**
@@ -324,7 +346,8 @@ function ProductDal() {
             } else {
                 var _tmp = sqlTierPrice;
                 for (var j = 0; j < seed; j++) {
-                    _tmp = _tmp.replace("{" + j + "}", "{" + (i * seed + j) + "}");
+                    var replaceRegex = new RegExp('\\{' + j + '\\}', "g");
+                    _tmp = _tmp.replace(replaceRegex, "{" + (i * seed + j) + "}");
                 };
                 sql.push(_tmp);
             }
