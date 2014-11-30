@@ -18,6 +18,8 @@ var productDal = dataProvider.getDataAccess("Product");
 var productCfg = dataProvider.getConfig("product");
 // crawl configuration.
 var productCrawlCfg = dataProvider.getConfigNode(productCfg, "crawl_config");
+// auto uplopad configuration.
+var productAutoUploadCfg = dataProvider.getConfigNode(productCfg, "autoupload_config");
 
 function ProductDataProvider() {
     /**
@@ -89,7 +91,50 @@ function ProductDataProvider() {
         });
         return deferred.promise;
     };
+    /**
+     * add product category mappings
+     * @param {object} product     ProductModel.
+     * @param {array} manufacturerIds  all brand manufacturer ids.
+     */
+    this.addProductManufacturerMappings = function(product, manufacturerIds) {
 
+        var deferred = Q.defer();
+
+        var default_manufacturerids = manufacturerIds || [productAutoUploadCfg.defaultManufacturerId.value];
+
+        logger.debug("default_manufacturerids: ", default_manufacturerids);
+
+        productDal.addProductManufacturerMappings(product.Id, default_manufacturerids).then(function() {
+            deferred.resolve("addProductManufacturerMappings->success");
+        }, function(err) {
+            logger.error("addProductManufacturerMappings Error:", err);
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+
+    /**
+     * add product category mappings
+     * @param {object} product     product instance.
+     * @param {array} categoryIds category ids.
+     */
+    this.addProductCategoryMappings = function(product, categoryIds) {
+        var deferred = Q.defer();
+
+        logger.debug("insert categoryids: ", categoryIds);
+
+        productDal.addProductCategoryMappings(product.Id, categoryIds).then(function(affectedRows) {
+            deferred.resolve("addProductCategoryMappings success (" + affectedRows + ")");
+        }, function(err) {
+            logger.error("addProductCategoryMappings Error:", err);
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+
+    
     //
     // helper methods: prepareProductTierPrice
     // ------------------------------------------------------------------------

@@ -193,10 +193,28 @@ function promise(err, results) {
     return deferred.promise;
 };
 
+/**
+ * Get formatted dal access result messages.
+ * @param  {string} methodKey method name
+ * @param  {string} status    success, failed.
+ * @param  {anything} results  the content that described dal operate result.
+ * @return {object} formatted result message.
+ */
+function getResultMessages(methodKey, status, results) {
+    var result = {};
+
+    result[methodKey] = {
+        status: status,
+        details: results
+    };
+    return result;
+};
+
 module.exports = {
     executeNoneQuery: executeNoneQuery,
     executeEntity: executeEntity,
     executeList: executeList,
     cast2Entity: cast2Entity,
-    promise: promise
+    promise: promise,
+    getResultMessages: getResultMessages
 };

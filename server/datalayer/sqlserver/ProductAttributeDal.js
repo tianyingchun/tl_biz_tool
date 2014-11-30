@@ -1,6 +1,7 @@
 // https://github.com/kriskowal/q
 var Q = require("q");
 var logger = require('../../helpers/log');
+var utility = require('../../helpers/utility');
 var dataProvider = require("../../dataProvider");
 var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
 var baseDal = require("../baseDal");
@@ -46,6 +47,66 @@ function ProductAttributeDal() {
 		});
 		return deferred.promise;
 	};
+	/**
+	 * Add productVariant attribute values
+	 * @param {id} productVariantAttributeMappingId productVariant AttributeMappingId.[[dbo].[ProductVariant_ProductAttribute_Mapping]]
+	 * @param {string}  productVariantAttributeKey  productvariant attribute key .e.g  color:
+	 * @param {array} productVariantAttributeValues
+	 *         color:->[{  
+                    "title": "Camel",
+                    "value": ""
+                },
+                {
+                    "title": "Dark gray",
+                    "value": ""
+                }]
+	 */
+	this.addProductVariantAttributeValues = function(productVariantAttributeMappingId, productVariantAttributeKey, productVariantAttributeValues) {
+		var deferred = Q.defer();
+		var productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
+		// product attributes.
+		var sql = [];
+		var params = [];
+		var seed = 7;
+
+		var len = productVariantAttributeValues.length;
+
+		for (var i = 0; i < len; i++) {
+			// color|size...
+			var _productVariantOption = productVariantAttributeValues[i];
+			// speical deal with color option.
+			var colorSqureRgb = productVariantAttributeKey.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
+
+			if (i == 0) {
+				sql.push(productVariantAttribute_values_sql);
+			} else {
+				var _tmp = productVariantAttribute_values_sql;
+				for (var j = 0; j < seed; j++) {
+					_tmp = _tmp.replace("{" + j + "}", "{" + (i * seed + j) + "}");
+				};
+				sql.push(_tmp);
+			}
+			params.push(productVariantAttributeMappingId, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0);
+		};
+		params.unshift(sql.join(";"));
+
+		baseDal.executeNoneQuery(params).then(function() {
+
+			var resultMsg = baseDal.getResultMessages("addProductVariantAttributeValues", "success", {
+				productVariantAttributeKey: productVariantAttributeKey,
+				VariantAttributeMappingId: productVariantAttributeMappingId,
+				VariantAttributeValuesCounts: len
+			});
+
+			deferred.resolve(resultMsg);
+
+		}, function(err) {
+			logger.error("Invoke Insert ProductVariantAttributeValue table Error: ", err);
+			deferred.reject("Add Product VariantAttribute Values failed!");
+		});
+		return deferred.promise;
+	};
+
 	/**
 	 * 返回所有的ProductAttributes.
 	 */

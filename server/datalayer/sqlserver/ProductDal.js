@@ -74,7 +74,7 @@ function ProductDal() {
      */
     this.addProductCategoryMappings = function(productId, categoryIds) {
         var checkExistRecordSql = "SELECT  * FROM  Product_Category_Mapping WHERE ProductId={0} AND CategoryId = {1}";
-        var insertSql = "INSERT INTO Product_Category_Mapping( ProductId ,CategoryId ,IsFeaturedProduct ,DisplayOrder)VALUES ({0},{1},{2},{3})";
+        var insertRecordSql = "INSERT INTO Product_Category_Mapping( ProductId ,CategoryId ,IsFeaturedProduct ,DisplayOrder)VALUES ({0},{1},{2},{3})";
         // finnaly sql command string.
         var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + "END";
         var finalSql = [];
@@ -99,9 +99,57 @@ function ProductDal() {
             return baseDal.executeNoneQuery(params);
         } else {
             logger.error("We must give not empty array with parameter in addProductCategoryMappings!");
-            
+
             return baseDal.promise("We must give not empty array with parameter in addProductCategoryMappings()!");
         }
+    };
+    /**
+     * 添加当前产品到执行的 manufacturer.
+     * @param {number} productId             产品ID
+     * @param {number} defaultManufacturerId 指定的品牌ID
+     */
+    this.addProductManufacturerMappings = function(productId, manufacturerIds) {
+        var insertRecordSql = "INSERT INTO Product_Manufacturer_Mapping  ( ProductId , ManufacturerId , IsFeaturedProduct , DisplayOrder)" +
+            "VALUES({0},{1},{2},{3})";
+        var checkExistRecordSql = "SELECT  * FROM  Product_Manufacturer_Mapping WHERE ProductId={0} AND ManufacturerId = {1}";
+        // finnaly sql command string.
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + "END";
+
+        var finalSql = [];
+        var params = [];
+        var seed = 4;
+
+        if (_.isArray(manufacturerIds)) {
+            for (var i = 0; i < manufacturerIds.length; i++) {
+                var manufacturerId = manufacturerIds[i];
+                if (i == 0) {
+                    finalSql.push(sql);
+                } else {
+                    var _tmp = sql;
+                    for (var j = 0; j < seed; j++) {
+                        _tmp = _tmp.replace(/"{" + j + "}"/g, "{" + (i * seed + j) + "}");
+                    };
+                    finalSql.push(_tmp);
+                }
+                params.push(productId, manufacturerId, false, 0);
+            };
+            params.unshift(finalSql.join(";"));
+
+            return baseDal.executeNoneQuery(params);
+        } else {
+            return baseDal.promise("addProductManufacturerMappings accept `manufacturerIds` must be array");
+        }
+    };
+
+    /**
+     * Add specification attributes of current product.
+     * @param  {object}   newProduct Product instance.
+     * @param  {object}   specificationAttributes
+     * [{ "title": "itemtype", "value": "Gloves & Mittens" }, { "title": "patterntype", "value": "Solid" }]
+     * @return {promise}
+     */
+    this.insertProductSpecificationAttributes = function(newProduct, specificationAttributes) {
+
     };
     /**
      * 添加新产品信息到数据库
@@ -109,73 +157,54 @@ function ProductDal() {
      */
     this.addNewProduct = function(product, productVariant) {
         var deferred = Q.defer();
-        // 1.  step1. insert product basic information.
+
+        // capture all task operation result.
+        var resultMessages = [];
+        // 1. insert product basic information.
         insertProduct(product).then(function(newProduct) {
 
+            resultMessages.push("insert product basic information success productId:`" + newProduct.Id + "`");
+
             if (newProduct.Id) {
-                // save all related product information tasks.
-                var productRelatedInfoTasks = [];
-                // add products to manafactureres
-                productRelatedInfoTasks.push(function(callback) {
-                    var default_manufacturerids = clientProductCfg.defaultManufacturerId.value;
+                // 2. add product variant.
+                insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
 
-                    logger.debug("default_manufacturerids: ", default_manufacturerids);
+                    resultMessages.push("insert product variant information success productVariantId:`" + newProductVariant.Id + "`");
 
-                    addProductIntoManufacturer(newProduct.Id, default_manufacturerids).then(function() {
-                        callback(null, "addProductIntoManufacturer->success");
-                    }, function(err) {
-                        logger.error("addProductIntoManufacturer error:", err);
-                        callback(err);
-                    });
-                });
-                // add product specification attributes.
-                // productRelatedInfoTasks.push(function(callback) {
-
-                //     insertProductSpecificationAttributes(newProduct).then(function(result) {
-                //         callback(null, "insertProductSpecificationAttributes->success");
-                //     }, function(err) {
-                //         logger.error("insertProductSpecificationAttributes error:", err);
-                //         callback(err);
-                //     });
-                // });
-                // add product variant information and its' related information.
-                productRelatedInfoTasks.push(function(callback) {
-                    // step3. add product variant.
-                    insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
-                        // run product variant related info tasks.
-                        async.parallel([
-                            function(callback) {
-                                insertProductVariantTierPrice(newProductVariant).then(function() {
-                                    callback(null, "insertProductVariantTierPrice success!");
-                                }, function(err) {
-                                    callback(err);
-                                });
-                            },
-                            function(callback) {
-                                insertProductVariantAttributes(newProductVariant).then(function() {
-                                    callback(null, "insertProductVariantAttributes success!");
-                                }, function(err) {
-                                    callback(err);
-                                });
-                            }
-                        ], function(err, results) {
-                            logger.debug("async.parallel within addNewProduct finished!", results);
-                            callback();
+                    var productRelatedTasks = [];
+                    // task: add product variant tier price.
+                    productRelatedTasks.push(function(callback) {
+                        insertProductVariantTierPrice(newProductVariant).then(function(result) {
+                            callback(null, result);
+                        }, function(err) {
+                            callback(err);
                         });
-                    }, function(err) {
-                        logger.error("insertProductVariant error:", err);
-                        callback(err);
                     });
-                });
-                // run all tasks.
-                async.parallel(productRelatedInfoTasks, function(err, results) {
-                    // if has error here, throw it.
-                    if (err) {
-                        deferred.reject(err);
-                    } else {
-                        logger.debug("addNewProduct() all tasks has been done success");
-                        deferred.resolve(results);
-                    }
+                    // task: add product variant attributes.
+                    productRelatedTasks.push(function(callback) {
+                        insertProductVariantAttributes(newProductVariant).then(function(result) {
+                            callback(null, result);
+                        }, function(err) {
+                            callback(err);
+                        });
+                    });
+                    // run product variant related info tasks.
+                    async.parallel(productRelatedTasks, function(err, results) {
+                        if (err) {
+                            logger.error("async.parallel within addNewProduct failed!", err);
+                            deferred.reject(err);
+                        } else {
+                            logger.debug("async.parallel within addNewProduct finished!", results);
+                            if (!_.isArray(results)) {
+                                results = [results];
+                            }
+                            resultMessages = resultMessages.concat(results);
+                            deferred.resolve(resultMessages);
+                        }
+                    });
+                }, function(err) {
+                    logger.error("insertProductVariant error:", err);
+                    deferred.reject(err);
                 });
             } else {
                 deferred.reject(new Error("insertProduct(product) failed,can't find the new uploaded product id !"));
@@ -213,16 +242,7 @@ function ProductDal() {
             return product;
         });
     };
-    /**
-     * 添加当前产品到执行的 manufacturer.
-     * @param {number} productId             产品ID
-     * @param {number} defaultManufacturerId 指定的品牌ID
-     */
-    function addProductIntoManufacturer(productId, defaultManufacturerId) {
-        var sql = "INSERT INTO Product_Manufacturer_Mapping  ( ProductId , ManufacturerId , IsFeaturedProduct , DisplayOrder)" +
-            "VALUES({0},{1},{2},{3});";
-        return baseDal.executeNoneQuery([sql, productId, defaultManufacturerId, false, 0]);
-    };
+
     /**
      * 添加ProductVariant 子产品信息
      * @param  {object} product ProductModel instance.
@@ -281,6 +301,9 @@ function ProductDal() {
      * @param  {object} newVariant ProductVariantModel instance.
      */
     function insertProductVariantTierPrice(newVariant) {
+
+        var deferred = Q.defer();
+
         var sqlTierPrice = "INSERT INTO dbo.TierPrice (ProductVariantId ,CustomerRoleId,Quantity,Price) VALUES({0},{1},{2},{3})";
 
         var tierPrice = newVariant.TierPrices;
@@ -305,17 +328,31 @@ function ProductDal() {
         };
         params.unshift(sql.join(";"));
 
-        return baseDal.executeNoneQuery(params);
+        baseDal.executeNoneQuery(params).then(function(affectedRows) {
+
+            deferred.resolve("insertProductVariantTierPrice success variantId: `" + newVariant.Id + "`");
+
+        }, function(err) {
+
+            deferred.reject(err);
+
+        });
+        return deferred.promise;
     };
     /**
      * 添加ProductVariant 的attributes 信息,e.g. colorList, sizeList.
      * @param  {object} newVariant ProductVariantModel instance.
      */
     function insertProductVariantAttributes(newVariant) {
-        var sqlStr = "INSERT INTO dbo.ProductVariant_ProductAttribute_Mapping " +
+
+        var deferred = Q.defer();
+
+        // outscope result messages.
+        var resultMessages = [];
+
+        var pVAMappingSql = "INSERT INTO dbo.ProductVariant_ProductAttribute_Mapping " +
             "(ProductVariantId , ProductAttributeId ,TextPrompt,IsRequired ,AttributeControlTypeId , DisplayOrder)" +
             " VALUES ({0},{1},{2},{3},{4},{5}); SELECT SCOPE_IDENTITY() AS Id; ";
-        var deferred = Q.defer();
 
         productAttribtsDal.getAttributControlTypeIds().then(function(paIds) {
             // { "color": 40, "size": 1, "other": 1 }
@@ -325,8 +362,12 @@ function ProductDal() {
 
             var productAttribtsKeys = Object.keys(productAttribts);
 
+            var resultMsg;
             async.eachSeries(productAttribtsKeys, function(key, callback) {
+
+                // product variant control type id.
                 var controlTypeId = productAttributeIds[key.toLowerCase()] || productAttributeIds["other"];
+                // color -->Color.
                 var promptText = utility.capitalize(key);
 
                 var _productAttribute = new ProductAttributeModel(promptText, "auto created by tool");
@@ -337,65 +378,40 @@ function ProductDal() {
 
                     var PVAMapping = dataProvider.getModel("PVAMapping");
                     // add new record to [ProductVariant_ProductAttribute_Mapping]
-                    baseDal.executeEntity(PVAMapping, [sqlStr, newVariant.Id, newProductAttribute.Id, promptText, true, controlTypeId, 0]).then(function(pvaMapping) {
+                    baseDal.executeEntity(PVAMapping, [pVAMappingSql, newVariant.Id, newProductAttribute.Id, promptText, true, controlTypeId, 0]).then(function(pvaMapping) {
 
-                        // color:[{ "title": "Black", "value": "000" }]
-                        var _productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
                         // product attributes.
-                        var productAttribtsList = productAttribts[key];
-                        var sql = [];
-                        var params = [];
-                        var seed = 7;
+                        var attributeAttribtsValues = productAttribts[key];
 
-                        for (var i = 0; i < productAttribtsList.length; i++) {
-                            // color|size...
-                            var _productVariantOption = productAttribtsList[i];
-                            // speical deal with color option.
-                            var colorSqureRgb = key.toLowerCase() == "color" ? "#" + _productVariantOption.value : "";
-
-                            if (i == 0) {
-                                sql.push(_productVariantAttribute_values_sql);
-                            } else {
-                                var _tmp = _productVariantAttribute_values_sql;
-                                for (var j = 0; j < seed; j++) {
-                                    _tmp = _tmp.replace("{" + j + "}", "{" + (i * seed + j) + "}");
-                                };
-                                sql.push(_tmp);
-                            }
-                            params.push(pvaMapping.Id, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0);
-                        };
-                        params.unshift(sql.join(";"));
-
-                        baseDal.executeNoneQuery(params).then(function() {
-                            callback(null, "Insert ProductVariant Attribute ok!");
+                        productAttribtsDal.addProductVariantAttributeValues(pvaMapping.Id, key, attributeAttribtsValues).then(function(execResult) {
+                            resultMessages.push(execResult);
+                            callback(null);
                         }, function(err) {
-                            logger.error("Invoke Insert ProductVariantAttributeValue table Error: ", err);
-                            callback("Insert ProductVariantAttributeValue failed!");
+                            callback(err);
                         });
+
                     }, function(err) {
                         logger.error("Inoke Insert ProductVariant_ProductAttribute_Mapping Error: ", err);
                         callback("Inoke Insert ProductVariant_ProductAttribute_Mapping failed!");
                     });
                 }, function(err) {
                     logger.error("Invoke AutoCreatedIfNotExist Error: ", err);
-                    callback("Insert ProductVariant Attribute failed!" + key);
+                    callback("Insert ProductVariant Attribute AutoCreatedIfNotExist() failed!" + key);
                 });
-            }, function finnaly(err, results) {
-                logger.debug("InsertProductVariantAttributes finished!", results);
-                deferred.resolve(results);
+            }, function finnaly(err) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    logger.debug("InsertProductVariantAttributes finished!");
+                    resultMessages = baseDal.getResultMessages("InsertProductVariantAttributes", "success", resultMessages);
+                    deferred.resolve(resultMessages);
+                }
             });
         }, function(err) {
             deferred.reject(err);
         });
         return deferred.promise;
     };
-    /**
-     * Add specification attributes of current product.
-     * @param  {object}   newProduct Product instance.
-     * @return {promise}
-     */
-    function insertProductSpecificationAttributes(newProduct) {
 
-    };
 }
 module.exports = ProductDal;
