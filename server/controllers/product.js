@@ -35,12 +35,21 @@ router.post("/auto_extract_products", function(req, res) {
 router.post("/auto_extract_upload_products", function(req, res) {
     logger.debug('controller: auto_extract_upload_products...');
     var reqBody = req.body;
-    var url = reqBody && reqBody.url || "";
-    if (url) {
+
+    var url, categoryIds, manufacturerIds;
+
+    if (reqBody) {
+        url = reqBody.url || "";
+        categoryIds = reqBody.categoryIds || [];
+        manufacturerIds = reqBody.manufacturerIds || [];
+    }
+    if (!url || !categoryIds.length || !manufacturerIds.length) {
+        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `url` or `categoryIds[]`,`manufacturerIds[]` is required!"));
+    } else {
         // crawl product information.
-        productService.crawlProductInfo(url).then(function(result) {
+        productService.crawlProductInfo(url).then(function(crawlProductInfo) {
             // to add new product into databse.
-            productService.addNewProduct(result).then(function(result) {
+            productService.addNewProduct(crawlProductInfo, categoryIds, manufacturerIds).then(function(result) {
                 base.apiOkOutput(res, result);
             }, function(err) {
                 base.apiErrorOutput(res, err);
@@ -49,8 +58,6 @@ router.post("/auto_extract_upload_products", function(req, res) {
         }, function(err) {
             base.apiErrorOutput(res, err);
         });
-    } else {
-        base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
     }
 });
 

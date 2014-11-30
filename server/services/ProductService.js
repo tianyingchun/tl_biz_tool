@@ -33,9 +33,11 @@ function ProductDataProvider() {
     /**
      * Add new product information to database.
      * @param product the ProductModel.
+     * @param categoryIds the category ids.
+     * @param manufacturerIds the manufacturer ids.
      * @return promise.
      */
-    this.addNewProduct = function(crawlProduct) {
+    this.addNewProduct = function(crawlProduct, categoryIds, manufacturerIds) {
 
         // first we need to check if existed the same product with provider sku(productId).
         var sku = crawlProduct.sku;
@@ -76,12 +78,19 @@ function ProductDataProvider() {
                 productVariant.TierPrices = prepareProductTierPrice(productVariant.Price);
 
                 logger.debug("Product Vairant Info: priceRate: `%s`, nowPrice: `%s`, oldPrice:`%s`, producCost:`%s` ", productCrawlCfg.price_rate.value, _price, productVariant.OldPrice, productVariant.ProductCost);
-                // go to add new product.
+
+                // Add product basic information and product variant information.
                 productDal.addNewProduct(productModel, productVariant).then(function(result) {
                     deferred.resolve(result);
                 }, function(err) {
                     deferred.reject(err);
                 });
+
+                // productDal.addProductCategoryMappings(productId, categoryIds);
+
+                // productDal.addProductManufacturerMappings(productId, manufacturerIds);
+
+
             } else {
                 deferred.reject(new Error("不能添加重复的产品SKU: " + sku + ", url:" + crawlProduct.providerUrl));
             }
@@ -134,7 +143,7 @@ function ProductDataProvider() {
         return deferred.promise;
     };
 
-    
+
     //
     // helper methods: prepareProductTierPrice
     // ------------------------------------------------------------------------

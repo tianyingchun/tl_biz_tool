@@ -200,14 +200,62 @@ function promise(err, results) {
  * @param  {anything} results  the content that described dal operate result.
  * @return {object} formatted result message.
  */
-function getResultMessages(methodKey, status, results) {
-    var result = {};
+function buildResultMessages(methodKey, results) {
+    var _initial = {};
 
-    result[methodKey] = {
-        status: status,
-        details: results
+    function getObject(methodKey, results) {
+        var obj = {};
+
+        obj[methodKey] = results;
+
+        return obj;
+    }
+
+    // initialize result message 
+    _initial[methodKey] = results;
+
+    function autoAttachedVal2Path(path, val) {
+
+        var container = _initial;
+        // Break the name at periods and create the object hierarchy we need   
+        var parts = path.split('.');
+        for (var i = 0; i < parts.length; i++) {
+            var part = parts[i];
+            // If there is no property of container with this name, create   
+            // an empty object.   
+            if (!container[part]) {
+                container[part] = (i == parts.length - 1) ? val : {};
+            } else if (!_.isObject(container[part])) {
+                if (i == parts.length - 1) {
+                    container[part] = val;
+                }
+                // If there is already a property, make sure it is an object   
+                logger.warn(part + " already exists and is not an object");
+            }
+            container = container[part];
+        }
+        return container;
     };
-    return result;
+
+    return {
+        /**
+         * pushNewMessage to existed message queue
+         * @param  {string} methodKey method name
+         * @param  {object} results   the results
+         * @param  {string} path optional  node path
+         */
+        pushNewMessage: function(methodKey, results, path) {
+            if (path) {
+                path = path + "." + methodKey;
+                var node = autoAttachedVal2Path(path, results);
+            } else {
+                _initial[methodKey] = results;
+            }
+        },
+        getResult: function() {
+            return _initial;
+        }
+    };
 };
 
 module.exports = {
@@ -216,5 +264,5 @@ module.exports = {
     executeList: executeList,
     cast2Entity: cast2Entity,
     promise: promise,
-    getResultMessages: getResultMessages
+    buildResultMessages: buildResultMessages
 };

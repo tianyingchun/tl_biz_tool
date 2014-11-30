@@ -159,17 +159,22 @@ function ProductDal() {
         var deferred = Q.defer();
 
         // capture all task operation result.
-        var resultMessages = [];
+        var resultMessagesObj;
         // 1. insert product basic information.
         insertProduct(product).then(function(newProduct) {
 
-            resultMessages.push("insert product basic information success productId:`" + newProduct.Id + "`");
+            resultMessagesObj = baseDal.buildResultMessages("addNewProduct", {
+                productId: newProduct.Id
+            });
 
             if (newProduct.Id) {
                 // 2. add product variant.
                 insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
 
-                    resultMessages.push("insert product variant information success productVariantId:`" + newProductVariant.Id + "`");
+                    // push new message to queue
+                    resultMessagesObj.pushNewMessage("addNewProductVariant", {
+                        productVariantId: newProductVariant.Id
+                    });
 
                     var productRelatedTasks = [];
                     // task: add product variant tier price.
@@ -195,11 +200,10 @@ function ProductDal() {
                             deferred.reject(err);
                         } else {
                             logger.debug("async.parallel within addNewProduct finished!", results);
-                            if (!_.isArray(results)) {
-                                results = [results];
-                            }
-                            resultMessages = resultMessages.concat(results);
-                            deferred.resolve(resultMessages);
+
+                            resultMessagesObj.pushNewMessage("variantTasks", results, "addNewProductVariant");
+
+                            deferred.resolve(resultMessagesObj.getResult());
                         }
                     });
                 }, function(err) {
@@ -348,7 +352,7 @@ function ProductDal() {
         var deferred = Q.defer();
 
         // outscope result messages.
-        var resultMessages = [];
+        var resultMessagesObj;
 
         var pVAMappingSql = "INSERT INTO dbo.ProductVariant_ProductAttribute_Mapping " +
             "(ProductVariantId , ProductAttributeId ,TextPrompt,IsRequired ,AttributeControlTypeId , DisplayOrder)" +
@@ -362,7 +366,8 @@ function ProductDal() {
 
             var productAttribtsKeys = Object.keys(productAttribts);
 
-            var resultMsg;
+            var resultMessages = [];
+
             async.eachSeries(productAttribtsKeys, function(key, callback) {
 
                 // product variant control type id.
@@ -403,8 +408,8 @@ function ProductDal() {
                     deferred.reject(err);
                 } else {
                     logger.debug("InsertProductVariantAttributes finished!");
-                    resultMessages = baseDal.getResultMessages("InsertProductVariantAttributes", "success", resultMessages);
-                    deferred.resolve(resultMessages);
+                    resultMessagesObj = baseDal.buildResultMessages("InsertProductVariantAttributes", resultMessages);
+                    deferred.resolve(resultMessagesObj.getResult());
                 }
             });
         }, function(err) {

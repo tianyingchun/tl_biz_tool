@@ -92,13 +92,13 @@ function ProductAttributeDal() {
 
 		baseDal.executeNoneQuery(params).then(function() {
 
-			var resultMsg = baseDal.getResultMessages("addProductVariantAttributeValues", "success", {
+			var resultMsgObj = baseDal.buildResultMessages("addProductVariantAttributeValues", {
 				productVariantAttributeKey: productVariantAttributeKey,
 				VariantAttributeMappingId: productVariantAttributeMappingId,
 				VariantAttributeValuesCounts: len
 			});
 
-			deferred.resolve(resultMsg);
+			deferred.resolve(resultMsgObj.getResult());
 
 		}, function(err) {
 			logger.error("Invoke Insert ProductVariantAttributeValue table Error: ", err);
