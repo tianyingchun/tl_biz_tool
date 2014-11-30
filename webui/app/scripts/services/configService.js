@@ -1,19 +1,13 @@
 app.factory('configService', ['FileService', 'CatalogService', function(FileService, CatalogService){
 	var configService = {};
 
-	configService.getClientConfigData = function (path) {
+	configService.getConfigJson = function (path) {
 		return FileService.readJson(path);
 	};
-	configService.saveClientConfigData = function (path, data) {
+	configService.saveConfigJson = function (path, data) {
 		return FileService.writeJson(path, data);
 	};
-	configService.getServerConfigData = function (path) {
-		return FileService.readJson(path);	
-	};
-	configService.saveServerConfigData = function (path, data) {
-		return FileService.writeJson(path, data);	
-	};
-	configService.getConfigData = function (url) {
+	configService.getConfigDataByAPI = function (url) {
 		return CatalogService.getConfigData(url);
 	}
 	return configService;

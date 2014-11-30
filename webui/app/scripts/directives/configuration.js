@@ -34,7 +34,10 @@ app.directive('configuration', ['$log', function($log){
 		// transclude: true,
 		// compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
 		link: function($scope, iElm, iAttrs, controller) {
-
+			$scope.click = function () {
+				this.configValue.index = this.$index;
+				this.configValue.value = this.item[this.configValue.api.valueTextNode];
+			}
 		}
 	};
 }]);
@@ -53,7 +56,7 @@ app.run(['$templateCache', function($templateCache){
 		                	"<div class='btn-group pull-left' dropdown>"+
             					"<button class=\"btn btn-primary dropdown-toggle\">{{configValue.items[configValue.index][configValue.api.displayTextNode]}} <span class='caret'></span></button>"+
             					"<ul class='dropdown-menu' role='menu'>"+
-            						"<li ng-repeat='item in configValue.items' ng-click='configValue.index=$index'><a href>{{item[configValue.api.displayTextNode]}}</a></li>"+
+            						"<li ng-repeat='item in configValue.items' ng-click='click()'><a href>{{item[configValue.api.displayTextNode]}}</a></li>"+
             					"</ul>"+
             				"</div>"+
 		                "</div>"+

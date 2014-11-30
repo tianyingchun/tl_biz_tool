@@ -38,29 +38,14 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
                 controller: 'IndexCtrl',
                 controllerAs: 'controller'
             })
-            .when('/auto-upload', {
-                templateUrl: appConfig.getTemplateUrl('app/views/auto-upload.html'),
+            .when('/product/product-upload', {
+                templateUrl: appConfig.getTemplateUrl('app/views/product-upload.html'),
                 controller: 'AutoUploadCtrl',
                 controllerAs: 'controller'
             })
-            .when('/image-spider', {
-                templateUrl: appConfig.getTemplateUrl('app/views/image-spider.html'),
-                controller: 'ImageSpiderCtrl',
-                controllerAs: 'controller'
-            })
-            .when('/image-upload', {
-                templateUrl: appConfig.getTemplateUrl('app/views/image-upload.html'),
-                controller: 'ImageUploadCtrl',
-                controllerAs: 'controller'
-            })
-            .when('/configuration/:config', {
-                templateUrl: appConfig.getTemplateUrl('app/views/client-config.html'),
-                controller: 'ClientConfigCtrl',
-                controllerAs: 'controller'
-            })
-            .when('/server-config', {
-                templateUrl: appConfig.getTemplateUrl('app/views/server-config.html'),
-                controller: 'ServerConfigCtrl',
+            .when('/configuration/:category/:config', {
+                templateUrl: appConfig.getTemplateUrl('app/views/configuration.html'),
+                controller: 'ConfigCtrl',
                 controllerAs: 'controller'
             })
             .otherwise({

@@ -61,41 +61,40 @@ app.constant('appModules', {
     }, {
         title: "产品管理",
         value: "product",
-        type: "normal",
-        data: ""
+        type: "normal"
     }, {
         title: "图片管理",
         value: "picture",
-        type: "normal",
-        data: ""
+        type: "normal"
     }]
-})
+});
 
 app.constant("navigationConfig", {
-    categories: [{
-        name: "产品管理",
-        path: "product-manage",
-        subCategories: [{
-            name: "自动上传产品",
-            path: "auto-upload"
+    product: {
+        categories: [{
+            title: '产品分类管理',
+            subCategories: [{
+                title: '查看分类列表',
+                path: '',
+            },{
+                title: '查看分类列表',
+                path: '',
+            }]
         }, {
-            name: "图片抓取管理",
-            path: "image-spider"
-        }, {
-            name: "图片上传模块",
-            path: "image-upload"
+            title: '产品上传管理',
+            subCategories: [{
+                title: '产品自动上传',
+                path: 'product/product-upload'
+            }, {
+                title: '查看产品列表',
+                path: 'product/product-list'
+            }, {
+                title: '其他产品相关配置',
+                path: 'product/product-config'
+            }]
         }]
-    }, {
-        name: "系统配置管理",
-        subCategories: []
-    }, {
-        name: "模块功能配置",
-        subCategories: [{
-            name: "客户端配置",
-            path: "client-config"
-        }, {
-            name: "服务端配置",
-            path: "server-config"
-        }]
-    }]
-})
+    },
+    picture: {
+
+    }
+});

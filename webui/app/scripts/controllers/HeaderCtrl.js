@@ -15,6 +15,9 @@ app.controller('HeaderCtrl', ['$scope', 'Session', 'appModules', function($scope
     };
 
     $scope.click = function (item) {
+        if (angular.equals(Session.currentModule, item)) {
+            return;
+        }
     	Session.currentModule = item;
     	$scope.$emit("navigationChange", item);
     }

@@ -6,6 +6,5 @@ enyo.depends(
 	"IndexCtrl.js",
 	"HeaderCtrl.js",
 	"NavCtrl.js",
-	"ClientConfigCtrl.js",
-	"ServerConfigCtrl.js"
+	"ConfigCtrl.js"
 );
