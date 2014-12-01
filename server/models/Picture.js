@@ -1,14 +1,13 @@
 var util = require('util');
 var BaseModel = require("./BaseModel");
 
-function Picture(id, pictureBinary, mimeType, seoFileName, isNew, displayOrder, fullPath) {
+function Picture(mimeType, seoFileName, isNew, displayOrder) {
 	BaseModel.call(this, "Picture");
-	this.PictureBinary = pictureBinary;
+	this.PictureBinary = [];
 	this.MimeType = mimeType;
 	this.SeoFilename = seoFileName;
 	this.IsNew = isNew;
 	this.DisplayOrder = displayOrder;
-	this.FullPath = fullPath;
 };
 util.inherits(Picture, BaseModel);
 
