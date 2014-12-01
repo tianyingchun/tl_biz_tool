@@ -1,6 +1,6 @@
-app.controller('ConfigCtrl', ['$scope', 'configService', 'Session', '$routeParams', '$location', 'ngDialog',
+app.controller('ConfigCtrl', ['$scope', 'configService', 'Session', '$routeParams', '$location', 'ngDialog', '$q',
 
-    function($scope, configService, Session, $routeParams, $location, ngDialog) {
+    function($scope, configService, Session, $routeParams, $location, ngDialog, $q) {
 
         $scope.$emit("changeSpinnerStatus", true);
         var categoryInRouter = $routeParams.categories;
@@ -15,11 +15,12 @@ app.controller('ConfigCtrl', ['$scope', 'configService', 'Session', '$routeParam
             return;
         }
 
+        var promisesAll = [];
         //go through all configs, whether one config need get data from service.
         angular.forEach($scope.configData.configs, function(config) {
             if (config.api) {
                 var url = config.api.url;
-                configService.getConfigDataByAPI(url).then(function(resp) {
+                var promise = configService.getConfigDataByAPI(url).then(function(resp) {
                     var items = resp.data;
                     config.items = items;
                     for (var i = 0; i < items.length; i++) {
@@ -28,13 +29,14 @@ app.controller('ConfigCtrl', ['$scope', 'configService', 'Session', '$routeParam
                             break;
                         }
                     }
-
-                    $scope.$emit("changeSpinnerStatus", false);
                 })
-            } else {
-                $scope.$emit("changeSpinnerStatus", false);
+                promisesAll.push(promise);
             }
         });
+
+        $q.all(promisesAll).finally(function () {
+            $scope.$emit("changeSpinnerStatus", false);
+        })
 
         /**
          * save config. first read json from path, than merge value. at last, save to local file.

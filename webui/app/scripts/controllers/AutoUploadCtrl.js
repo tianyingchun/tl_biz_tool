@@ -2,22 +2,25 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
     function($scope, $log, FileService, ProductService, ngDialog, regexRules, statusEnum, $filter, CatalogService) {
 
         $scope.$emit("changeSpinnerStatus", true);
+        var allCategories = {};
         var promise = CatalogService.getAllCatalog();
         promise.then(function(result) {
+
             result = result.data;
-            var parent = {};
             angular.forEach(result, function(item) {
-                if (item.ParentCategoryId == 0) {
-                    parent[item.Id] = item.Name.trim();
+                item.Name = item.Name.trim();
+                allCategories[item.Id] = angular.copy(item);
+            })
+
+            angular.forEach(result, function(item) {
+                var temp = item;
+                item.displayName = item.Name;
+                while(temp.ParentCategoryId != 0) {
+                    item.displayName = allCategories[item.ParentCategoryId].Name + ' -> ' + item.Name.trim();
+                    temp = allCategories[item.ParentCategoryId];
                 }
             })
-            angular.forEach(result, function(item) {
-                if (item.ParentCategoryId == 0) {
-                    item.displayName = item.Name.trim();
-                } else {
-                    item.displayName = parent[item.ParentCategoryId] + ' -> ' + item.Name.trim();
-                }
-            })
+
             result.sort(function (a, b) {
                 if (a.displayName >= b.displayName) {
                     return 1;
@@ -26,7 +29,8 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 }
             })
             $scope.catalogList = angular.copy(result);
-            $scope.$emit("changeSpinnerStatus", false);
+        }).finally(function () {
+             $scope.$emit("changeSpinnerStatus", false);
         });
 
         var list = [];

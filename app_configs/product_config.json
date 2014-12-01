@@ -49,7 +49,7 @@
                 "value": 1,
                 "type": "dropdown",
                 "api": {
-                    "url": "/configs/product/get_all_manufacturers",
+                    "url": "/utility/get_all_manufacturers",
                     "valueTextNode": "Id",
                     "displayTextNode": "Name"
                 }
