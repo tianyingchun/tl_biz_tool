@@ -25,7 +25,7 @@ function PictureDal() {
 	 * @return {promise}
 	 */
 	this.getPictureById = function(pictureId) {
-		var sql = "SELECT Id, PictureBinary , MimeType ,SeoFilename ,IsNew FROM dbo.Picture WHERE Id={0}";
+		var sql = "SELECT Id, PictureBinary , MimeType ,SeoFilename ,IsNew FROM Picture WHERE Id={0}";
 		return baseDal.executeEntity(PictureModel, [sql, pictureId]);
 	};
 
@@ -35,7 +35,7 @@ function PictureDal() {
 	 * @return  promise object.
 	 */
 	this.updatePicture = function(picture) {
-		var sql = "UPDATE dbo.Picture SET MimeType={0},PictureBinary={1},SeoFilename={2},IsNew={3} WHERE Id={4}";
+		var sql = "UPDATE Picture SET MimeType={0},PictureBinary={1},SeoFilename={2},IsNew={3} WHERE Id={4}";
 		return baseDal.executeNoneQuery([sql, picture.MimeType, picture.PictureBinary, picture.SeoFilename, picture.IsNew, picture.Id]);
 	};
 	/**
@@ -44,7 +44,7 @@ function PictureDal() {
 	 * @return promise object.
 	 */
 	this.getAllPicturesByProductId = function(productId) {
-		var sql = "SELECT Id,PictureBinary,MimeType,SeoFilename,IsNew FROM dbo.Picture WHERE id IN (SELECT PictureId FROM dbo.Product_Picture_Mapping WHERE ProductId={0})";
+		var sql = "SELECT Id,PictureBinary,MimeType,SeoFilename,IsNew FROM Picture WHERE id IN (SELECT PictureId FROM Product_Picture_Mapping WHERE ProductId={0})";
 		return baseDal.executeList(PictureModel, [sql, productId]);
 	};
 
@@ -54,7 +54,7 @@ function PictureDal() {
 	 * @return promise object.
 	 */
 	this.deletePicture = function(pictureId) {
-		var sql = "DELETE FROM  dbo.Picture WHERE Id ={0}";
+		var sql = "DELETE FROM  Picture WHERE Id ={0}";
 		return baseDal.executeNoneQuery([sql, pictureId]);
 	};
 };

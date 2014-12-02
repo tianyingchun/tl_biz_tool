@@ -28,6 +28,7 @@
         "qr-image": "*",
         "crypto": "*",
         "atma-formatter": "*",
-        "fs-finder": "*"
+        "fs-finder": "*",
+        "gm":"*"
     }
 }

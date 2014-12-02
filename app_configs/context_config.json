@@ -11,8 +11,8 @@
                     "password": "clothesgate_test",
                     "server": "calantha.arvixe.com",
                     "database": "clothesgate_test",
-                    "connectionTimeout":300000,
-                    "requestTimeout":300000
+                    "connectionTimeout": 300000,
+                    "requestTimeout": 300000
                 },
                 "type": "dropdown",
                 "api": {

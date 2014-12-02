@@ -28,4 +28,6 @@ router.post("/auto_extract_product_pictures", function(req, res) {
     }
 });
 
+
+
 module.exports = router;
