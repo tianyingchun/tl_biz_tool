@@ -12,7 +12,7 @@
                     <li>
                         <input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter">
                     </li>
-                    <li ng-repeat='item in catalogList | filter: catalogFilter' ng-click='controller.selectCatalog(item)'><a href>{{item.displayName}}</a>
+                    <li ng-repeat='item in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(item)'><a href>{{item.displayName}}</a>
                     </li>
                 </ul>
             </div>
@@ -46,7 +46,7 @@
                                     <li>
                                         <input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter">
                                     </li>
-                                    <li ng-repeat='item in catalogList | filter: catalogFilter' ng-click='controller.selectCatalog(item)'><a href>{{item.displayName}}</a>
+                                    <li ng-repeat='category in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(category,item)'><a href>{{category.displayName}}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -60,6 +60,7 @@
                         <div>
                             <button ng-disabled="doingBatch" ng-click="controller.handle(item)" class="btn btn-default">处理</button>
                             <button ng-disabled="doingBatch" class="btn btn-danger" ng-show="item.error" popover-trigger="click" popover-placement="bottom" popover="{{item.errorMessage}}">错误信息</button>
+                            <button ng-disabled="doingBatch" ng-click="controller.remove(item)" class="btn btn-default">删除</button>
                         </div>
                     </td>
                 </tr>
@@ -67,3 +68,15 @@
         </table>
     </div>
 </div>
+
+
+<script type="text/ng-template" id="selectCategory">
+	<h3>选择分类</h3>
+    <div ng-repeat="category in categories">
+    	<div><input type="checkbox" ng-model=category.selected>{{category.Name}}</div>
+    </div>
+    <div>
+    	<button class="btn btn-primary" ng-click="confirm(categories)">确定</button>
+    	<button class="btn btn-default" ng-click="closeThisDialog()">取消</button>
+    </div>
+</script>

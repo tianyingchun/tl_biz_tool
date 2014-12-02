@@ -1,4 +1,4 @@
-(function() {
+(function () {
     function CatalogService($log, BaseHttpRequest) {
 
             // each service must be defined this key used to flag current request belong to.
@@ -15,7 +15,7 @@
         // Expose service request apis to consumer.
     angular.extend(CatalogService.prototype, {
         //上传产品
-        addProducts2Category: function(product, categoryId) {
+        addProducts2Category: function (product, categoryId) {
             var promise = this.postRequest("/catalog/add_products", {
                 product: product,
                 categoryId: categoryId
@@ -23,7 +23,7 @@
             return promise;
         },
 
-        getAllCatalog: function () {
+        getAllCategories: function () {
             var promise = this.getRequest("/utility/get_all_categoris", {}, {cache: true});
             return promise;
         },

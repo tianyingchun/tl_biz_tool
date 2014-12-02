@@ -1,6 +1,6 @@
 app.controller('ConfigCtrl', ['$scope', 'configService', 'Session', '$routeParams', '$location', 'ngDialog', '$q',
 
-    function($scope, configService, Session, $routeParams, $location, ngDialog, $q) {
+    function ($scope, configService, Session, $routeParams, $location, ngDialog, $q) {
 
         $scope.$emit("changeSpinnerStatus", true);
         var categoryInRouter = $routeParams.categories;
@@ -17,10 +17,11 @@ app.controller('ConfigCtrl', ['$scope', 'configService', 'Session', '$routeParam
 
         var promisesAll = [];
         //go through all configs, whether one config need get data from service.
-        angular.forEach($scope.configData.configs, function(config) {
+        angular.forEach($scope.configData.configs, function (config) {
+            var config = config;
             if (config.api) {
                 var url = config.api.url;
-                var promise = configService.getConfigDataByAPI(url).then(function(resp) {
+                var promise = configService.getConfigDataByAPI(url).then(function (resp) {
                     var items = resp.data;
                     config.items = items;
                     for (var i = 0; i < items.length; i++) {
@@ -42,25 +43,25 @@ app.controller('ConfigCtrl', ['$scope', 'configService', 'Session', '$routeParam
          * save config. first read json from path, than merge value. at last, save to local file.
          * @return {[type]} success : true, failed: false.
          */
-        this.saveConfig = function() {
+        this.saveConfig = function () {
             var path = Session.currentCategory.path;
             var promise = configService.getConfigJson(path)
-            promise.then(function(data) {
-                angular.forEach($scope.configData.configs, function(config, key) {
+            promise.then(function (data) {
+                angular.forEach($scope.configData.configs, function (config, key) {
                     var temp = data[configInRouter]['configs'];
                     if (temp[key]) {
                         temp[key].value = config.value;
                     }
                 });
 
-                configService.saveConfigJson(path, data).then(function() {
+                configService.saveConfigJson(path, data).then(function () {
                     Session.currentCategory.needRefresh = true;
                     ngDialog.open({
                         template: '<p>保存成功!</p>',
                         plain: true
                     });
                     console.log("Save success!");
-                }, function(err) {
+                }, function (err) {
                     ngDialog.open({
                         template: '<p>保存失败!</p>',
                         plain: true
