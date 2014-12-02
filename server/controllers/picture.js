@@ -28,6 +28,25 @@ router.post("/auto_extract_product_pictures", function(req, res) {
     }
 });
 
+router.get("/test_image_magick", function(req, res) {
+
+    var gm = require('gm');//.subClass({ imageMagick: true });
+    var fs = require('fs');
+
+    // resize and remove EXIF profile data
+    gm('D:/Github_Works/extract_dir/orignal.jpg')
+        .resize(240, 240)
+        .noProfile()
+        .write('D:/Github_Works/extract_dir/resized.jpg', function(err) {
+            if (!err) {
+                base.apiOkOutput(res, "");
+
+            } else {
+                console.dir(err);
+            }
+
+        });
+});
 
 
 module.exports = router;

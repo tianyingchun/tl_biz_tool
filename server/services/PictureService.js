@@ -4,6 +4,7 @@ var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
 var Q = require("q");
 var path = require("path");
+var _ = require("underscore");
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
@@ -11,6 +12,14 @@ var pictureDal = dataProvider.getDataAccess("Picture");
 
 var PictureModel = dataProvider.getModel("Picture");
 
+//http://www.graphicsmagick.org/INSTALL-windows.html#installing-using-installer-package
+//using node gm libaray we need to first install graphicsmagick libaray
+//test>>: gm convert logo: logo.gif
+//https://github.com/aheckmann/gm
+//
+var gm = require("gm");
+
+var fs = require("fs");
 
 var pictureCfg = dataProvider.getConfig("picture");
 
@@ -78,6 +87,36 @@ function PictureDataProvider() {
      */
     this.crawlPictures = function(httpUrl) {
         return pictureSpiderDal.crawlPictures(httpUrl);
+    };
+
+    /**
+     * the product name
+     * @param  {string} string name  the picture name default is product name.
+     * @return {string} converted product seo name.
+     */
+    this.getPictureSeName = function(name) {
+        var okChars = "abcdefghijklmnopqrstuvwxyz1234567890 _-";
+        name = _.trim(name);
+        //non western chars should be converted.
+        if (!name) {
+            return null;
+        }
+        var result = [];
+        for (var i = 0; i < name.length; i++) {
+            var c2 = c = name[i];
+            if (!!~okChars.indexOf(c2)) {
+                result.push(c2);
+            }
+        };
+        var name2 = result.join("");
+        name2 = name2.replace(" ", "-");
+        while (!!~name2.indexOf("--")) {
+            name2 = name2.replace("--", "-");
+        }
+        while (!!~name2.indexOf("__")) {
+            name2 = name2.replace("__", "_");
+        }
+        return name2;
     };
 
     /**
