@@ -20,9 +20,13 @@ var pictureCfgCrawl = dataProvider.getConfigNode(pictureCfg, "crawl_config");
 var pictureSpiderDal = dataProvider.getDataAccess("spider", "Picture");
 
 function PictureDataProvider() {
-    // 更新图片信息
+    /**
+     * Update picture information
+     * @param  {object} picture PictureModel instance.
+     * @return {promise}
+     */
     this.updatePicture = function(picture) {
-        // promise update picture 
+        // promise update picture   
         return pictureDal.updatePicture(picture);
     };
     /**
@@ -49,12 +53,20 @@ function PictureDataProvider() {
 
         return deferred.promise;
     };
-    // 获取图片信息实体
+    /**
+     * Get picture entity info by id.
+     * @param  {number} pictureId pictureId
+     * @return {promise}
+     */
     this.getPictureById = function(pictureId) {
         // promise update picture 
         return pictureDal.getPictureById(pictureId);
     };
-    // 删除图片
+    /**
+     * Delete picture from database.
+     * @param  {number} pictureId picture id number.
+     * @return {promise}
+     */
     this.deletePicture = function(pictureId) {
         // promise update picture 
         return pictureDal.deletePicture(pictureId);
@@ -141,8 +153,6 @@ function PictureDataProvider() {
         var lastPart = parts[parts.length - 1];
         switch (lastPart) {
             case "pjpeg":
-            case "jpeg":
-            case "jpg":
                 lastPart = "jpg";
                 break;
             case "x-png":
