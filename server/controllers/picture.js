@@ -2,10 +2,13 @@ var express = require('express');
 var router = express.Router();
 var base = require("./base");
 var logger = require("../helpers/log");
-
+var utility = require("../helpers/utility");
+var finder = require('fs-finder');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
+var pictureCfg = dataProvider.getConfig("picture");
+var pictureUploadCfg = dataProvider.getConfigNode(pictureCfg, "upload_config");
 // picture sql server service.
 var pictureService = dataProvider.getService("Picture");
 
@@ -28,9 +31,40 @@ router.post("/auto_extract_product_pictures", function(req, res) {
     }
 });
 
+/**
+ * API: /picture/auto_sync_product_pictures_2database
+ * @requestBody: {url: ""}
+ * first sync the relationship between product and pictures, then transfer all pictures to another dest dir.
+ */
+router.post("/auto_sync_product_pictures_2database", function(req, res) {
+
+    var reqBody = req.body;
+
+    var url = reqBody && reqBody.url || "";
+    // get product sku by given product url.
+    var sku = utility.extractProductId(url);
+
+    // picture source directory.
+    var picture_source_dir = pictureUploadCfg.picture_source_dir.value;
+    // picture synced to directory.
+    var picture_synced_to_dir = pictureUploadCfg.picture_synced_to_dir.value;
+
+    logger.debug("sku: %s, picture_source_dir: %s ", sku, picture_source_dir);
+    // file matched picture files with sku.
+    finder.from(picture_source_dir).findFiles(sku + "_<[0-9]+>", function(files) {
+        for (var i = 0; i < files.length; i++) {
+            // loop each file.
+            var file = files[i];
+            // 
+        };
+        base.apiOkOutput(res, "");
+    });
+
+});
+// only for testing purpose.
 router.get("/test_image_magick", function(req, res) {
 
-    var gm = require('gm');//.subClass({ imageMagick: true });
+    var gm = require('gm'); //.subClass({ imageMagick: true });
     var fs = require('fs');
 
     // resize and remove EXIF profile data

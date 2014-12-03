@@ -178,6 +178,7 @@ function PictureDataProvider() {
 
 
         // TODO..Using `node-imagemagick`
+        
         // File.WriteAllBytes(targetFilePath, pictureBinary);
     };
     /**
