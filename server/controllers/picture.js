@@ -1,17 +1,18 @@
 var express = require('express');
 var router = express.Router();
+var async = require("async");
+
 var base = require("./base");
 var logger = require("../helpers/log");
 var utility = require("../helpers/utility");
 var finder = require('fs-finder');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
-
 var pictureCfg = dataProvider.getConfig("picture");
 var pictureUploadCfg = dataProvider.getConfigNode(pictureCfg, "upload_config");
 // picture sql server service.
 var pictureService = dataProvider.getService("Picture");
-
+var productService = dataProvider.getService("Product");
 /**
  * API: /picture/auto_extract_product_pictures
  * Crawl all pictures from provider spider repository.
@@ -52,14 +53,24 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
     logger.debug("sku: %s, picture_source_dir: %s ", sku, picture_source_dir);
     // file matched picture files with sku.
     finder.from(picture_source_dir).findFiles(sku + "_<[0-9]+>", function(files) {
-        for (var i = 0; i < files.length; i++) {
-            // loop each file.
-            var file = files[i];
-            // 
-        };
-        base.apiOkOutput(res, "");
-    });
 
+        productService.getProductIdBySku(sku).then(function(productId) {
+            var pictureSyncTasks = [];
+            pictureSyncTasks.push(function(callback) {
+                // insert picture while this picture validated status is ok!
+                // do validate this picture,e.g. max size
+                // 
+                // 
+                // TOODO..
+            });
+            // run all picture sync taks.
+            async.parallel(pictureSyncTasks, function(err, results) {
+
+            });
+        }, function(err) {
+            base.apiErrorOutput(res, err);
+        });
+    });
 });
 // only for testing purpose.
 router.get("/test_image_magick", function(req, res) {

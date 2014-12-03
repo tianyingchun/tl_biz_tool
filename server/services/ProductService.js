@@ -37,6 +37,25 @@ function ProductDataProvider() {
         return productSpiderDal.start(httpUrl);
     };
     /**
+     * Get product Id by product variant sku
+     * @param  {string} sku product variant sku.
+     * @return {promise} 
+     */
+    this.getProductIdBySku = function(sku) {
+        var deferred = Q.defer();
+        productDal.getProductVariantBySku(sku).then(function(productVariant) {
+            if (productVariant) {
+                deferred.resolve(productVariant.ProductId);
+            } else {
+                logger.debug("Can't find product varant by sku:" + sku);
+                deferred.reject(new Error("Can't find product varant by sku:" + sku));
+            }
+        }, function(err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+    /**
      * Add new product information to database. we provider this public api to do below tasks:
      *
      *  1. upload product basicinfo to db

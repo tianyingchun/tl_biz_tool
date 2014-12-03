@@ -52,6 +52,7 @@ function ProductDal() {
             " FROM dbo.ProductVariant WHERE Sku={0}";
         return baseDal.executeEntity(ProductVariantModel, [sql, sku])
     };
+
     /**
      * 根据Product variant id获取ProductVariant 对象
      * @param  {number} productVariantId 产品variantId
