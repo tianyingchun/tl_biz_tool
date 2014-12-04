@@ -4,7 +4,6 @@ var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
 var Q = require("q");
 var path = require("path");
-var _ = require("underscore");
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
@@ -96,7 +95,7 @@ function PictureDataProvider() {
      */
     this.getPictureSeName = function(name) {
         var okChars = "abcdefghijklmnopqrstuvwxyz1234567890 _-";
-        name = _.trim(name);
+        name = name.replace(/^\s+|\s+$/g, "").toLowerCase();
         //non western chars should be converted.
         if (!name) {
             return null;
@@ -109,14 +108,12 @@ function PictureDataProvider() {
             }
         };
         var name2 = result.join("");
-        name2 = name2.replace(" ", "-");
-        while (!!~name2.indexOf("--")) {
-            name2 = name2.replace("--", "-");
-        }
-        while (!!~name2.indexOf("__")) {
-            name2 = name2.replace("__", "_");
-        }
+        name2 = name2.replace(/\s+/g, "-");
+        name2 = name2.replace(/--/g, "-");
+        name2 = name2.replace(/__/g, "_");
+
         return name2;
+
     };
 
     /**
@@ -178,7 +175,7 @@ function PictureDataProvider() {
 
 
         // TODO..Using `node-imagemagick`
-        
+
         // File.WriteAllBytes(targetFilePath, pictureBinary);
     };
     /**

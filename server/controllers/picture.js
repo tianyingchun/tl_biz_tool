@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var async = require("async");
+var async = require('async');
 
 var base = require("./base");
 var logger = require("../helpers/log");
@@ -64,6 +64,7 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                 var productName = product.Name;
                 // check if have product pictures for this productid
                 productService.getPicturesByProductId(productId).then(function(productPictureList) {
+                    logger.warn(productPictureList);
                     // do some task to upload product pictures.
                     if (!productPictureList || productPictureList.length == 0) {
                         var pictureSyncTasks = [];
@@ -77,7 +78,12 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                         });
                         // run all picture sync taks.
                         async.parallel(pictureSyncTasks, function(err, results) {
-                            base.apiOkOutput(res, results);
+                            if (err) {
+                                base.apiErrorOutput(res, err);
+
+                            } else {
+                                base.apiOkOutput(res, results);
+                            }
                         });
                     } else {
                         // check if existed picture mappings for current productId, if have throw error,
