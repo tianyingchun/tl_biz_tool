@@ -37,9 +37,17 @@ function ProductDataProvider() {
         return productSpiderDal.start(httpUrl);
     };
     /**
+     * Get all pictures from given productid.
+     * @param  {number} productId product id
+     * @return {promise}
+     */
+    this.getPicturesByProductId = function(productId) {
+        return productDal.getPicturesByProductId(productId);
+    };
+    /**
      * Get product Id by product variant sku
      * @param  {string} sku product variant sku.
-     * @return {promise} 
+     * @return {promise}
      */
     this.getProductIdBySku = function(sku) {
         var deferred = Q.defer();
@@ -54,6 +62,35 @@ function ProductDataProvider() {
             deferred.reject(err);
         });
         return deferred.promise;
+    };
+    /**
+     * Get product detail info by product id.
+     * @param  {number} productId product identifier.
+     * @return {promise}
+     */
+    this.getProduct = function(productId) {
+        return productDal.getProduct(productId);
+    };
+
+    /**
+     * Get product detail by sku.
+     * @param  {string} sku product variant sku.
+     * @return {promise}
+     */
+    this.getProductInfoBySku = function(sku) {
+        var deferred = Q.defer();
+        var _this = this;
+        this.getProductIdBySku(sku).then(function(productId) {
+            _this.getProduct(productId).then(function(product) {
+                deferred.resolve(product);
+            }, function(err) {
+                deferred.reject(err);
+            });
+        }, function(err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+
     };
     /**
      * Add new product information to database. we provider this public api to do below tasks:
@@ -75,7 +112,7 @@ function ProductDataProvider() {
      */
     this.addNewProduct = function(crawlProduct, categoryIds, manufacturerIds) {
 
-        manufacturerIds = manufacturerIds || [productAutoUploadCfg.defaultManufacturerId.value];
+        manufacturerIds = (manufacturerIds && manufacturerIds.length) ? manufacturerIds : [productAutoUploadCfg.defaultManufacturerId.value];
         // first we need to check if existed the same product with provider sku(productId).
         var sku = crawlProduct.sku;
         var deferred = Q.defer();
