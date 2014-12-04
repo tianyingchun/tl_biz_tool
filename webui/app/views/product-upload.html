@@ -12,7 +12,7 @@
                     <li>
                         <input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter">
                     </li>
-                    <li ng-repeat='item in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(item)'><a href>{{item.displayName}}</a>
+                    <li ng-repeat='category in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(category)'><a href>{{category.displayName}}</a>
                     </li>
                 </ul>
             </div>
@@ -33,7 +33,7 @@
 
             <tbody>
                 <tr ng-repeat="item in list" ng-class="{success: item.success, danger: item.error}">
-                    <td>{{$index + 1}}</td>
+                    <td class="number">{{$index + 1}}</td>
                     <td class="url-content">
                         <div>{{item.url}}</div>
                     </td>
@@ -50,14 +50,14 @@
                                     </li>
                                 </ul>
                             </div>
-                            <button class="btn">{{fjdfjda}}</button>
+                            <button class="btn btn-default" ng-click="controller.editCategory(item)">查看已选分类</button>
                         </div>
                     </td>
                     <td class="status">
                         <div>{{item.status}}</div>
                     </td>
                     <td class="action">
-                        <div>
+                        <div class="action-content">
                             <button ng-disabled="doingBatch" ng-click="controller.handle(item)" class="btn btn-default">处理</button>
                             <button ng-disabled="doingBatch" class="btn btn-danger" ng-show="item.error" popover-trigger="click" popover-placement="bottom" popover="{{item.errorMessage}}">错误信息</button>
                             <button ng-disabled="doingBatch" ng-click="controller.remove(item)" class="btn btn-default">删除</button>

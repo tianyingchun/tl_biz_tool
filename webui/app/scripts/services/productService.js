@@ -24,10 +24,7 @@
     angular.extend(ProductService.prototype, {
         //上传产品
         uploadProduct: function(product) {
-            var data = {
-                url: product.url
-            }
-            var promise = this.postRequest("/product/upload_basic_info", data, this.productBasicInfoDto);
+            var promise = this.postRequest("/product/auto_extract_upload_products", product, this.productBasicInfoDto);
             return promise;
         }
     });

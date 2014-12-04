@@ -34,7 +34,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             $scope.$emit("changeSpinnerStatus", false);
         });
 
-        var list = [];
+        var list = [{url: "http://www.baidu.com"}];
         this.uploadFile = function () {
             helper.file_upload.click();
             helper.file_upload.change(function () {
@@ -77,23 +77,65 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             categories = categories.reverse();
             var dialogScope = $scope.$new();
             dialogScope.categories = categories;
+
             var dialog = ngDialog.openConfirm({
                 scope: dialogScope,
                 template: "selectCategory"
             });
             dialog.then(function (data) {
-                var categoryIds = [];
-                angular.forEach(data, function (item) {
-                    if (item.selected === true) {
-                        categoryIds.push(item.Id);
-                    }
-                })
-                productURL.categoryIds = categoryIds;
+                // var categories = [];
+                // angular.forEach(data, function (item) {
+                //     if (item.selected === true) {
+                //         categories.push(item);
+                //     }
+                // })
+                // for selected product url
+                if (productURL) {
+                    productURL.categories = data;
+                } else { // select categor for all product url
+                    angular.forEach($scope.list, function (item) {
+                        item.categories = data;
+                    })
+                }
+                
                 console.log(category);
             }, function (data) {
                 console.log(data)
             })
-        }
+        };
+
+        this.editCategory = function (item) {
+            var product = item;
+            if (product.categories && product.categories.length > 0) {
+                var dialogScope = $scope.$new();
+                dialogScope.categories = product.categories;
+                var dialog = ngDialog.openConfirm({
+                    scope: dialogScope,
+                    template: "selectCategory"
+                });
+
+                dialog.then(function (data) {
+                    var categoryIds = [];
+                    angular.forEach(data, function (item) {
+                        if (item.selected === true) {
+                            categoryIds.push(item.Id);
+                        }
+                    })
+                    // for selected product url
+                    if (productURL) {
+                        productURL.categoryIds = categoryIds;
+                    } else { // select categor for all product url
+                        angular.forEach($scope.list, function (item) {
+                            item.categorrIds = categoryIds;
+                        })
+                    }
+                    
+                    console.log(category);
+                }, function (data) {
+                    console.log(data)
+                })
+            }
+        };
 
 
         this.handle = function (item) {
@@ -101,7 +143,19 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 $scope.$emit('changeSpinnerStatus', true);
                 item.status = statusEnum.PROCESSING;
 
-                var promise = ProductService.uploadProduct(item);
+                if (item.categories && item.categories.length > 0) {
+                    var categoryIds = [];
+                    angular.forEach(item.categories, function (item) {
+                        categoryIds.push(item.Id);
+                    })
+                }
+                var data = {
+                    url: item.url,
+                    categoryIds: categoryIds,
+                    manufacturerIds: []
+                }
+                console.log(data);
+                var promise = ProductService.uploadProduct(data);
                 promise.then(function (results) {
                     item.success = true;
                     item.status = statusEnum.PROCESS_SUCCESS;
@@ -146,7 +200,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 });
                 $scope.doingBatch = false;
             }
-        }
+        };
 
     }
 ])
