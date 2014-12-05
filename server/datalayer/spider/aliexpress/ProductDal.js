@@ -206,6 +206,9 @@ function ProductSpiderService() {
     // the html code for description. need to remove all specical characters.
     this.description = "";
 
+    // used to store error messages.
+    this.errors = [];
+
     this.getResult = function() {
         var result = {
             sku: this.productId,
@@ -217,8 +220,25 @@ function ProductSpiderService() {
             nowPrice: this.nowPrice,
             productAttribts: this.productAttribts,
             specAttribts: this.specAttribts,
-            description: this.description
+            description: this.description,
+            hasErrors: false
         };
+        // if some important crawl is unexpected, throw error message.
+        if (this.errors.length) {
+            var _finallyErrorMsg = [];
+            _finallyErrorMsg.push("provider: aliexpress\n");
+            _finallyErrorMsg.push("service name: ProductSpiderService()\n");
+            // error detail message.
+
+            _finallyErrorMsg.push("details:" + this.errors.map(function(item) {
+                return JSON.stringify(item)
+            }).join("\n"));
+
+            result = {
+                hasErrors: true,
+                errors: new Error(_finallyErrorMsg.join(""))
+            };
+        }
         return result;
     };
     /**
@@ -234,57 +254,64 @@ function ProductSpiderService() {
         var _this = this;
 
         var deferred = Q.defer();
+        // check if we get product id from this url.
+        // 
+        if (this.productId) {
+            // first download color style content and cached to memory.
+            fetchSkuColorStyleContent().then(function(result) {
+                if (!result.body) {
+                    logger.error("pre load sku color style failed!", result.url);
+                    deferred.reject("pre load sku color style failed: " + result.url);
+                } else {
+                    utility.loadHtmlDocument(_this.url).then(function(htmlBody) {
+                        // now we have the whole body, parse it and select the nodes we want...
+                        var $ = cheerio.load(htmlBody, {
+                            normalizeWhitespace: true,
+                            xmlMode: true
+                        });
+                        // save current all dom html codes.
+                        _this.$dom = $;
+                        // fetch all sorted categories.
+                        _this.fetchCategories();
+                        // fetch page title.
+                        _this.fetchTitle();
+                        // fetch price list from highest price 2 lowest price. [18.00,17.00,15.00] --USD
+                        _this.fetchOldPriceList();
 
-        // first download color style content and cached to memory.
-        fetchSkuColorStyleContent().then(function(result) {
-            if (!result.body) {
-                logger.error("pre load sku color style failed!", result.url);
-                deferred.reject("pre load sku color style failed: " + result.url);
-            } else {
-                utility.loadHtmlDocument(_this.url).then(function(htmlBody) {
-                    // now we have the whole body, parse it and select the nodes we want...
-                    var $ = cheerio.load(htmlBody, {
-                        normalizeWhitespace: true,
-                        xmlMode: true
+                        _this.fetchNowPriceList();
+                        // fetch all supported color list.
+                        _this.fetchProductAttribtsList();
+
+                        //fetch product item specifications.
+                        _this.fetchspecAttribts();
+
+                        // fetch product description. Note: because we will aysnc send an new request to get product description html code here
+                        // and we will waiting for all description has been downloaded, then flush success event to consumer.
+                        _this.fetchDescription().then(function(desc) {
+                            _this.description = desc;
+                            // return result to client.
+                            deferred.resolve(_this.getResult());
+
+                        }, function(descErr) {
+                            logger.debug("fetch description error: ", descErr);
+                            _this.description = "fetch description error";
+                            deferred.resolve(_this.getResult());
+                        });
+
+                    }, function(htmlBodyError) {
+                        // throw error.
+                        deferred.reject(htmlBodyError);
                     });
-                    // save current all dom html codes.
-                    _this.$dom = $;
-                    // fetch all sorted categories.
-                    _this.fetchCategories();
-                    // fetch page title.
-                    _this.fetchTitle();
-                    // fetch price list from highest price 2 lowest price. [18.00,17.00,15.00] --USD
-                    _this.fetchOldPriceList();
+                }
 
-                    _this.fetchNowPriceList();
-                    // fetch all supported color list.
-                    _this.fetchProductAttribtsList();
-
-                    //fetch product item specifications.
-                    _this.fetchspecAttribts();
-
-                    // fetch product description. Note: because we will aysnc send an new request to get product description html code here
-                    // and we will waiting for all description has been downloaded, then flush success event to consumer.
-                    _this.fetchDescription().then(function(desc) {
-                        _this.description = desc;
-                        // return result to client.
-                        deferred.resolve(_this.getResult());
-
-                    }, function(descErr) {
-                        logger.debug("fetch description error: ", descErr);
-                        _this.description = "fetch description error";
-                        deferred.resolve(_this.getResult());
-                    });
-
-                }, function(htmlBodyError) {
-                    // throw error.
-                    deferred.reject(htmlBodyError);
-                });
-            }
-
-        }, function error(err) {
-            deferred.reject(err);
-        });
+            }, function error(err) {
+                deferred.reject(err);
+            });
+        } else {
+            var _errorMsg = utility.stringFormat("make sure you have chosen an correct product url `{0}`", this.url);
+            logger.error(_errorMsg);
+            deferred.reject(new Error(_errorMsg));
+        }
         // return promise.
         return deferred.promise;
     }
@@ -308,6 +335,12 @@ _.extend(ProductSpiderService.prototype, {
     fetchTitle: function() {
         logger.debug("filter to get title content...");
         this.title = this.$dom("h1.product-name").text();
+        if (!this.title) {
+            logger.error("fetchTitle", "can't find correct title for this product!");
+            this.errors.push({
+                "fetchTitle": "can't find correct title for this product!"
+            });
+        }
     },
     fetchOldPriceList: function() {
         logger.debug("filter to get old price list...");
@@ -334,6 +367,12 @@ _.extend(ProductSpiderService.prototype, {
         // if no now price, then use old price.
         if (!this.nowPrice.length) {
             this.nowPrice = this.oldPrice;
+        }
+        if (!(this.nowPrice.length && this.nowPrice[0])) {
+            logger.error("fetchNowPriceList", "can't find now sell price for this product!");
+            this.errors.push({
+                "fetchNowPriceList": "can't find now sell price for this product!"
+            });
         }
     },
     fetchProductAttribtsList: function() {
@@ -391,7 +430,16 @@ _.extend(ProductSpiderService.prototype, {
         var _this = this;
         return fetchProductDescriptions(this.productId).then(function(result) {
             var desc = result.body || "";
-            var $desc = _this.$dom(desc);
+            var $desc = "";
+            try {
+                $desc = _this.$dom(desc);
+            } catch (e) {
+                $desc = _this.$dom("");
+                logger.error("fetchDescription", e.message);
+                _this.errors.push({
+                    "fetchDescription": e.message
+                });
+            }
             // remove a link.
             $desc.find("a").remove();
             // remove img link.

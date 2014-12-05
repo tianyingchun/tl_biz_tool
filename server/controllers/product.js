@@ -20,7 +20,11 @@ router.post("/auto_extract_products", function(req, res) {
     if (url) {
         // crawl product information.
         productService.crawlProductInfo(url).then(function(result) {
-            base.apiOkOutput(res, result);
+            if (result.hasErrors) {
+                base.apiErrorOutput(res, result.errors);
+            } else {
+                base.apiOkOutput(res, result);
+            }
         }, function(err) {
             base.apiErrorOutput(res, err);
         });
@@ -50,13 +54,16 @@ router.post("/auto_extract_upload_products", function(req, res) {
     } else {
         // crawl product information.
         productService.crawlProductInfo(url).then(function(crawlProductInfo) {
-            // to add new product into databse.
-            productService.addNewProduct(crawlProductInfo, categoryIds, manufacturerIds).then(function(result) {
-                base.apiOkOutput(res, result);
-            }, function(err) {
-                base.apiErrorOutput(res, err);
-            });
-
+            if (crawlProductInfo.hasErrors) {
+                base.apiErrorOutput(res, crawlProductInfo.errors);
+            } else {
+                // to add new product into databse.
+                productService.addNewProduct(crawlProductInfo, categoryIds, manufacturerIds).then(function(result) {
+                    base.apiOkOutput(res, result);
+                }, function(err) {
+                    base.apiErrorOutput(res, err);
+                });
+            }
         }, function(err) {
             base.apiErrorOutput(res, err);
         });
