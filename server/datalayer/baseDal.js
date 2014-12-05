@@ -120,8 +120,6 @@ function executeEntity(Constructor, sqlParams) {
         if (result && Constructor.prototype instanceof BaseModel) {
             if (_.isArray(result) && result.length) {
                 _instance = cast2Entity(result[0], Constructor);
-            } else {
-                _instance = cast2Entity(result, Constructor);
             }
         } else {
             logger.warn("the model constructor `%s` must be inherits from BaseModel", Constructor.name);
@@ -138,8 +136,6 @@ function executeList(Constructor, sqlParams) {
         if (result && Constructor.prototype instanceof BaseModel) {
             if (_.isArray(result) && result.length) {
                 _instance = cast2EntityList(result, Constructor);
-            } else {
-                _instance = cast2EntityList([result], Constructor);
             }
         } else {
             logger.warn("the model constructor `%s` must be inherits from BaseModel", Constructor.name);

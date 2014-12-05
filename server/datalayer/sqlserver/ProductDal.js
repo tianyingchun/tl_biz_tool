@@ -16,7 +16,7 @@ var SpecificationAttributeModel = dataProvider.getModel("SpecificationAttribute"
 var SpecificationAttributeOptionModel = dataProvider.getModel("SpecificationAttributeOption");
 var Product_SpecificationAttribute_MappingModel = dataProvider.getModel("Product_SpecificationAttribute_Mapping");
 var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
-
+var ProductPictureModel = dataProvider.getModel("ProductPicture");
 // client product configurations.
 var clientProductCfg = dataProvider.getConfig("product").autoupload_config.configs;
 
@@ -27,8 +27,8 @@ function ProductDal() {
      * @param  {number} productId 获取指定产品的信息
      */
     this.getProduct = function(productId) {
-        var sqlStr = "SELECT Id,Name,ShortDescription,FullDescription,AdminComment,ProductTemplateId,ShowOnHomePage,MetaKeywords,MetaDescription,MetaTitle,AllowCustomerReviews,ApprovedRatingSum,NotApprovedRatingSum,ApprovedTotalReviews,NotApprovedTotalReviews,SubjectToAcl,Published,Deleted,CreatedOnUtc,UpdatedOnUtc FROM  dbo.Product WHERE id={0}";
-        return baseDal.executeList(ProductModel, [sql, productId]);
+        var sql = "SELECT Id,Name,ShortDescription,FullDescription,AdminComment,ProductTemplateId,ShowOnHomePage,MetaKeywords,MetaDescription,MetaTitle,AllowCustomerReviews,ApprovedRatingSum,NotApprovedRatingSum,ApprovedTotalReviews,NotApprovedTotalReviews,SubjectToAcl,Published,Deleted,CreatedOnUtc,UpdatedOnUtc FROM  Product WHERE id={0}";
+        return baseDal.executeEntity(ProductModel, [sql, productId]);
     };
 
     /**
@@ -168,7 +168,17 @@ function ProductDal() {
         }
         return deferred.promise;
     };
+    /**
+     * Get all pictures from given productid.
+     * @param  {number} productId product id.
+     * @return {promise}
+     */
+    this.getPicturesByProductId = function(productId) {
 
+        var sql = "SELECT Id, ProductId, PictureId, DisplayOrder FROM dbo.Product_Picture_Mapping WHERE ProductId = {0}";
+
+        return baseDal.executeList(ProductPictureModel, [sql, productId]);
+    };
     /**
      * Add specification attributes of current product.
      * @param  {number}   newProduct.Id productId
