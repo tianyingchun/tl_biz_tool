@@ -49,7 +49,7 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
             },
             failed: function(defered, resp) {
 
-                var result = utility.httpRespDataConverter(resp.statusText || resp.data, resp.status);
+                var result = utility.httpRespDataConverter(resp.data, resp.status);
 
                 $log.debug(this.logKey(), utility.stringFormat("failed -> converted data {0}", result));
 

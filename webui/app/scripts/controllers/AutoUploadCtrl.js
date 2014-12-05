@@ -34,7 +34,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             $scope.$emit("changeSpinnerStatus", false);
         });
 
-        var list = [{url: "http://www.baidu.com"}];
+        var list = [];
         this.uploadFile = function () {
             helper.file_upload.click();
             helper.file_upload.change(function () {
@@ -49,11 +49,21 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                         item = item.trim();
                         var temp = {};
                         if (regexRules.url.test(item)) {
+                            var hasFound = false;
+                            for (var i = 0; i < list.length; i++) {
+                                if (list[i].url === item) {
+                                    hasFound = true;
+                                    break;
+                                }
+                            };
+                            if (hasFound) {
+                                return;
+                            }
                             temp.url = item;
                             list.push(temp);
-                            $scope.list = angular.copy(list);
                         }
                     })
+                    $scope.list = angular.copy(list);
                 })
             })
         };
@@ -68,7 +78,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             var productURL = productURL;
             var category = category;
             var categories = [angular.copy(category)];
-            while(category.ParentCategoryId != 0) {
+            while (category.ParentCategoryId != 0) {
                 var temp = allCategories[category.ParentCategoryId];
                 categories.push(angular.copy(temp));
                 category = temp;
@@ -83,12 +93,6 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 template: "selectCategory"
             });
             dialog.then(function (data) {
-                // var categories = [];
-                // angular.forEach(data, function (item) {
-                //     if (item.selected === true) {
-                //         categories.push(item);
-                //     }
-                // })
                 // for selected product url
                 if (productURL) {
                     productURL.categories = data;
@@ -97,7 +101,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                         item.categories = data;
                     })
                 }
-                
+
                 console.log(category);
             }, function (data) {
                 console.log(data)
@@ -115,25 +119,52 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 });
 
                 dialog.then(function (data) {
-                    var categoryIds = [];
-                    angular.forEach(data, function (item) {
-                        if (item.selected === true) {
-                            categoryIds.push(item.Id);
-                        }
-                    })
-                    // for selected product url
-                    if (productURL) {
-                        productURL.categoryIds = categoryIds;
-                    } else { // select categor for all product url
-                        angular.forEach($scope.list, function (item) {
-                            item.categorrIds = categoryIds;
-                        })
+                    if (product) {
+                        product.categories = data;
                     }
-                    
-                    console.log(category);
                 }, function (data) {
                     console.log(data)
                 })
+            }
+        };
+
+        /**
+         * /
+         * @param  {[type]} product [description]
+         * @return {[type]}         [description]
+         */
+        function uploadProduct(product) {
+            if (product.categories && product.categories.length > 0) {
+                var categoryIds = [];
+                angular.forEach(product.categories, function (item) {
+                    if (item.selected === true) {
+                        categoryIds.push(item.Id);
+                    }
+                })
+                
+                if (categoryIds.length > 0) {
+
+                    var data = {
+                        url: product.url,
+                        categoryIds: categoryIds,
+                        manufacturerIds: []
+                    }
+                    return ProductService.uploadProduct(data);
+                } else {
+                    console.log("product don't select category");
+                    return null;
+                }
+            } else {
+                // TODO: how to deal with none categories product
+                console.log("product don't have category!");
+                return null;
+            }
+        };
+
+        this.remove = function (item) {
+            var index = $scope.list.indexOf(item);
+            if (index > -1) {
+                $scope.list.splice(index, 1);
             }
         };
 
@@ -143,25 +174,18 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 $scope.$emit('changeSpinnerStatus', true);
                 item.status = statusEnum.PROCESSING;
 
-                if (item.categories && item.categories.length > 0) {
-                    var categoryIds = [];
-                    angular.forEach(item.categories, function (item) {
-                        categoryIds.push(item.Id);
-                    })
+                var promise = uploadProduct(item);
+                if (promise === null) {
+                    // tell user need to select category
+                    
+                    return;
                 }
-                var data = {
-                    url: item.url,
-                    categoryIds: categoryIds,
-                    manufacturerIds: []
-                }
-                console.log(data);
-                var promise = ProductService.uploadProduct(data);
                 promise.then(function (results) {
                     item.success = true;
                     item.status = statusEnum.PROCESS_SUCCESS;
                 }, function (err) {
                     item.error = true;
-                    item.errorMessage = err;
+                    item.errorMessage = err.data.message;
                     item.status = statusEnum.PROCESS_FAILED;
                 }).finally(function () {
                     $scope.$emit('changeSpinnerStatus', false);
@@ -176,14 +200,18 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 var list = $scope.list;
                 $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
-                    var promise = ProductService.uploadProduct(item);
+                    var promise = uploadProduct(item);
+                    if (promise === null) {
+                        callback();
+                        return;
+                    }
                     promise.then(function (results) {
                         item.success = true;
                         item.status = statusEnum.PROCESS_SUCCESS;
                         callback();
                     }, function (err) {
                         item.error = true;
-                        item.errorMessage = err;
+                        item.errorMessage = err.data.message;
                         item.status = statusEnum.PROCESS_FAILED;
                         callback();
                     })

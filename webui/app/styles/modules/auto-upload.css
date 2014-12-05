@@ -1,1 +1,42 @@
-.auto-upload .number{width:50px}.auto-upload .action{width:215px}.auto-upload .status{width:100px}.auto-upload table tbody tr td{vertical-align:middle}.auto-upload .search-bar{width:250px;display:inline-block;vertical-align:middle}.auto-upload .search-query{border-radius:15px}.auto-upload .catalog-list{width:150px;text-align:center}.auto-upload .catalog-list .catalog-list-content{height:400px;overflow-x:auto}.auto-upload .tool-bar div{margin-right:30px}.auto-upload .tool-bar .catalog-list-content{height:500px;overflow-x:auto;right:0;left:auto}
+.auto-upload {
+  text-align: center;
+}
+.auto-upload .number {
+  width: 50px;
+}
+.auto-upload .action {
+  width: 157px;
+}
+.auto-upload .status {
+  width: 80px;
+}
+.auto-upload table tr td,
+.auto-upload table tr th {
+  vertical-align: middle;
+  text-align: center;
+}
+.auto-upload .search-bar {
+  width: 250px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.auto-upload .search-query {
+  border-radius: 15px;
+}
+.auto-upload .catalog-list {
+  width: 100px;
+  text-align: center;
+}
+.auto-upload .catalog-list .catalog-list-content {
+  height: 400px;
+  overflow-x: auto;
+}
+.auto-upload .tool-bar div {
+  margin-right: 30px;
+}
+.auto-upload .tool-bar .catalog-list-content {
+  height: 500px;
+  overflow-x: auto;
+  right: 0;
+  left: auto;
+}
