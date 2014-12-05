@@ -93,6 +93,44 @@ function ProductDataProvider() {
 
     };
     /**
+     * Check if we can now upload new pictures for current product
+     * @param  {string} sku product variant sku.
+     * @return {promise}  return new product basic information.
+     */
+    this.ifAllowUsUploadNewPictures = function(sku) {
+        var deferred = Q.defer();
+        var _this = this;
+        this.getProductInfoBySku(sku).then(function(product) {
+            logger.debug("current product:", product);
+            var productId = product.Id;
+            if (productId && productId != 0) {
+                _this.getPicturesByProductId(productId).then(function(productPictureList) {
+                    // status is ok, can upload new pictures.
+                    if (!productPictureList || productPictureList.length == 0) {
+                        deferred.resolve(product);
+                    } else {
+                        // check if existed picture mappings for current productId, if have throw error,
+                        // we can't allow upload picture if this product has picture mapping.
+                        var _message = utility.stringFormat("The sku:`{0}`, product id:`{1}` has existed pictures, can't add repeated picture now!", sku, productId);
+                        logger.warn(_message);
+                        deferred.reject(new Error(_message));
+                    }
+                }, function(err) {
+                    deferred.reject(err);
+                });
+            } else {
+                var _errorMsg = utility.stringFormat("can't find product basic detail by sku `{0}`, please upload product first!", sku);
+                logger.debug(_errorMsg);
+                deferred.reject(new Error(_errorMsg));
+            }
+
+        }, function(err) {
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    };
+    /**
      * Add new product information to database. we provider this public api to do below tasks:
      *
      *  1. upload product basicinfo to db

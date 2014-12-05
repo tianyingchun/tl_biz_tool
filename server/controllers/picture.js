@@ -51,60 +51,41 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
     var picture_synced_to_dir = pictureUploadCfg.picture_synced_to_dir.value;
 
     logger.debug("sku: %s, picture_source_dir: %s ", sku, picture_source_dir);
-    // file matched picture files with sku.
-    finder.from(picture_source_dir).findFiles(sku + "_<[0-9]+>", function(files) {
 
-        productService.getProductInfoBySku(sku).then(function(product) {
-            logger.debug("current product:", product);
+    // check if allow us upload new pictures, if allow return product basic info.
+    productService.ifAllowUsUploadNewPictures(sku).then(function(product) {
 
-            var productId = product.Id;
-            if (productId && productId != 0) {
+        var productName = product.Name;
 
+        var pictureSyncTasks = [];
+        pictureSyncTasks.push(function(callback) {
+            // insert picture while this picture validated status is ok!
+            // do validate this picture,e.g. max size
+            // get picture seo name.
+            var seName = pictureService.getPictureSeName(productName);
 
-                var productName = product.Name;
-                // check if have product pictures for this productid
-                productService.getPicturesByProductId(productId).then(function(productPictureList) {
-                    logger.warn(productPictureList);
-                    // do some task to upload product pictures.
-                    if (!productPictureList || productPictureList.length == 0) {
-                        var pictureSyncTasks = [];
-                        pictureSyncTasks.push(function(callback) {
-                            // insert picture while this picture validated status is ok!
-                            // do validate this picture,e.g. max size
-                            // get picture seo name.
-                            var seName = pictureService.getPictureSeName(productName);
+            // file matched picture files with sku.
+            finder.from(picture_source_dir).findFiles(sku + "_<[0-9]+>", function(files) {
+                logger.debug("matched files: ", files);
+            });
 
-                            callback(null, seName);
-                        });
-                        // run all picture sync taks.
-                        async.parallel(pictureSyncTasks, function(err, results) {
-                            if (err) {
-                                base.apiErrorOutput(res, err);
-
-                            } else {
-                                base.apiOkOutput(res, results);
-                            }
-                        });
-                    } else {
-                        // check if existed picture mappings for current productId, if have throw error,
-                        // 
-                        // we can't allow upload picture if this product has picture mapping.
-                        var _message = utility.stringFormat("The sku:`{0}`, product id:`{1}` has existed pictures, can't add repeated picture now!", sku, productId);
-                        logger.warn(_message);
-                        base.apiErrorOutput(res, new Error(_message));
-                    }
-                }, function(err) {
-                    base.apiErrorOutput(res, err);
-                });
-            } else {
-                var _errorMsg = utility.stringFormat("can't find product basic detail by sku `{0}`, please upload product first!", sku);
-                logger.debug(_errorMsg);
-                base.apiErrorOutput(res, new Error(_errorMsg));
-            }
-        }, function(err) {
-            base.apiErrorOutput(res, err);
+            callback(null, seName);
         });
+        // run all picture sync taks.
+        async.parallel(pictureSyncTasks, function(err, results) {
+            if (err) {
+                base.apiErrorOutput(res, err);
+
+            } else {
+                base.apiOkOutput(res, results);
+            }
+        });
+
+    }, function(err) {
+        // can't allow us upload pictures.
+        base.apiErrorOutput(res, err);
     });
+
 });
 // only for testing purpose.
 router.get("/test_image_magick", function(req, res) {

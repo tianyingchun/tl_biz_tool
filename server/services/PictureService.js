@@ -45,6 +45,7 @@ function PictureDataProvider() {
      * @return {promise}
      */
     this.insertPicture = function(mimeType, seoFilename, isNew, displayOrder) {
+        
         var pictureModel = new PictureModel(mimeType, seoFilename, isNew, displayOrder);
 
         var deferred = Q.defer();
@@ -53,7 +54,7 @@ function PictureDataProvider() {
         pictureDal.insertPicture(pictureModel).then(function(newPicture) {
 
             // insert picture 
-
+            deferred.resolve(newPicture);
 
         }, function(err) {
             deferred.reject(err);
