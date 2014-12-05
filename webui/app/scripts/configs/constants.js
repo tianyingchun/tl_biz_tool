@@ -54,7 +54,7 @@ app.constant("statusEnum", {
 app.constant('appModules', {
     modules: [{
         title: "配置管理",
-        value: "config",
+        value: "configuration",
         path: "./tl_biz_tool/app_configs/config_factory.json",
         type: "config",
         default: true

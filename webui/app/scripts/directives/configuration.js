@@ -52,8 +52,8 @@ app.run(['$templateCache', function($templateCache){
 	                	// "<div data-ng-repeat=\"(configKey, configValue) in source.configs\" class=\"form-horizontal\">"+
 		                	
 		                "<div ng-if=\"isDropdown(configValue.type)\">"+
-		                	"<label class=\"col-sm-2 control-label\">{{configKey}}</label>"+
-		                	"<div class='btn-group pull-left' dropdown>"+
+		                	"<label class=\"col-lg-3 col-md-4 col-sm-5 control-label\">{{configKey}}</label>"+
+		                	"<div class='btn-group pull-left col-lg-9 col-md-8 col-sm-7' dropdown>"+
             					"<button class=\"btn btn-primary dropdown-toggle\">{{configValue.items[configValue.index][configValue.api.displayTextNode]}} <span class='caret'></span></button>"+
             					"<ul class='dropdown-menu' role='menu'>"+
             						"<li ng-repeat='item in configValue.items' ng-click='click()'><a href>{{item[configValue.api.displayTextNode]}}</a></li>"+
@@ -63,16 +63,16 @@ app.run(['$templateCache', function($templateCache){
 		                	
 		                "<div ng-if=\"isTextBox(configValue.type)\">"+
 			                "<div ng-if=\"!isObject(configValue.value)\" class=\"form-group\">"+
-	                		 	"<label class=\"col-sm-2 control-label\">{{configKey}}</label>"+
-	                			"<div class=\"col-sm-10\">"+
+	                		 	"<label class=\"col-lg-3 col-md-4 col-sm-5 control-label\">{{configKey}}</label>"+
+	                			"<div class=\"col-lg-9 col-md-8 col-sm-7\">"+
 	                				"<input ng-if=\"isTextBox(configValue.type)\" type=\"text\" ng-model=\"configValue.value\" class=\"form-control\">"+
                 				"</div>"+
                 			"</div>"+
 
 		                	"<div ng-if=\"isObject(configValue.value)\">"+
 		                		"<div data-ng-repeat=\"(key, value) in configValue.value\" class=\"form-group\">"+
-                					"<label class=\"col-sm-2 control-label\">{{key}}</label>"+
-                					"<div class=\"col-sm-10\"><input type=\"text\" ng-model=\"value\" class=\"form-control\"></div>"+
+                					"<label class=\"col-lg-3 col-md-4 col-sm-5 control-label\">{{key}}</label>"+
+                					"<div class=\"col-lg-9 col-md-8 col-sm-7\"><input type=\"text\" ng-model=\"value\" class=\"form-control\"></div>"+
                 				"</div>"+
 							"</div>"+
 		                "</div>"+	

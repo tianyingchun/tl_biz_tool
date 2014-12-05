@@ -4,5 +4,6 @@ enyo.depends(
 	"pictureService.js",
 	"fileService.js",
 	"configService.js",
-	"Session.js"
+	"Session.js",
+	"dialogService.js"
 );

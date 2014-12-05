@@ -1,5 +1,5 @@
-app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductService", "ngDialog", "regexRules", "statusEnum", "$filter", "CatalogService",
-    function ($scope, $log, FileService, ProductService, ngDialog, regexRules, statusEnum, $filter, CatalogService) {
+app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductService", "ngDialog", "regexRules", "statusEnum", "$filter", "CatalogService", "DialogService",
+    function ($scope, $log, FileService, ProductService, ngDialog, regexRules, statusEnum, $filter, CatalogService, DialogService) {
 
         $scope.$emit("changeSpinnerStatus", true);
         var allCategories = {};
@@ -34,7 +34,6 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             $scope.$emit("changeSpinnerStatus", false);
         });
 
-        var list = [];
         this.uploadFile = function () {
             helper.file_upload.click();
             helper.file_upload.change(function () {
@@ -44,6 +43,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
 
                 var promise = FileService.readFile(path);
                 promise.then(function (file) {
+                    var list = [];
                     var results = file.trim().split('\n');
                     angular.forEach(results, function (item) {
                         item = item.trim();
@@ -57,22 +57,16 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                                 }
                             };
                             if (hasFound) {
-                                return;
+                                // return;
                             }
                             temp.url = item;
                             list.push(temp);
                         }
                     })
-                    $scope.list = angular.copy(list);
+                    $scope.list = list;
                 })
             })
         };
-
-        $scope.list = angular.copy(list);
-        $scope.doFilter = function () {
-            $scope.list = $filter('filter')(list, $scope.searchFilter);
-        };
-
 
         this.selectCategory = function (category, productURL) {
             var productURL = productURL;
@@ -172,14 +166,15 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
         this.handle = function (item) {
             if (item.url && item.url.length > 0) {
                 $scope.$emit('changeSpinnerStatus', true);
-                item.status = statusEnum.PROCESSING;
 
                 var promise = uploadProduct(item);
                 if (promise === null) {
                     // tell user need to select category
-                    
+                    DialogService.showAlertDialog("请给产品选择分类再上传!");
+                    $scope.$emit('changeSpinnerStatus', false);
                     return;
                 }
+                item.status = statusEnum.PROCESSING;
                 promise.then(function (results) {
                     item.success = true;
                     item.status = statusEnum.PROCESS_SUCCESS;
@@ -195,9 +190,9 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
 
         this.doBatch = function () {
             $scope.doingBatch = true;
-            if ($scope.list.length > 0) {
+            if ($scope.finalList && $scope.finalList.length > 0) {
                 $log.info("start do a batch");
-                var list = $scope.list;
+                var list = $scope.finalList;
                 $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
                     var promise = uploadProduct(item);
@@ -205,6 +200,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                         callback();
                         return;
                     }
+                    item.status = statusEnum.PROCESSING;
                     promise.then(function (results) {
                         item.success = true;
                         item.status = statusEnum.PROCESS_SUCCESS;
@@ -222,10 +218,7 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 })
             } else {
                 $log.info("nothing to do!");
-                ngDialog.open({
-                    template: '<p>没用可以处理的地址了!</p>',
-                    plain: true
-                });
+                DialogService.showAlertDialog("没有可以处理的产品!");
                 $scope.doingBatch = false;
             }
         };

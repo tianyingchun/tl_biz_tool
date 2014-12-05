@@ -9,8 +9,8 @@
                 <button class="btn btn-default dropdown-toggle">选择分类 <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu catalog-list-content" role="menu">
-                    <li>
-                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter">
+                    <li class="category-filter">
+                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="categoryFilter">
                     </li>
                     <li ng-repeat='category in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(category)'><a href>{{category.displayName}}</a>
                     </li>
@@ -32,7 +32,7 @@
             </thead>
 
             <tbody>
-                <tr ng-repeat="item in list" ng-class="{success: item.success, danger: item.error}">
+                <tr ng-repeat="item in list | filter: searchFilter as finalList" ng-class="{success: item.success, danger: item.error}">
                     <td class="number">{{$index + 1}}</td>
                     <td class="url-content">
                         <div>{{item.url}}</div>
@@ -43,8 +43,8 @@
                                 <button class="btn btn-primary btn-xs dropdown-toggle">选择分类 <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu catalog-list-content" role="menu">
-                                    <li>
-                                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="catalogFilter">
+                                    <li class="category-filter">
+                                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="categoryFilter">
                                     </li>
                                     <li ng-repeat='category in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(category,item)'><a href>{{category.displayName}}</a>
                                     </li>
@@ -59,7 +59,7 @@
                     <td class="action">
                         <div class="action-content">
                             <button ng-disabled="doingBatch" ng-click="controller.handle(item)" class="btn btn-default btn-xs">处理</button>
-                            <button ng-disabled="doingBatch" class="btn btn-danger btn-xs" ng-show="item.error" popover-trigger="click" popover-placement="bottom" popover="{{item.errorMessage}}">错误信息</button>
+                            <button ng-disabled="doingBatch" class="btn btn-danger btn-xs" ng-show="item.error" popover-trigger="click" popover-placement="left" popover="{{item.errorMessage}}">错误信息</button>
                             <button ng-disabled="doingBatch" ng-click="controller.remove(item)" class="btn btn-default btn-xs">删除</button>
                         </div>
                     </td>
