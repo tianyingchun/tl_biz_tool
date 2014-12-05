@@ -6,6 +6,7 @@ var base = require("./base");
 var logger = require("../helpers/log");
 var utility = require("../helpers/utility");
 var finder = require('fs-finder');
+var fse = require("fs-extra");
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 var pictureCfg = dataProvider.getConfig("picture");
@@ -64,12 +65,20 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
             // get picture seo name.
             var seName = pictureService.getPictureSeName(productName);
 
-            // file matched picture files with sku.
-            finder.from(picture_source_dir).findFiles(sku + "_<[0-9]+>", function(files) {
-                logger.debug("matched files: ", files);
-            });
+            // check if existed directory path.
+            var hasExistedDir = fse.existsSync(picture_source_dir);
+            if (hasExistedDir) {
+                // file matched picture files with sku.
+                finder.from(picture_source_dir).findFiles(sku + "_<[0-9]+>", function(files) {
 
-            callback(null, seName);
+                    logger.debug("matched files: ", files);
+
+                });
+                callback(null, seName);
+
+            } else {
+                callback("can't find picture upload source url, please check config settings");
+            }
         });
         // run all picture sync taks.
         async.parallel(pictureSyncTasks, function(err, results) {

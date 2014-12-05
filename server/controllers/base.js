@@ -46,6 +46,9 @@ var base = {
      * @param  {object} the Error instance.
      */
     apiErrorOutput: function(res, error) {
+        if (_.isString(error)) {
+            error = new Error(error);
+        }
         if (error && error.error) {
             error = error.error;
         }
