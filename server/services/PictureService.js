@@ -48,9 +48,9 @@ function PictureDataProvider() {
      * @param  {Boolean} isNew       A value indicating whether the picture is new
      * @return {promise}
      */
-    this.insertPicture = function(mimeType, seoFilename, isNew, displayOrder) {
+    this.insertPicture = function(mimeType, seoFilename, isNew) {
 
-        var pictureModel = new PictureModel(mimeType, seoFilename, isNew, displayOrder);
+        var pictureModel = new PictureModel(mimeType, seoFilename, isNew);
 
         var deferred = Q.defer();
 

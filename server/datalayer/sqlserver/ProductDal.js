@@ -76,22 +76,22 @@ function ProductDal() {
     };
     /**
      * add product picture mappings.
-     * @param {array} pictureIds required, passed target picture id, auto add all pictures mapping for this product
+     * @param {array} pictures [{pictureId:1111, displayOrder:0}]  required, passed target picture id, auto add all pictures mapping for this product
      */
-    this.addProductPictureMappings = function(productId, pictureIds) {
+    this.addProductPictureMappings = function(productId, pictures) {
         var checkExistRecordSql = "SELECT * FROM Product_Picture_Mapping WHERE ProductId ={0} AND PictureId={1} ";
         var insertRecordSql = "INSERT INTO dbo.Product_Picture_Mapping( ProductId ,PictureId ,DisplayOrder) VALUES  ( {0},{1},{2}) ";
         var deferred = Q.defer();
 
         // finnaly sql command string.
-        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END";
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END ";
 
         var finalSql = [];
         var params = [];
         var seed = 3;
-        if (_.isArray(pictureIds)) {
-            for (var i = 0; i < pictureIds.length; i++) {
-                var pictureId = pictureIds[i];
+        if (_.isArray(pictures)) {
+            for (var i = 0; i < pictures.length; i++) {
+                var picture = pictures[i];
                 if (i == 0) {
                     finalSql.push(sql);
                 } else {
@@ -102,13 +102,17 @@ function ProductDal() {
                     };
                     finalSql.push(_tmp);
                 }
-                params.push(productId, pictureId, false, 0);
+                params.push(productId, picture.pictureId, picture.displayOrder);
             }
             params.unshift(finalSql.join(";"));
 
             baseDal.executeNoneQuery(params).then(function(result) {
 
-                deferred.resolve("AddProduct Picture Mappings success, productId: `" + productId + "`, PictureIds: " + JSON.stringify(pictureIds));
+                deferred.resolve({
+                    result: "AddProduct Picture Mappings success",
+                    productId: productId,
+                    Pictures: pictures
+                });
 
             }, function(err) {
                 deferred.reject(err);
@@ -131,7 +135,7 @@ function ProductDal() {
         var deferred = Q.defer();
 
         // finnaly sql command string.
-        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END";
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END ";
         var finalSql = [];
         var params = [];
         var seed = 4;
@@ -176,7 +180,7 @@ function ProductDal() {
             "VALUES({0},{1},{2},{3}) ";
         var checkExistRecordSql = "SELECT  * FROM  Product_Manufacturer_Mapping WHERE ProductId={0} AND ManufacturerId = {1}";
         // finnaly sql command string.
-        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END";
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END ";
 
         var deferred = Q.defer();
 

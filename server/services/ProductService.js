@@ -264,10 +264,10 @@ function ProductDataProvider() {
     };
     /**
      * add product picture mappings.
-     * @param {array} pictureIds required, passed target picture id, auto add all pictures mapping for this product
+     * @param {array} pictures [{pictureId:1111, displayOrder:0}] required, passed target picture id, auto add all pictures mapping for this product
      */
-    this.addProductPictureMappings = function(productId, pictureIds) {
-        return productDal.addProductPictureMappings(productId, pictureIds);
+    this.addProductPictureMappings = function(productId, pictures) {
+        return productDal.addProductPictureMappings(productId, pictures);
     };
     /**
      * add product category mappings

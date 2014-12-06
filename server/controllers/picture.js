@@ -93,14 +93,17 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                                     logger.debug("the mimeType of uploading picture: ", mimeType);
 
                                     // insert new picture record into database.
-                                    pictureService.insertPicture(mimeType, seName, true, _displayOrder).then(function(newPictureEntity) {
+                                    pictureService.insertPicture(mimeType, seName, true).then(function(newPictureEntity) {
 
                                         var pictureId = newPictureEntity.Id;
                                         //save new picture to new target directory.
                                         pictureService.savePictureInFile(_pictureSourcePath, _pictureTargetSize, pictureId, mimeType).then(function(result) {
 
                                             logger.debug("saved picture success file path: ", result);
-                                            callback(null, pictureId);
+                                            callback(null, {
+                                                pictureId: pictureId,
+                                                displayOrder: _displayOrder
+                                            });
 
                                         }, function(err) {
                                             callback(err);
@@ -128,8 +131,8 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                         base.apiErrorOutput(res, err);
                     } else {
                         // picture ids.
-                        var pictureIds = results;
-                        productService.addProductPictureMappings(productId, pictureIds).then(function(result) {
+                        var pictures = results;
+                        productService.addProductPictureMappings(productId, pictures).then(function(result) {
                             base.apiOkOutput(res, result);
                         }, function(err) {
                             base.apiErrorOutput(res, err);
