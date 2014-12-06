@@ -1,56 +1,56 @@
 {
-    "crawl_config": {
-        "title": "图片模块配置",
-        "description": "图片模块相关配置信息管理",
-        "configs": {
-            "picture_source_url": {
-                "title": "产品图片数据源",
-                "description": "产品描述数据来源API地址",
-                "value": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
-                "type": "textbox"
-            },
-            "saveto_dir": {
-                "title": "图片抓取到哪儿?",
-                "description": "用来保存图片抓取后临到保存到当前电脑的指定目录",
-                "value": "D:\\Github_Works\\extract_dir",
-                "type": "textbox"
-            }
-        }
-    },
-    "upload_config": {
-        "title": "图片上传配置",
-        "description": "图片上传模块相关信息配置",
-        "configs": {
-            "picture_source_dir": {
-                "title": "待同步的图片源目录",
-                "description": "设置当前准备同步指定产品列表的图片源目录,会根据此目录去查找对应的图片文件",
-                "value": "D:\\Github_Works\\extract_dir\\2014-12-04",
-                "type": "textbox"
-            },
-            "picture_synced_to_dir": {
-                "title": "图片同步到后台后保存的路径?",
-                "description": "当图片和产品数据绑定到DB 后需要重命名这些图片到指定的目录,以被FTP上传到产线",
-                "value": "D:\\Github_Works\\syncto_dir",
-                "type": "textbox"
-            },
-            "picture_maximum_size": {
-                "title": "图片最大尺寸",
-                "description": "允许上传的图片最大的尺寸，取最长边",
-                "value": "1280",
-                "type": "textbox"
-            },
-            "picture_resized_width": {
-                "title": "图片推荐尺寸(Width)",
-                "description": "当前上传的图片被压缩的推荐尺寸(Width)",
-                "value": "210",
-                "type": "textbox"
-            },
-            "picture_resized_height": {
-                "title": "图片推荐尺寸(Height)",
-                "description": "当前上传的图片被压缩的推荐尺寸(Height)",
-                "value": "250",
-                "type": "textbox"
-            }
-        }
+  "crawl_config": {
+    "title": "图片模块配置",
+    "description": "图片模块相关配置信息管理",
+    "configs": {
+      "picture_source_url": {
+        "title": "产品图片数据源",
+        "description": "产品描述数据来源API地址",
+        "value": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
+        "type": "textbox"
+      },
+      "saveto_dir": {
+        "title": "图片抓取到哪儿?",
+        "description": "用来保存图片抓取后临到保存到当前电脑的指定目录",
+        "value": "D:\\Github_Works\\extract_dir",
+        "type": "textbox"
+      }
     }
+  },
+  "upload_config": {
+    "title": "图片上传配置",
+    "description": "图片上传模块相关信息配置",
+    "configs": {
+      "picture_source_dir": {
+        "title": "待同步的图片源目录",
+        "description": "设置当前准备同步指定产品列表的图片源目录,会根据此目录去查找对应的图片文件",
+        "value": "D:\\Github_Works\\extract_dir\\2014-12-06",
+        "type": "textbox"
+      },
+      "picture_synced_to_dir": {
+        "title": "图片同步到后台后保存的路径?",
+        "description": "当图片和产品数据绑定到DB 后需要重命名这些图片到指定的目录,以被FTP上传到产线",
+        "value": "D:\\Github_Works\\syncto_dir",
+        "type": "textbox"
+      },
+      "picture_maximum_size": {
+        "title": "图片最大尺寸",
+        "description": "允许上传的图片最大的尺寸，取最长边",
+        "value": "1280",
+        "type": "textbox"
+      },
+      "picture_resized_width": {
+        "title": "图片推荐尺寸(Width)",
+        "description": "当前上传的图片被压缩的推荐尺寸(Width)",
+        "value": "210",
+        "type": "textbox"
+      },
+      "picture_resized_height": {
+        "title": "图片推荐尺寸(Height)",
+        "description": "当前上传的图片被压缩的推荐尺寸(Height)",
+        "value": "250",
+        "type": "textbox"
+      }
+    }
+  }
 }

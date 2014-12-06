@@ -75,6 +75,52 @@ function ProductDal() {
         return baseDal.executeEntity(ProductVariantModel, [sql, productVariantId]);
     };
     /**
+     * add product picture mappings.
+     * @param {array} pictureIds required, passed target picture id, auto add all pictures mapping for this product
+     */
+    this.addProductPictureMappings = function(productId, pictureIds) {
+        var checkExistRecordSql = "SELECT * FROM Product_Picture_Mapping WHERE ProductId ={0} AND PictureId={1} ";
+        var insertRecordSql = "INSERT INTO dbo.Product_Picture_Mapping( ProductId ,PictureId ,DisplayOrder) VALUES  ( {0},{1},{2}) ";
+        var deferred = Q.defer();
+
+        // finnaly sql command string.
+        var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " END";
+
+        var finalSql = [];
+        var params = [];
+        var seed = 3;
+        if (_.isArray(pictureIds)) {
+            for (var i = 0; i < pictureIds.length; i++) {
+                var pictureId = pictureIds[i];
+                if (i == 0) {
+                    finalSql.push(sql);
+                } else {
+                    var _tmp = sql;
+                    for (var j = 0; j < seed; j++) {
+                        var replaceRegex = new RegExp('\\{' + j + '\\}', "g");
+                        _tmp = _tmp.replace(replaceRegex, "{" + (i * seed + j) + "}");
+                    };
+                    finalSql.push(_tmp);
+                }
+                params.push(productId, pictureId, false, 0);
+            }
+            params.unshift(finalSql.join(";"));
+
+            baseDal.executeNoneQuery(params).then(function(result) {
+
+                deferred.resolve("AddProduct Picture Mappings success, productId: `" + productId + "`, PictureIds: " + JSON.stringify(pictureIds));
+
+            }, function(err) {
+                deferred.reject(err);
+            });
+        } else {
+            logger.error("We must give not empty array with parameter in addProductPictureMappings!");
+
+            deferred.reject("We must give not empty array with parameter in addProductPictureMappings()!");
+        }
+        return deferred.promise;
+    };
+    /**
      * add product category mappings.
      * @param {array} categoryIds required, passed target category id, auto add all category mapping for this product
      */

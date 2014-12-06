@@ -4,6 +4,8 @@ var logger = require('../helpers/log');
 var utility = require('../helpers/utility');
 var Q = require("q");
 var path = require("path");
+var fse = require("fs-extra");
+var gm = require('gm');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
@@ -23,6 +25,8 @@ var fs = require("fs");
 var pictureCfg = dataProvider.getConfig("picture");
 
 var pictureCfgCrawl = dataProvider.getConfigNode(pictureCfg, "crawl_config");
+
+var pictureCfgUpload = dataProvider.getConfigNode(pictureCfg, "upload_config");
 
 // picture spider service.
 var pictureSpiderDal = dataProvider.getDataAccess("spider", "Picture");
@@ -45,7 +49,7 @@ function PictureDataProvider() {
      * @return {promise}
      */
     this.insertPicture = function(mimeType, seoFilename, isNew, displayOrder) {
-        
+
         var pictureModel = new PictureModel(mimeType, seoFilename, isNew, displayOrder);
 
         var deferred = Q.defer();
@@ -116,7 +120,19 @@ function PictureDataProvider() {
         return name2;
 
     };
-
+    /**
+     * @sync method.
+     * Get displayorderby give picture path
+     * @param  {string} picturePath picture path
+     * @return {number} displayOrder.
+     */
+    this.getDisplayOrderByPictureName = function(picturePath) {
+        var displayOrder = 0;
+        if (picturePath) {
+            displayOrder = parseInt(picturePath.match(/[^_/]*$/)[0].replace(/.\w*$/, ""));
+        }
+        return displayOrder;
+    };
     /**
      * Updates a SEO filename of a picture
      * @param {number} pictureId   picture id number.
@@ -147,12 +163,76 @@ function PictureDataProvider() {
         });
         return deferred.promise;
     };
+    /**
+     * Validation picture if match our website requirement, e.g. maxsize.
+     * @param  {string} picturePath full file path.
+     * @return {promise} {size:{weight:xx,height:xxx}, filepath:''}
+     */
+    this.validatePicture = function(picturePath) {
+        var deferred = Q.defer();
+        var _this = this;
+        var fileExisted = fse.existsSync(picturePath);
+        if (fileExisted) {
+            gm(picturePath).size(function(err, size) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    var maxSize = _this.getPictureMaximumSize();
 
-    // 
-    // helper methods.
-    // --------------------------------------------
-    // 
-    function savePictureInFile(pictureId, pictureBinary, mimeType) {
+                    logger.debug("picture maxSize:`%s`, size: `%s`", maxSize, size);
+
+                    var newSize = size;
+                    if ((size.height > maxSize) || (size.width > maxSize)) {
+                        newSize = _this.calculateDimensions(size, maxSize);
+                    }
+                    deferred.resolve({
+                        filepath: picturePath,
+                        size: newSize
+                    });
+                }
+            });
+        } else {
+            var _existMsg = utility.stringFormat("can't find the picture with path: `{0}`", picturePath);
+            logger.warn(_existMsg);
+            deferred.reject(_existMsg);
+        }
+        return deferred.promise;
+    };
+    
+    this.getPictureMaximumSize = function() {
+        var maxSize = parseInt(pictureCfgUpload.picture_maximum_size.value);
+        return maxSize;
+    };
+    /**
+     * Get mimetype for given picture path
+     * @param  {string} picturePath picture path
+     * @return {promise} - returns the image format (gif, jpeg, png, etc)
+     */
+    this.getPictureMimeType = function(picturePath) {
+        var deferred = Q.defer();
+        var fileExisted = fse.existsSync(picturePath);
+
+        if (fileExisted) {
+            gm(picturePath).format(function(err, value) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    value = value ? value.toLowerCase() : "jpeg";
+                    deferred.resolve(value);
+                }
+            });
+        } else {
+            var _errorMsg = utility.stringFormat("can't find picture with given path `{0}`", picturePath);
+            logger.error(_errorMsg);
+            deferred.reject(_errorMsg);
+        }
+        return deferred.promise;
+    };
+
+
+    this.savePictureInFile = function(pictureOriginPath, newSize, pictureId, mimeType) {
+
+        var deferred = Q.defer();
 
         var lastPart = getFileExtensionFromMimeType(mimeType);
 
@@ -172,13 +252,24 @@ function PictureDataProvider() {
 
         var targetFilePath = path.join(pictureCfgCrawl.syncedto_dir.value, localFilename);
 
-        logger.debug("sync picture target file path: ", targetFilePath);
+        logger.debug("sync picture target file path: `%s` ", targetFilePath);
 
-
-        // TODO..Using `node-imagemagick`
-
-        // File.WriteAllBytes(targetFilePath, pictureBinary);
+        // resize width, height.
+        gm(pictureOriginPath).resize(newSize.width, newSize.height).write(targetFilePath, function(err) {
+            if (err) {
+                deferred.reject(err);
+            } else {
+                deferred.resolve("sync picture target file path: `" + targetFilePath + "` success!");
+            }
+        });
+        return deferred.promise;
     };
+
+    // 
+    // helper methods.
+    // --------------------------------------------
+    // 
+
     /**
      * Returns the file extension from mime type.
      * @param  {string} string mimeType    Mime type
