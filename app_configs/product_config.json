@@ -1,59 +1,59 @@
 {
-    "crawl_config": {
-        "title": "产品抓取配置",
-        "description": "用来配置一些关于产品抓取数据源所必须的资源地址信息",
-        "configs": {
-            "sku_color_css_url": {
-                "title": "颜色值CSS数据源",
-                "description": "产品数据ColorList颜色的来源Css文件",
-                "value": "http://style.aliunicorn.com/css/6v/run/wholesale/buyer/module/sku-color-card.css",
-                "type": "textbox"
-            },
-            "product_description_url": {
-                "title": "产品描述数据源",
-                "description": "产品描述数据来源API地址",
-                "value": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
-                "type": "textbox"
-            },
-            "price_rate": {
-                "title": "产品价格比率",
-                "description": "当前产品价格制定比率 = 当前抓取价格的倍率",
-                "value": 1.4,
-                "type": "textbox"
-            },
-            "old_price_rate": {
-                "title": "产品卖价上浮比率",
-                "description": "当前产品显示价格 = 当前产品卖价*比率",
-                "value": 1.8,
-                "type": "textbox"
-            },
-            "tier_price_rate": {
-                "title": "产品卖价上浮比率",
-                "description": "当前产品显示价格 = 当前产品卖价*比率",
-                "type": "textbox",
-                "value": {
-                    "tier_10": 0.9,
-                    "tier_20": 0.85,
-                    "tier_30": 0.8
-                }
-            }
+  "crawl_config": {
+    "title": "产品抓取配置",
+    "description": "用来配置一些关于产品抓取数据源所必须的资源地址信息",
+    "configs": {
+      "sku_color_css_url": {
+        "title": "颜色值CSS数据源",
+        "description": "产品数据ColorList颜色的来源Css文件",
+        "value": "http://style.aliunicorn.com/css/6v/run/wholesale/buyer/module/sku-color-card.css",
+        "type": "textbox"
+      },
+      "product_description_url": {
+        "title": "产品描述数据源",
+        "description": "产品描述数据来源API地址",
+        "value": "http://desc.aliexpress.com/getDescModuleAjax.htm?productId={pid}",
+        "type": "textbox"
+      },
+      "price_rate": {
+        "title": "产品价格比率",
+        "description": "当前产品价格制定比率 = 当前抓取价格的倍率",
+        "value": 1.4,
+        "type": "textbox"
+      },
+      "old_price_rate": {
+        "title": "产品卖价上浮比率",
+        "description": "当前产品显示价格 = 当前产品卖价*比率",
+        "value": 1.8,
+        "type": "textbox"
+      },
+      "tier_price_rate": {
+        "title": "产品卖价上浮比率",
+        "description": "当前产品显示价格 = 当前产品卖价*比率",
+        "type": "textbox",
+        "value": {
+          "tier_10": 0.9,
+          "tier_20": 0.85,
+          "tier_30": 0.8
         }
-    },
-    "autoupload_config": {
-        "title": "产品上传配置",
-        "description": "用来配置产品默认设定的值,比如Manufacturer Ids",
-        "configs": {
-            "defaultManufacturerId": {
-                "title": "默认品牌ID",
-                "description": "默认品牌ID",
-                "value": 1,
-                "type": "dropdown",
-                "api": {
-                    "url": "/utility/get_all_manufacturers",
-                    "valueTextNode": "Id",
-                    "displayTextNode": "Name"
-                }
-            }
-        }
+      }
     }
+  },
+  "autoupload_config": {
+    "title": "产品上传配置",
+    "description": "用来配置产品默认设定的值,比如Manufacturer Ids",
+    "configs": {
+      "defaultManufacturerId": {
+        "title": "默认品牌ID",
+        "description": "默认品牌ID",
+        "value": 2,
+        "type": "dropdown",
+        "api": {
+          "url": "/utility/get_all_manufacturers",
+          "valueTextNode": "Id",
+          "displayTextNode": "Name"
+        }
+      }
+    }
+  }
 }
