@@ -156,7 +156,7 @@ function ProductDataProvider() {
         var deferred = Q.defer();
         productDal.getProductVariantBySku(sku).then(function(testProductVariant) {
             // logger.debug("getProductVariantBySku: ", testProductVariant);
-            if (!testProductVariant.Id) {
+            if (!testProductVariant || !testProductVariant.Id) {
                 // product name.
                 var name = crawlProduct.title;
 

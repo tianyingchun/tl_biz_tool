@@ -184,10 +184,14 @@ function downloadPicture(productId, url) {
  
  */
 function extractProductId(url) {
+    var productSku = "";
     if (url) {
-        return url.match(/[^_/]*$/)[0].replace(/.html.*$/, "");
+        //  productSku = url.match(/[^_/]*$/)[0].replace(/.html.*$/, "");
+        //  -Oversized-Sweater/405992_2023050161.html -->405992_2023050161 it is error id. we need to filter 405992
+        productSku = url.match(/[^_/]*$/)[0].replace(/.html.*$/, "");
     }
-    return "";
+    logger.debug("extractProduct sku: ", productSku);
+    return productSku;
 };
 /**
  * Automatically Capitalize the first letter of each word in one sentence.
@@ -262,8 +266,6 @@ function buildResultMessages(methodKey, results) {
         }
     };
 };
-
-
 
 
 

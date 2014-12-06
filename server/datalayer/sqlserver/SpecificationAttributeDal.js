@@ -52,7 +52,7 @@ function SpecificationAttributeDal() {
         var name = specificationAttribute.Name.toLowerCase();
 
         this.getSpecificationAttributeByName(name).then(function(find) {
-            if (find.Id) {
+            if (find && find.Id) {
                 logger.debug("found exist product specification attribute..", name);
                 deferred.resolve(find);
             } else {

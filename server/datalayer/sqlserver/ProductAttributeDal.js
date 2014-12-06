@@ -15,7 +15,7 @@ function ProductAttributeDal() {
 		var sql = " INSERT INTO [dbo].[ProductAttribute] (Name, Description) VALUES({0},{1});SELECT SCOPE_IDENTITY() AS Id;";
 		return baseDal.executeEntity(ProductAttributeModel, [sql, utility.capitalize(productAttribute.Name), productAttribute.Description])
 			.then(function success(newEntity) {
-				if (newEntity.Id) {
+				if (newEntity && newEntity.Id) {
 					productAttribute.Id = newEntity.Id;
 				}
 				return productAttribute;
@@ -31,7 +31,7 @@ function ProductAttributeDal() {
 		var _this = this;
 		var name = productAttribute.Name.toLowerCase();
 		this.getProductAttributeByName(name).then(function(find) {
-			if (find.Id) {
+			if (find && find.Id) {
 				logger.debug("found exist product attribute..", name);
 				deferred.resolve(find);
 			} else {
