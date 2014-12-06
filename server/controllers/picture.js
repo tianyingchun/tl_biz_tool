@@ -99,7 +99,8 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                                         //save new picture to new target directory.
                                         pictureService.savePictureInFile(_pictureSourcePath, _pictureTargetSize, pictureId, mimeType).then(function(result) {
 
-                                            callback(null, result);
+                                            logger.debug("saved picture success file path: ", result);
+                                            callback(null, pictureId);
 
                                         }, function(err) {
                                             callback(err);
@@ -108,7 +109,7 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                                     }, function(err) {
                                         callback(err);
                                     });
-                                    
+
                                 }, function(err) {
                                     callback(err);
                                 });
@@ -126,7 +127,13 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                     if (err) {
                         base.apiErrorOutput(res, err);
                     } else {
-                        base.apiOkOutput(res, results);
+                        // picture ids.
+                        var pictureIds = results;
+                        productService.addProductPictureMappings(productId, pictureIds).then(function(result) {
+                            base.apiOkOutput(res, result);
+                        }, function(err) {
+                            base.apiErrorOutput(res, err);
+                        });
                     }
                 });
             });

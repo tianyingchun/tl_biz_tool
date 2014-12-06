@@ -11,7 +11,7 @@ function PictureDal() {
 	 */
 	this.insertPicture = function(picture) {
 		var sql = "INSERT INTO Picture(MimeType ,PictureBinary,SeoFilename ,IsNew) VALUES ({0},{1},{2},{3});SELECT SCOPE_IDENTITY() AS Id;";
-		return baseDal.executeEntity(PictureModel, [sql, picture.MimeType, picture.PictureBinary, picture.SeoFilename, picture.IsNew])
+		return baseDal.executeEntity(PictureModel, [sql, picture.MimeType, ["VarBinary", picture.PictureBinary], picture.SeoFilename, picture.IsNew])
 			.then(function success(newPicture) {
 				if (newPicture != null) {
 					picture.Id = newPicture.Id;
@@ -36,7 +36,7 @@ function PictureDal() {
 	 */
 	this.updatePicture = function(picture) {
 		var sql = "UPDATE Picture SET MimeType={0},PictureBinary={1},SeoFilename={2},IsNew={3} WHERE Id={4}";
-		return baseDal.executeNoneQuery([sql, picture.MimeType, picture.PictureBinary, picture.SeoFilename, picture.IsNew, picture.Id]);
+		return baseDal.executeNoneQuery([sql, picture.MimeType, ["VarBinary", picture.PictureBinary], picture.SeoFilename, picture.IsNew, picture.Id]);
 	};
 	/**
 	 * 获取指定产品下的所有图片

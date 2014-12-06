@@ -263,6 +263,13 @@ function ProductDataProvider() {
         return deferred.promise;
     };
     /**
+     * add product picture mappings.
+     * @param {array} pictureIds required, passed target picture id, auto add all pictures mapping for this product
+     */
+    this.addProductPictureMappings = function(productId, pictureIds) {
+        return productDal.addProductPictureMappings(productId, pictureIds);
+    };
+    /**
      * add product category mappings
      * @param {number} productId     productId.
      * @param {array} manufacturerIds  all brand manufacturer ids.

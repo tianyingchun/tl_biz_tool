@@ -198,7 +198,7 @@ function PictureDataProvider() {
         }
         return deferred.promise;
     };
-    
+
     this.getPictureMaximumSize = function() {
         var maxSize = parseInt(pictureCfgUpload.picture_maximum_size.value);
         return maxSize;
@@ -250,7 +250,10 @@ function PictureDataProvider() {
         };
         var localFilename = utility.stringFormat("{0}_0.{1}", formatId(pictureId), lastPart);
 
-        var targetFilePath = path.join(pictureCfgCrawl.syncedto_dir.value, localFilename);
+        // make sure the dest directory has created!
+        fse.ensureDirSync(pictureCfgUpload.picture_synced_to_dir.value);
+
+        var targetFilePath = path.join(pictureCfgUpload.picture_synced_to_dir.value, localFilename);
 
         logger.debug("sync picture target file path: `%s` ", targetFilePath);
 

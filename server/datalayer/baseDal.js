@@ -26,7 +26,13 @@ function _prepareSqlParameters(request, sqlData) {
     // get prepared sql command string.
     var preparedSql = utility.stringFormatSql(function(idx, item) {
         var _paramKey = "param" + idx;
-        this.input(_paramKey, item);
+        // https://github.com/patriksimek/node-mssql
+        // support customized sql datatype. ["VarBinary",value]
+        if (_.isArray(item)) {
+            this.input(_paramKey, sql[item[0]], item[1]);
+        } else {
+            this.input(_paramKey, item);
+        }
         return "@" + _paramKey;
     }, request, sqlData);
 
