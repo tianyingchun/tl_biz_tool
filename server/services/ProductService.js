@@ -50,18 +50,15 @@ function ProductDataProvider() {
      * @return {promise}
      */
     this.getProductIdBySku = function(sku) {
-        var deferred = Q.defer();
-        productDal.getProductVariantBySku(sku).then(function(productVariant) {
+
+        return productDal.getProductVariantBySku(sku).then(function(productVariant) {
             if (productVariant) {
-                deferred.resolve(productVariant.ProductId);
+                return productVariant.ProductId;
             } else {
                 logger.debug("Can't find product varant by sku:" + sku);
-                deferred.reject(new Error("Can't find product varant by sku:" + sku));
+                throw new Error("Can't find product varant by sku:" + sku);
             }
-        }, function(err) {
-            deferred.reject(err);
         });
-        return deferred.promise;
     };
     /**
      * Get product detail info by product id.
@@ -78,19 +75,11 @@ function ProductDataProvider() {
      * @return {promise}
      */
     this.getProductInfoBySku = function(sku) {
-        var deferred = Q.defer();
         var _this = this;
-        this.getProductIdBySku(sku).then(function(productId) {
-            _this.getProduct(productId).then(function(product) {
-                deferred.resolve(product);
-            }, function(err) {
-                deferred.reject(err);
+        return this.getProductIdBySku(sku)
+            .then(function(productId) {
+                return _this.getProduct(productId);
             });
-        }, function(err) {
-            deferred.reject(err);
-        });
-        return deferred.promise;
-
     };
     /**
      * Check if we can now upload new pictures for current product
@@ -98,37 +87,31 @@ function ProductDataProvider() {
      * @return {promise}  return new product basic information.
      */
     this.ifAllowUsUploadNewPictures = function(sku) {
-        var deferred = Q.defer();
         var _this = this;
-        this.getProductInfoBySku(sku).then(function(product) {
+        return this.getProductInfoBySku(sku).then(function(product) {
             logger.debug("current product:", product);
+            return product;
+        }).then(function(product) {
             var productId = product.Id;
-            if (productId && productId != 0) {
-                _this.getPicturesByProductId(productId).then(function(productPictureList) {
+            if (product && productId != 0) {
+                return _this.getPicturesByProductId(productId).then(function(productPictureList) {
                     // status is ok, can upload new pictures.
                     if (!productPictureList || productPictureList.length == 0) {
-                        deferred.resolve(product);
+                        return product;
                     } else {
                         // check if existed picture mappings for current productId, if have throw error,
                         // we can't allow upload picture if this product has picture mapping.
                         var _message = utility.stringFormat("The sku:`{0}`, product id:`{1}` has existed pictures, can't add repeated picture now!", sku, productId);
                         logger.warn(_message);
-                        deferred.reject(new Error(_message));
+                        throw new Error(_message);
                     }
-                }, function(err) {
-                    deferred.reject(err);
                 });
             } else {
                 var _errorMsg = utility.stringFormat("can't find product basic detail by sku `{0}`, please upload product first!", sku);
                 logger.debug(_errorMsg);
-                deferred.reject(new Error(_errorMsg));
+                throw new Error(_errorMsg);
             }
-
-        }, function(err) {
-            deferred.reject(err);
         });
-
-        return deferred.promise;
     };
     /**
      * Add new product information to database. we provider this public api to do below tasks:

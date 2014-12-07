@@ -68,84 +68,83 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
         if (hasExistedDir) {
             // file matched picture files with sku.
             finder.from(picture_source_dir).findFiles(sku + "_<[0-9]+>", function(files) {
-                // save all tasks here.
-                var pictureSyncTasks = [];
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
+                // if we can't find files throw error here.
+                if (!files || !files.length) {
+                    var _fileMsg = "can't find pictures in directory :`" + picture_source_dir + "` with productId: `" + productId + "`";
+                    logger.error(_fileMsg);
+                    base.apiErrorOutput(res, _fileMsg);
+                } else {
+                    // save all tasks here.
+                    var pictureSyncTasks = [];
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
 
-                    logger.debug("matched file: ", file);
-                    // use closure to wrapper file name.
-                    var syncTask = function(file) {
+                        logger.debug("matched file: ", file);
+                        // use closure to wrapper file name.
+                        var syncTask = function(file) {
 
-                        return function(callback) {
-                            // insert picture while this picture validated status is ok!
-                            // do validate this picture,e.g. max size
-                            pictureService.validatePicture(file).then(function(pictureInfo) {
+                            return function(callback) {
+                                // insert picture while this picture validated status is ok!
+                                // do validate this picture,e.g. max size
+                                pictureService.validatePicture(file).then(function(pictureInfo) {
 
-                                logger.debug("validatePicture result: ", pictureInfo);
+                                    logger.debug("validatePicture result: ", pictureInfo);
 
-                                var _pictureSourcePath = pictureInfo.filepath;
-                                var _pictureTargetSize = pictureInfo.size;
-                                var _displayOrder = pictureService.getDisplayOrderByPictureName(_pictureSourcePath);
+                                    var _pictureSourcePath = pictureInfo.filepath;
+                                    var _pictureTargetSize = pictureInfo.size;
+                                    var _displayOrder = pictureService.getDisplayOrderByPictureName(_pictureSourcePath);
 
-                                // insert into database, and picture mapping.
-                                pictureService.getPictureMimeType(_pictureSourcePath).then(function(mimeType) {
-                                    logger.debug("the mimeType of uploading picture: ", mimeType);
+                                    // insert into database, and picture mapping.
+                                    pictureService.getPictureMimeType(_pictureSourcePath).then(function(mimeType) {
+                                        logger.debug("the mimeType of uploading picture: ", mimeType);
 
-                                    // insert new picture record into database.
-                                    pictureService.insertPicture(mimeType, seName, true).then(function(newPictureEntity) {
+                                        // insert new picture record into database.
+                                        pictureService.insertPicture(mimeType, seName, true).then(function(newPictureEntity) {
 
-                                        var pictureId = newPictureEntity.Id;
-                                        //save new picture to new target directory.
-                                        pictureService.savePictureInFile(_pictureSourcePath, _pictureTargetSize, pictureId, mimeType).then(function(result) {
+                                            var pictureId = newPictureEntity.Id;
+                                            //save new picture to new target directory.
+                                            pictureService.savePictureInFile(_pictureSourcePath, _pictureTargetSize, pictureId, mimeType).then(function(result) {
+                                                logger.debug("saved picture success file path: ", result);
+                                                callback(null, {
+                                                    pictureId: pictureId,
+                                                    displayOrder: _displayOrder
+                                                });
 
-                                            logger.debug("saved picture success file path: ", result);
-                                            callback(null, {
-                                                pictureId: pictureId,
-                                                displayOrder: _displayOrder
                                             });
 
-                                        }, function(err) {
-                                            callback(err);
                                         });
 
-                                    }, function(err) {
-                                        callback(err);
                                     });
 
-                                }, function(err) {
+                                }).fail(function(err) {
                                     callback(err);
                                 });
+                            };
+                        }(file);
 
-                            }, function(err) {
-                                callback(err);
-                            });
-                        };
-                    }(file);
-
-                    pictureSyncTasks.push(syncTask);
-                };
-                // run all picture sync taks.
-                async.parallel(pictureSyncTasks, function(err, results) {
-                    if (err) {
-                        base.apiErrorOutput(res, err);
-                    } else {
-                        // picture ids.
-                        var pictures = results;
-                        productService.addProductPictureMappings(productId, pictures).then(function(result) {
-                            base.apiOkOutput(res, result);
-                        }, function(err) {
+                        pictureSyncTasks.push(syncTask);
+                    };
+                    // run all picture sync taks.
+                    async.parallel(pictureSyncTasks, function(err, results) {
+                        if (err) {
                             base.apiErrorOutput(res, err);
-                        });
-                    }
-                });
+                        } else {
+                            // picture ids.
+                            var pictures = results;
+                            productService.addProductPictureMappings(productId, pictures).then(function(result) {
+                                base.apiOkOutput(res, result);
+                            }, function(err) {
+                                base.apiErrorOutput(res, err);
+                            });
+                        }
+                    });
+                }
             });
 
         } else {
-            base.apiErrorOutput(res, new Error("can't find picture `picture_source_dir`, please check config settings"));
+            throw new Error("can't find picture `picture_source_dir`, please check config settings");
         }
-    }, function(err) {
-        // can't allow us upload pictures.
+    }).fail(function(err) {
         base.apiErrorOutput(res, err);
     });
 
