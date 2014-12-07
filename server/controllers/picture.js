@@ -95,15 +95,15 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
                                     var _displayOrder = pictureService.getDisplayOrderByPictureName(_pictureSourcePath);
 
                                     // insert into database, and picture mapping.
-                                    pictureService.getPictureMimeType(_pictureSourcePath).then(function(mimeType) {
+                                    return pictureService.getPictureMimeType(_pictureSourcePath).then(function(mimeType) {
                                         logger.debug("the mimeType of uploading picture: ", mimeType);
 
                                         // insert new picture record into database.
-                                        pictureService.insertPicture(mimeType, seName, true).then(function(newPictureEntity) {
+                                        return pictureService.insertPicture(mimeType, seName, true).then(function(newPictureEntity) {
 
                                             var pictureId = newPictureEntity.Id;
                                             //save new picture to new target directory.
-                                            pictureService.savePictureInFile(_pictureSourcePath, _pictureTargetSize, pictureId, mimeType).then(function(result) {
+                                            return pictureService.savePictureInFile(_pictureSourcePath, _pictureTargetSize, pictureId, mimeType).then(function(result) {
                                                 logger.debug("saved picture success file path: ", result);
                                                 callback(null, {
                                                     pictureId: pictureId,
