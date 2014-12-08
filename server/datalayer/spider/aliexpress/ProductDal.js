@@ -6,7 +6,6 @@ var _ = require('underscore');
 var cssparser = require("cssparser");
 var fse = require("fs-extra");
 var logger = require('../../../helpers/log');
-
 // getting parser module
 var utility = require("../../../helpers/utility");
 
@@ -193,10 +192,10 @@ function fetchProductDescriptions(productId) {
  * @return {promise} html content
  */
 function fetchProductSizeTableTemplate(tempatePath) {
-    var templateFile = "../../../../statics/" + tempatePath;
+    var templateFile = "../statics/" + tempatePath;
     var deferred = Q.defer();
     if (fse.existsSync(templateFile)) {
-        fse.readFile(templateFile, function(err, data) {
+        fse.readFile(templateFile, 'utf8', function(err, data) {
             if (err) {
                 deferred.reject(err);
             } else {
