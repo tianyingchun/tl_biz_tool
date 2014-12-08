@@ -194,6 +194,7 @@ function fetchProductDescriptions(productId) {
 function fetchProductSizeTableTemplate(tempatePath) {
     var templateFile = "../statics/" + tempatePath;
     var deferred = Q.defer();
+    logger.debug("fetchProductSizeTableTemplate:", templateFile);
     if (fse.existsSync(templateFile)) {
         fse.readFile(templateFile, 'utf8', function(err, data) {
             if (err) {
@@ -474,8 +475,11 @@ _.extend(ProductSpiderService.prototype, {
         //     desc = $desc.text();
         //     return desc;
         // });
-
-        var defaultTemplateFile = productAutoUploadCfg.defaultProductSizeTableTemplate.value || "";
+        
+        // each time, we need to refetch this configurations.
+        var _productCfg = dataProvider.getConfig("product");
+        var _productAutoUploadCfg = dataProvider.getConfigNode(_productCfg, "autoupload_config");
+        var defaultTemplateFile = _productAutoUploadCfg.defaultProductSizeTableTemplate.value || "";
 
         return fetchProductSizeTableTemplate(defaultTemplateFile);
     }
