@@ -1,6 +1,6 @@
 var logger = require('../helpers/log');
 var dataProvider = require("../dataProvider");
-
+var Q = require("q");
 var productAttribtsDal = dataProvider.getDataAccess("ProductAttribute");
 var manufacturerDal = dataProvider.getDataAccess("Manufacturer");
 var catalogDal = dataProvider.getDataAccess("Catalog");
@@ -37,6 +37,17 @@ function UtilityDataProvider() {
         return manufacturerDal.getAllManufacturers();
     };
 
+    this.getProductSizeTemplates = function() {
+        var deferred = Q.defer();
+        var templates = [];
+        //  now add product size table template 'clothes'
+        templates.push({
+            Name: "Women Clothing",
+            TemplateFileName: "women_clothing.html"
+        });
+        deferred.resolve(templates);
+        return deferred.promise;
+    };
     /**
      * 返回所有的产品分类列表
      */

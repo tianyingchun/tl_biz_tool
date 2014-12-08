@@ -41,6 +41,19 @@ router.get("/get_all_manufacturers", function(req, res) {
 		base.apiErrorOutput(res, error);
 	});
 });
+
+/**
+ * API: /utility/get_product_size_templates
+ * 返回所有的产品品牌
+ */
+router.get("/get_product_size_templates", function(req, res) {
+	utilityService.getProductSizeTemplates().then(function success(result) {
+		base.apiOkOutput(res, result);
+	}, function error(error) {
+		base.apiErrorOutput(res, error);
+	});
+});
+
 /**
  * API:/utility/add_new_product_attribute
  * 增加新的ProductAttributes

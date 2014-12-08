@@ -4,13 +4,17 @@
 var cheerio = require('cheerio');
 var _ = require('underscore');
 var cssparser = require("cssparser");
-
+var fse = require("fs-extra");
 var logger = require('../../../helpers/log');
 
 // getting parser module
 var utility = require("../../../helpers/utility");
 
 var dataProvider = require("../../../dataProvider");
+
+// product configuraitons.
+var productCfg = dataProvider.getConfig("product");
+var productAutoUploadCfg = dataProvider.getConfigNode(productCfg, "autoupload_config");
 
 var Q = require("q");
 
@@ -180,6 +184,28 @@ function fetchProductDescriptions(productId) {
     }, function(err) {
         deferred.reject(err);
     });
+    return deferred.promise;
+};
+
+/**
+ * Read html product size template content from local file,
+ * @param  {string} tempatePath template file path
+ * @return {promise} html content
+ */
+function fetchProductSizeTableTemplate(tempatePath) {
+    var templateFile = "../../../../statics/" + tempatePath;
+    var deferred = Q.defer();
+    if (fse.existsSync(templateFile)) {
+        fse.readFile(templateFile, function(err, data) {
+            if (err) {
+                deferred.reject(err);
+            } else {
+                deferred.resolve(data);
+            }
+        });
+    } else {
+        deferred.resolve("nothing here, please write it by yourself!");
+    }
     return deferred.promise;
 };
 
@@ -428,26 +454,31 @@ _.extend(ProductSpiderService.prototype, {
     fetchDescription: function() {
         logger.debug("filter to get product description...");
         var _this = this;
-        return fetchProductDescriptions(this.productId).then(function(result) {
-            var desc = result.body || "";
-            var $desc = "";
-            try {
-                $desc = _this.$dom(desc);
-            } catch (e) {
-                $desc = _this.$dom("");
-                logger.error("fetchDescription", e.message);
-                _this.errors.push({
-                    "fetchDescription": e.message
-                });
-            }
-            // remove a link.
-            $desc.find("a").remove();
-            // remove img link.
-            $desc.find("img").remove();
-            // extract all text content.
-            desc = $desc.text();
-            return desc;
-        });
+        // now we can't need to crawl product description.
+        // return fetchProductDescriptions(this.productId).then(function(result) {
+        //     var desc = result.body || "";
+        //     var $desc = "";
+        //     try {
+        //         $desc = _this.$dom(desc);
+        //     } catch (e) {
+        //         $desc = _this.$dom("");
+        //         logger.error("fetchDescription", e.message);
+        //         _this.errors.push({
+        //             "fetchDescription": e.message
+        //         });
+        //     }
+        //     // remove a link.
+        //     $desc.find("a").remove();
+        //     // remove img link.
+        //     $desc.find("img").remove();
+        //     // extract all text content.
+        //     desc = $desc.text();
+        //     return desc;
+        // });
+
+        var defaultTemplateFile = productAutoUploadCfg.defaultProductSizeTableTemplate.value || "";
+
+        return fetchProductSizeTableTemplate(defaultTemplateFile);
     }
 });
 

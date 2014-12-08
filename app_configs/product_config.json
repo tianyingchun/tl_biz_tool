@@ -53,6 +53,17 @@
           "valueTextNode": "Id",
           "displayTextNode": "Name"
         }
+      },
+      "defaultProductSizeTableTemplate": {
+        "title": "默认上传的产品尺寸模版TABLE",
+        "description": "上传的产品尺寸模版",
+        "value": "women_clothing.html",
+        "type": "dropdown",
+        "api": {
+          "url": "/utility/get_product_size_templates",
+          "valueTextNode": "TemplateFileName",
+          "displayTextNode": "Name"
+        }
       }
     }
   }
