@@ -1,4 +1,5 @@
 var fs = require("fs-extra");
+var _ = require("underscore");
 var config = require("./config/index")();
 var logger = require("./helpers/log");
 
@@ -114,10 +115,19 @@ module.exports = {
     getConfigNode: function(configRoot, nodeName, keyName) {
         var cfgValue = "";
         try {
-            if (keyName) {
-                cfgValue = configRoot[nodeName].configs[keyName].value;
+            // allow us to re-refetch new configuration from file.
+            if (_.isString(configRoot)) {
+                configRoot = this.getConfig(configRoot);
+            }
+            // if object,get value from cache.
+            if (_.isObject(configRoot)) {
+                if (keyName) {
+                    cfgValue = configRoot[nodeName].configs[keyName].value;
+                } else {
+                    cfgValue = configRoot[nodeName].configs;
+                }
             } else {
-                cfgValue = configRoot[nodeName].configs;
+                logger.error("The type of configRoot only can be `string` or `object`");
             }
         } catch (e) {
             logger.error("get config node failed!", e);
