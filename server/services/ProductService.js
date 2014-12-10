@@ -157,13 +157,13 @@ function ProductDataProvider() {
                 var productVariant = new ProductVariantModel(0, name, sku, name);
                 // make sure that if now price eqauls 0 we need to throw error.
                 var _price = crawlProduct.nowPrice.length ? crawlProduct.nowPrice[0] : 0;
-                _price = _price * productCrawlCfg.price_rate.value;
+                _price = _price * parseFloat(productCrawlCfg.price_rate.value);
 
                 productVariant.Price = _price;
                 // the price we need paid!
                 productVariant.SourcePrice = crawlProduct.nowPrice[0];
                 // show the old price to customer.
-                productVariant.OldPrice = _price * productCrawlCfg.old_price_rate.value;
+                productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value);
                 productVariant.ProductCost = productVariant.SourcePrice;
                 productVariant.SourceUrl = crawlProduct.providerUrl;
                 productVariant.SourceInfoComment = crawlProduct.title;
@@ -306,7 +306,7 @@ function ProductDataProvider() {
         for (var tier in values) {
             var tierPriceModel = new TierPriceModel();
             tierPriceModel.Quantity = parseInt(tier.split("_")[1]);
-            tierPriceModel.Price = values[tier] * nowPrice;
+            tierPriceModel.Price = parseFloat(values[tier]) * parseFloat(nowPrice);
             result.push(tierPriceModel);
         }
         return result;
