@@ -16,8 +16,8 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
                 var temp = item;
                 item.displayName = item.Name;
                 while (temp.ParentCategoryId != 0) {
-                    item.displayName = allCategories[item.ParentCategoryId].Name + ' -> ' + item.Name.trim();
-                    temp = allCategories[item.ParentCategoryId];
+                    item.displayName = allCategories[temp.ParentCategoryId].Name + ' -> ' + item.displayName.trim();
+                    temp = allCategories[temp.ParentCategoryId];
                 }
             })
 
