@@ -33,6 +33,16 @@ module.exports = {
 
         _app = app;
 
+        // allow cros domin supports for all api request.
+        _app.all("*", function(req, res, next) {
+            res.set({
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "PUT, GET, POST, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type"
+            });
+            next();
+        });
         // 
         _app.use('/configs', configs);
         _app.use('/product', product);
