@@ -46,7 +46,7 @@
       "defaultManufacturerId": {
         "title": "默认品牌ID",
         "description": "默认品牌ID",
-        "value": 2,
+        "value": 1,
         "type": "dropdown",
         "api": {
           "url": "/utility/get_all_manufacturers",
