@@ -82,10 +82,12 @@ var base = {
      * @param  {Function} next next
      */
     setResponseHeaders: function(req, res, next) {
-        res.set({
-            "Content-Type": "application/json"
-        });
-        next();
+        if (res) {
+            res.set({
+                "Content-Type": "application/json"
+            });
+        }
+        if (next) next();
     },
     getErrorModel: function(code, message) {
         var _error = {
