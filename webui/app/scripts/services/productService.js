@@ -24,7 +24,7 @@
     angular.extend(ProductService.prototype, {
         //上传产品
         uploadProduct: function(product) {
-            var promise = this.postRequest("/product/auto_extract_upload_products", product, this.productBasicInfoDto);
+            var promise = this.postRequest("/product/auto_extract_upload_products", product, this.productBasicInfoDto, {timeout: 1000 * 60 * 10});
             return promise;
         }
     });
