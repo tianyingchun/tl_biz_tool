@@ -89,10 +89,10 @@ app.controller("AutoUploadCtrl", ["$scope", "$log", "FileService", "ProductServi
             dialog.then(function (data) {
                 // for selected product url
                 if (productURL) {
-                    productURL.categories = data;
+                    productURL.categories = angular.copy(data);
                 } else { // select categor for all product url
                     angular.forEach($scope.list, function (item) {
-                        item.categories = data;
+                        item.categories = angular.copy(data);
                     })
                 }
 
