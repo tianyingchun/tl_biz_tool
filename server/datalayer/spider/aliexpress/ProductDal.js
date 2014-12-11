@@ -453,7 +453,10 @@ _.extend(ProductSpiderService.prototype, {
                     } else {
                         // now we need to move `Packaging Details` into product full description.
                         // cut it from specification attribute.
-                        _this.description += "<div class=\"package-detail\">" + $childItems.parent().html() + "</div>";
+                        var _packagingDetail = $childItems.parent().html();
+                        if (_packagingDetail) {
+                            _this.description += "<div class=\"title\">Packaging Details</div><div class=\"package-detail\">" + _packagingDetail + "</div>";
+                        }
                     }
                 }
             });
