@@ -280,6 +280,9 @@ function ProductSpiderService() {
      * @return {promise}
      */
     this.start = function(httpUrl) {
+        // clear exist data.
+        this.description = "";
+
         this.url = httpUrl;
         // current product id.
         this.productId = utility.extractProductId(this.url);
