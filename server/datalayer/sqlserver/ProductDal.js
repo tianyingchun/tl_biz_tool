@@ -422,8 +422,10 @@ function ProductDal() {
             variant.IsTaxExempt, variant.TaxCategoryId, variant.ManageInventoryMethodId, variant.StockQuantity,
             variant.DisplayStockAvailability, variant.DisplayStockQuantity, variant.MinStockQuantity, variant.LowStockActivityId,
             variant.NotifyAdminForQuantityBelow, variant.BackorderModeId, variant.AllowBackInStockSubscriptions,
-            variant.OrderMinimumQuantity, variant.OrderMaximumQuantity, variant.AllowedQuantities, variant.DisableBuyButton, variant.DisableWishlistButton, variant.CallForPrice,
-            variant.Price, variant.OldPrice, variant.ProductCost, variant.SpecialPrice, variant.SpecialPriceStartDateTimeUtc, variant.SpecialPriceEndDateTimeUtc,
+            variant.OrderMinimumQuantity, variant.OrderMaximumQuantity, variant.AllowedQuantities, variant.DisableBuyButton, variant.DisableWishlistButton, variant.CallForPrice, ["Decimal", variant.Price],
+            ["Decimal", variant.OldPrice],
+            ["Decimal", variant.ProductCost],
+            ["Decimal", variant.SpecialPrice], variant.SpecialPriceStartDateTimeUtc, variant.SpecialPriceEndDateTimeUtc,
             variant.CustomerEntersPrice, variant.MinimumCustomerEnteredPrice, variant.MaximumCustomerEnteredPrice, variant.Weight, variant.Length,
             variant.Width, variant.Height, variant.PictureId, variant.AvailableStartDateTimeUtc, variant.AvailableEndDateTimeUtc,
             variant.Published, variant.Deleted, variant.DisplayOrder, variant.CreatedOnUtc, variant.UpdatedOnUtc, variant.AvailableForPreOrder, variant.SourceUrl, variant.SourceInfoComment
@@ -463,7 +465,7 @@ function ProductDal() {
                 };
                 sql.push(_tmp);
             }
-            params.push(newVariant.Id, null, item.Quantity, item.Price);
+            params.push(newVariant.Id, null, item.Quantity, ["Decimal", item.Price]);
         };
         params.unshift(sql.join(";"));
 

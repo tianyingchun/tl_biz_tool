@@ -29,7 +29,17 @@ function _prepareSqlParameters(request, sqlData) {
         // https://github.com/patriksimek/node-mssql
         // support customized sql datatype. ["VarBinary",value]
         if (_.isArray(item)) {
-            this.input(_paramKey, sql[item[0]], item[1]);
+            var sqlType = sql[item[0]];
+            var sqlVal = item[1];
+            switch (item[0]) {
+                // for decimal keep 2.33.
+                // request.input("Price", sql.Decimal(10, 2), 155.33);
+                case "Decimal":
+                    sqlType = sql["Decimal"](10, 2);
+                    sqlVal = parseFloat(sqlVal);
+                    break;
+            }
+            this.input(_paramKey, sqlType, sqlVal);
         } else {
             this.input(_paramKey, item);
         }
