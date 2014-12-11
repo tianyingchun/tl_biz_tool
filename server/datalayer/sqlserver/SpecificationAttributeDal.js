@@ -30,7 +30,7 @@ function SpecificationAttributeDal() {
         var sql = "INSERT INTO SpecificationAttribute( Name ,ParticalViewName ,Remarks ,DisplayOrder) VALUES ({0},{1},{2},{3});SELECT SCOPE_IDENTITY() AS Id;";
         return baseDal.executeEntity(SpecificationAttributeModel, [
             sql,
-            utility.capitalize(specificationAttribute.Name),
+            specificationAttribute.Name,
             specificationAttribute.ParticalViewName,
             specificationAttribute.Remarks,
             specificationAttribute.DisplayOrder
@@ -83,7 +83,7 @@ function SpecificationAttributeDal() {
         return baseDal.executeEntity(SpecificationAttributeOptionModel, [
             sql,
             specificationAttributeOption.SpecificationAttributeId,
-            utility.capitalize(specificationAttributeOption.Name),
+            specificationAttributeOption.Name,
             specificationAttributeOption.Remarks,
             specificationAttributeOption.DisplayOrder
         ]);

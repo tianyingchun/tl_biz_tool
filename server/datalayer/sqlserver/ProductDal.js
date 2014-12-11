@@ -510,7 +510,7 @@ function ProductDal() {
                 // product variant control type id.
                 var controlTypeId = productAttributeIds[key.toLowerCase()] || productAttributeIds["other"];
                 // color -->Color.
-                var promptText = utility.capitalize(key);
+                var promptText = key;
 
                 var _productAttribute = new ProductAttributeModel(promptText, "auto created by tool");
                 // create product attribute item.

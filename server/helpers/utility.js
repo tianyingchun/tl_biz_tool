@@ -197,9 +197,18 @@ function extractProductId(url) {
  * Automatically Capitalize the first letter of each word in one sentence.
  */
 function capitalize(s) {
-    return s && s.replace(/\w\S*/g, function(txt) {
+    var result = s ? s.replace(/\w\S*/g, function(txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
+    }) : "";
+    return result;
+};
+
+/**
+ * Trim string empty character
+ * @param  {string} s " my name is " --> "my name is"
+ */
+function trim(s) {
+    return s ? s.replace(/^\s+|\s+$/g, "") : "";
 };
 
 /**
@@ -270,6 +279,7 @@ function buildResultMessages(methodKey, results) {
 
 
 module.exports = {
+    trim: trim,
     stringFormat: stringFormat,
     stringFormatSql: stringFormatSql,
     extractProductId: extractProductId,
