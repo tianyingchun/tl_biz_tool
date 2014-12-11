@@ -1,3 +1,4 @@
+var logger = require("../helpers/log");
 var exception = require("../helpers/exception");
 var product = require('../controllers/product');
 var catalog = require('../controllers/catalog');
@@ -35,6 +36,11 @@ module.exports = {
 
         // allow cros domin supports for all api request.
         _app.all("*", function(req, res, next) {
+            // setting default timeout for httpserver.
+            res.setTimeout(10 * 60 * 1000, function() {
+                logger.error("Nodejs Web server timeout!!!!");
+                exception.writeJSONError(res, new Error("Nodejs Web server timeout!!!!"));
+            });
             res.set({
                 "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
