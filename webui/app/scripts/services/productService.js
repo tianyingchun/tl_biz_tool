@@ -11,12 +11,7 @@
             // --------------------------------------------------
             //  dto
             this.productBasicInfoDto = function(result) {
-                return {
-                    code: result.code,
-                    message: result.message,
-                    mobile: result.data.phone,
-                    name: result.data.name
-                };
+                return result;
             };
         }
         //
@@ -24,7 +19,10 @@
     angular.extend(ProductService.prototype, {
         //上传产品
         uploadProduct: function(product) {
-            var promise = this.postRequest("/product/auto_extract_upload_products", product, this.productBasicInfoDto, {timeout: 1000 * 60 * 10});
+            var promise = this.postRequest("/product/auto_extract_upload_products", product, {
+                dto: this.productBasicInfoDto,
+                timeout: 1000 * 60 * 10
+            });
             return promise;
         }
     });

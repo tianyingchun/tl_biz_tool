@@ -28,7 +28,9 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
 
         // for get request get params parameter
         function getSerializedUrl(url, requestData) {
-            return url.split("?")[0] + "?" + utility.toQueryString(requestData);
+            var serializedParams = utility.toQueryString(requestData);
+            var newUrl = serializedParams ? url.split("?")[0] + "?" + serializedParams : url.split("?")[0];
+            return newUrl;
         };
         /**
          * Define global row data result converter.
@@ -89,7 +91,7 @@ app.factory("httpRequest", ['$log', '$http', "$q", 'utility', 'remoteApi',
                                 var defered = $q.defer();
 
                                 // defined dto here.
-                                var dto; 
+                                var dto;
 
                                 if (config) {
                                     if (angular.isFunction(config)) {
