@@ -224,18 +224,21 @@ function ProductSpiderService() {
      */
     this.start = function(httpUrl) {
         //  define product crawn info, each crawl re-instance productCrawlInfo, make sure confuse instance distraction
-        this.productCrawlInfo = new ProductCrawlInfoModel();
+        this.productCrawlInfo = new ProductCrawlInfoModel(httpUrl);
 
         this.url = httpUrl;
+
+        var productId = utility.extractProductId(this.url);
         // current product id.
-        this.productId = utility.extractProductId(this.url);
+        this.productCrawlInfo.productId = productId;
+        this.productCrawlInfo.sku = productId;
 
         var _this = this;
 
         var deferred = Q.defer();
         // check if we get product id from this url.
         // 
-        if (this.productId) {
+        if (productId) {
             // first download color style content and cached to memory.
             fetchSkuColorStyleContent().then(function(result) {
                 if (!result.body) {

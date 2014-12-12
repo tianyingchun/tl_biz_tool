@@ -4,10 +4,16 @@ var BaseModel = require("./BaseModel");
 /**
  * Define crawl prduct info entity model.
  */
-function ProductCrawlInfo() {
+function ProductCrawlInfo(url) {
 	BaseModel.call(this, "ProductCrawlInfo");
 	// page title
 	this.title = "";
+
+	this.url = url;
+
+	this.sku = "";
+
+	this.productId = "";
 	// categories ---women>>dresses ==>[dresses, women]
 	this.categories = [];
 	// old price list the higher the before [10,9,8,5.5]
@@ -29,7 +35,7 @@ function ProductCrawlInfo() {
 
 	this.getResult = function() {
 		var result = {
-			sku: this.productId,
+			sku: this.sku,
 			providerUrl: this.url,
 			title: this.title,
 			productId: this.productId,
