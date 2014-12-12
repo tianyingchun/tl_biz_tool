@@ -322,7 +322,7 @@ _.extend(ProductSpiderService.prototype, {
         if (!this.productCrawlInfo.title) {
             logger.error("fetchTitle", "can't find correct title for this product!");
             this.productCrawlInfo.errors.push({
-                "fetchTitle": "can't find correct title for this product!"
+                "fetchTitle": "can't find correct title for this product," + this.url
             });
         }
     },
@@ -355,7 +355,7 @@ _.extend(ProductSpiderService.prototype, {
         if (!(this.productCrawlInfo.nowPrice.length && this.productCrawlInfo.nowPrice[0])) {
             logger.error("fetchNowPriceList", "can't find now sell price for this product!");
             this.productCrawlInfo.errors.push({
-                "fetchNowPriceList": "can't find now sell price for this product!"
+                "fetchNowPriceList": "can't find now sell price for this product, url:" + this.url
             });
         }
     },

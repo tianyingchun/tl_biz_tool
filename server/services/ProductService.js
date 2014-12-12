@@ -160,10 +160,10 @@ function ProductDataProvider() {
                 // if current price less than 10USD, alway use 9.9$ we can make some activity for this.
                 if (_price < 10) {
                     // set specical price for this.
-                    logger.warn("set specical price as 9.9$, origin price is: " + _price);
+                    logger.warn("set specical price as 9.9$, origin price is: " + _price + " sku: " + sku);
 
                     _price = 9.9;
-                    
+
                     // use random rate for old price if sale price equals 9.9
                     productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value) * (Math.random() / 2 + 1);
 
