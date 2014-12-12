@@ -1,21 +1,21 @@
 (function() {
     function ProductService($log, BaseHttpRequest) {
 
-            // each service must be defined this key used to flag current request belong to.
-            this.logAPIUniqueKey = "[ProductService]";
+        // each service must be defined this key used to flag current request belong to.
+        this.logAPIUniqueKey = "[ProductService]";
 
-            // inherits base http request infrustrature.
-            BaseHttpRequest.call(this);
+        // inherits base http request infrustrature.
+        BaseHttpRequest.call(this);
 
-            //
-            // --------------------------------------------------
-            //  dto
-            this.productBasicInfoDto = function(result) {
-                return result;
-            };
-        }
         //
-        // Expose service request apis to consumer.
+        // --------------------------------------------------
+        //  dto
+        this.productBasicInfoDto = function(result) {
+            return result;
+        };
+    };
+    //
+    // Expose service request apis to consumer.
     angular.extend(ProductService.prototype, {
         //上传产品
         uploadProduct: function(product) {

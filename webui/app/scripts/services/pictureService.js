@@ -1,18 +1,18 @@
 (function() {
     function PictureService($log, BaseHttpRequest) {
 
-            // each service must be defined this key used to flag current request belong to.
-            this.logAPIUniqueKey = "[PictureService]";
+        // each service must be defined this key used to flag current request belong to.
+        this.logAPIUniqueKey = "[PictureService]";
 
-            // inherits base http request infrustrature.
-            BaseHttpRequest.call(this);
+        // inherits base http request infrustrature.
+        BaseHttpRequest.call(this);
 
-            //
-            // --------------------------------------------------
-            //  dto
-        }
         //
-        // Expose service request apis to consumer.
+        // --------------------------------------------------
+        //  dto
+    };
+    //
+    // Expose service request apis to consumer.
     angular.extend(PictureService.prototype, {
         /**
          * 上传图片

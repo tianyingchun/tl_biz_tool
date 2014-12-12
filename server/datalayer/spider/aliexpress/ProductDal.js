@@ -372,9 +372,9 @@ _.extend(ProductSpiderService.prototype, {
             // trim empty.
             title = utility.capitalize(utility.trim(title));
 
-            if (title == "color") {
+            if (title == "Color") {
                 productAttribtsList[title] = fetchProductSpecColor($, $lis);
-            } else if (title == "size") {
+            } else if (title == "Size") {
                 productAttribtsList[title] = fetchProductSpecSize($, $lis);
             } else {
                 productAttribtsList[title] = fetchProductSpecOther($, $lis);
