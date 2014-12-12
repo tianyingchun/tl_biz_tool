@@ -157,11 +157,19 @@ function ProductDataProvider() {
                 var _price = crawlProduct.nowPrice.length ? crawlProduct.nowPrice[0] : 0;
                 _price = _price * parseFloat(productCrawlCfg.price_rate.value);
 
+                // if current price less than 10USD, alway use 9.9$ we can make some activity for this.
+                if (_price < 10) {
+                    // set specical price for this.
+                    logger.warn("set specical price as 9.9$, origin price is: " + _price);
+                    _price = 9.9;
+                }
+
                 productVariant.Price = _price;
-                // the price we need paid!
-                productVariant.SourcePrice = crawlProduct.nowPrice[0];
                 // show the old price to customer.
                 productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value);
+
+                // the price we need paid!
+                productVariant.SourcePrice = crawlProduct.nowPrice[0];
                 productVariant.ProductCost = productVariant.SourcePrice;
                 productVariant.SourceUrl = crawlProduct.providerUrl;
                 productVariant.SourceInfoComment = crawlProduct.title;
