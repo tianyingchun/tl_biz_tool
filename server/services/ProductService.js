@@ -161,12 +161,18 @@ function ProductDataProvider() {
                 if (_price < 10) {
                     // set specical price for this.
                     logger.warn("set specical price as 9.9$, origin price is: " + _price);
+
                     _price = 9.9;
+                    
+                    // use random rate for old price if sale price equals 9.9
+                    productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value) * (Math.random() / 2 + 1);
+
+                } else {
+                    // show the old price to customer.
+                    productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value);
                 }
 
                 productVariant.Price = _price;
-                // show the old price to customer.
-                productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value);
 
                 // the price we need paid!
                 productVariant.SourcePrice = crawlProduct.nowPrice[0];
