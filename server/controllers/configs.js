@@ -7,7 +7,6 @@ var logger = require("../helpers/log");
 var dataProvider = require("../dataProvider");
 // utility service.
 var utilityService = dataProvider.getService("Utility");
-
 // all dynamic configurations public api.
 // -----------------------------------------------------------
 
@@ -32,8 +31,7 @@ router.get("/context/get_crawl_provider", function(req, res) {
  * Get clothesgate database connection configs for sqlserver.
  */
 router.get("/context/db_clothesgate_envs", function(req, res) {
-    var systemCfg = dataProvider.getConfig("system");
-    var configs = systemCfg.db_clothesgate_config.configs;
+    var configs = dataProvider.getConfigNode("system", "db_clothesgate_config");
     base.apiOkOutput(res, [
         configs["testEnv"],
         configs["productionEnv"]

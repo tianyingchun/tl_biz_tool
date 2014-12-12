@@ -10,7 +10,7 @@ var logger = require('../../../helpers/log');
 var utility = require("../../../helpers/utility");
 
 var dataProvider = require("../../../dataProvider");
-
+var ProductCrawlInfoModel = dataProvider.getModel("ProductCrawlInfo");
 var Q = require("q");
 
 var skuStyleContent = "";
@@ -213,71 +213,18 @@ function fetchProductSizeTableTemplate(tempatePath) {
 };
 
 function ProductSpiderService() {
-    // store all document code fetched from providered http url.
-    this.$dom = "";
+    // defaut instance.
+    this.productCrawlInfo = new ProductCrawlInfoModel();
 
-    // page title
-    this.title = "";
-
-    // categories ---women>>dresses ==>[dresses, women]
-    this.categories = [];
-    // old price list the higher the before [10,9,8,5.5]
-    this.oldPrice = [];
-    // now sale price.
-    this.nowPrice = [];
-
-    // all product specs attributes eg. color, size, etc.
-    this.productAttribts = {};
-
-    // all key value canbe used to category filtered. e.g. {gender:male, style:american}
-    this.specAttribts = {};
-
-    // the html code for description. need to remove all specical characters.
-    this.description = "";
-
-    // used to store error messages.
-    this.errors = [];
-
-    this.getResult = function() {
-        var result = {
-            sku: this.productId,
-            providerUrl: this.url,
-            title: this.title,
-            productId: this.productId,
-            categories: this.categories,
-            oldPrice: this.oldPrice,
-            nowPrice: this.nowPrice,
-            productAttribts: this.productAttribts,
-            specAttribts: this.specAttribts,
-            description: this.description,
-            hasErrors: false
-        };
-        // if some important crawl is unexpected, throw error message.
-        if (this.errors.length) {
-            var _finallyErrorMsg = [];
-            _finallyErrorMsg.push("provider: aliexpress\n");
-            _finallyErrorMsg.push("service name: ProductSpiderService()\n");
-            // error detail message.
-
-            _finallyErrorMsg.push("details:" + this.errors.map(function(item) {
-                return JSON.stringify(item)
-            }).join("\n"));
-
-            result = {
-                hasErrors: true,
-                errors: new Error(_finallyErrorMsg.join(""))
-            };
-        }
-        return result;
-    };
+    this.$dom = null;
     /**
      * Crawl product basic information from specificed http url.
      * @param  {string} httpUrl httpUrl http absolute url
      * @return {promise}
      */
     this.start = function(httpUrl) {
-        // clear exist data.
-        this.description = "";
+        //  define product crawn info, each crawl re-instance productCrawlInfo, make sure confuse instance distraction
+        this.productCrawlInfo = new ProductCrawlInfoModel();
 
         this.url = httpUrl;
         // current product id.
@@ -321,14 +268,14 @@ function ProductSpiderService() {
                         // and we will waiting for all description has been downloaded, then flush success event to consumer.
                         _this.fetchDescription().then(function(desc) {
                             // keep description value if have another information.
-                            _this.description += desc;
+                            _this.productCrawlInfo.description += desc;
                             // return result to client.
-                            deferred.resolve(_this.getResult());
+                            deferred.resolve(_this.productCrawlInfo.getResult());
 
                         }, function(descErr) {
                             logger.debug("fetch description error: ", descErr);
                             _this.description = "fetch description error";
-                            deferred.resolve(_this.getResult());
+                            deferred.resolve(_this.productCrawlInfo.getResult());
                         });
 
                     }, function(htmlBodyError) {
@@ -363,14 +310,14 @@ _.extend(ProductSpiderService.prototype, {
         $breadcrumb.each(function(i, item) {
             crumb.push($(item).text());
         });
-        this.categories = crumb.reverse();
+        this.productCrawlInfo.categories = crumb.reverse();
     },
     fetchTitle: function() {
         logger.debug("filter to get title content...");
-        this.title = this.$dom("h1.product-name").text();
-        if (!this.title) {
+        this.productCrawlInfo.title = this.$dom("h1.product-name").text();
+        if (!this.productCrawlInfo.title) {
             logger.error("fetchTitle", "can't find correct title for this product!");
-            this.errors.push({
+            this.productCrawlInfo.errors.push({
                 "fetchTitle": "can't find correct title for this product!"
             });
         }
@@ -378,7 +325,7 @@ _.extend(ProductSpiderService.prototype, {
     fetchOldPriceList: function() {
         logger.debug("filter to get old price list...");
         var prices = this.$dom("#sku-price").text().split(/\s*-\s*/);
-        this.oldPrice = prices.reverse();
+        this.productCrawlInfo.oldPrice = prices.reverse();
     },
     fetchNowPriceList: function() {
         logger.debug("filter to get now sale price list...");
@@ -396,14 +343,14 @@ _.extend(ProductSpiderService.prototype, {
                 prices.push(_nowprice);
             }
         }
-        this.nowPrice = prices.reverse();
+        this.productCrawlInfo.nowPrice = prices.reverse();
         // if no now price, then use old price.
-        if (!this.nowPrice.length) {
-            this.nowPrice = this.oldPrice;
+        if (!this.productCrawlInfo.nowPrice.length) {
+            this.productCrawlInfo.nowPrice = this.productCrawlInfo.oldPrice;
         }
-        if (!(this.nowPrice.length && this.nowPrice[0])) {
+        if (!(this.productCrawlInfo.nowPrice.length && this.productCrawlInfo.nowPrice[0])) {
             logger.error("fetchNowPriceList", "can't find now sell price for this product!");
-            this.errors.push({
+            this.productCrawlInfo.errors.push({
                 "fetchNowPriceList": "can't find now sell price for this product!"
             });
         }
@@ -431,7 +378,7 @@ _.extend(ProductSpiderService.prototype, {
             }
 
         });
-        this.productAttribts = productAttribtsList;
+        this.productCrawlInfo.productAttribts = productAttribtsList;
     },
     fetchspecAttribts: function() {
         logger.debug("filter to get specifications attributes...");
@@ -451,7 +398,7 @@ _.extend(ProductSpiderService.prototype, {
                         // cut it from specification attribute.
                         var _packagingDetail = $childItems.parent().html();
                         if (_packagingDetail) {
-                            _this.description += "<div class=\"title\">Packaging Details</div><div class=\"package-detail\">" + _packagingDetail + "</div>";
+                            _this.productCrawlInfo.description += "<div class=\"title\">Packaging Details</div><div class=\"package-detail\">" + _packagingDetail + "</div>";
                         }
                     }
                 }
@@ -482,7 +429,7 @@ _.extend(ProductSpiderService.prototype, {
                 }
             });
         }
-        _this.specAttribts = result;
+        _this.productCrawlInfo.specAttribts = result;
     },
     fetchDescription: function() {
         logger.debug("filter to get product description...");

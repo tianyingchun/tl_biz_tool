@@ -9,8 +9,7 @@ var finder = require('fs-finder');
 var fse = require("fs-extra");
 // data provider singleton.
 var dataProvider = require("../dataProvider");
-var pictureCfg = dataProvider.getConfig("picture");
-var pictureUploadCfg = dataProvider.getConfigNode(pictureCfg, "upload_config");
+
 // picture sql server service.
 var pictureService = dataProvider.getService("Picture");
 var productService = dataProvider.getService("Product");
@@ -45,7 +44,8 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
     var url = reqBody && reqBody.url || "";
     // get product sku by given product url.
     var sku = utility.extractProductId(url);
-
+    
+    var pictureUploadCfg = dataProvider.getConfigNode("picture", "upload_config");
     // picture source directory.
     var picture_source_dir = pictureUploadCfg.picture_source_dir.value;
     // picture synced to directory.
