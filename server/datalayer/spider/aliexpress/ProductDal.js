@@ -138,9 +138,10 @@ function fetchProductSpecSize($, $lis) {
             var value = $sizeSpan.text();
             value = value ? value.toLowerCase() : "";
             value = utility.capitalize(utility.trim(value));
+            // for value, we always use uppercase.
             result.push({
                 title: value,
-                value: value
+                value: value.toUpperCase()
             });
         });
     }
