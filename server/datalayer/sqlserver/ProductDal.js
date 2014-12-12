@@ -7,19 +7,12 @@ var dataProvider = require("../../dataProvider");
 var ProductModel = dataProvider.getModel("Product");
 var ProductVariantModel = dataProvider.getModel("ProductVariant");
 var baseDal = require("../baseDal");
-// product attributes dal
-var productAttribtsDal = dataProvider.getDataAccess("ProductAttributeDal");
-
-var productSpecificationAttributeDal = dataProvider.getDataAccess("SpecificationAttribute");
-
+ 
 var SpecificationAttributeModel = dataProvider.getModel("SpecificationAttribute");
 var SpecificationAttributeOptionModel = dataProvider.getModel("SpecificationAttributeOption");
 var Product_SpecificationAttribute_MappingModel = dataProvider.getModel("Product_SpecificationAttribute_Mapping");
 var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
 var ProductPictureModel = dataProvider.getModel("ProductPicture");
-// client product configurations.
-var clientProductCfg = dataProvider.getConfig("product").autoupload_config.configs;
-
 
 function ProductDal() {
     /**
@@ -237,7 +230,8 @@ function ProductDal() {
      * @return {promise}
      */
     this.addProductSpecificationAttributes = function(productId, specificationAttributes) {
-
+        
+        var productSpecificationAttributeDal = dataProvider.getDataAccess("SpecificationAttribute");
         var deferred = Q.defer();
 
         var resultMessages = [];
@@ -485,6 +479,8 @@ function ProductDal() {
      * @param  {object} newVariant ProductVariantModel instance.
      */
     function insertProductVariantAttributes(newVariant) {
+        // product attributes dal, can be invoid instance cache.
+        var productAttribtsDal = dataProvider.getDataAccess("ProductAttributeDal");
 
         var deferred = Q.defer();
 

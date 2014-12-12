@@ -16,18 +16,16 @@ var TierPriceModel = dataProvider.getModel("TierPrice");
 // product variant model.
 var ProductVariantModel = dataProvider.getModel('ProductVariant');
 
-var productSpiderDal = dataProvider.getDataAccess("spider", "Product");
-
-var productDal = dataProvider.getDataAccess("Product");
-// product data model.
-
-var productCfg = dataProvider.getConfig("product");
-// crawl configuration.
-var productCrawlCfg = dataProvider.getConfigNode(productCfg, "crawl_config");
-// auto uplopad configuration.
-var productAutoUploadCfg = dataProvider.getConfigNode(productCfg, "autoupload_config");
-
 function ProductDataProvider() {
+    // crawl configuration.
+    var productCrawlCfg = dataProvider.getConfigNode("product", "crawl_config");
+    // auto uplopad configuration.
+    var productAutoUploadCfg = dataProvider.getConfigNode("product", "autoupload_config");
+
+    var productDal = dataProvider.getDataAccess("Product");
+
+    var productSpiderDal = dataProvider.getDataAccess("spider", "Product");
+
     /**
      * Crawl product basic information from specificed spider repository
      * @param  {string} httpUrl product url.

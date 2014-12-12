@@ -1,37 +1,28 @@
-//https://github.com/aheckmann/gm
-//
-var logger = require('../helpers/log');
-var utility = require('../helpers/utility');
 var Q = require("q");
 var path = require("path");
 var fse = require("fs-extra");
-var gm = require('gm');
-// data provider singleton.
-var dataProvider = require("../dataProvider");
-
-var pictureDal = dataProvider.getDataAccess("Picture");
-
-var PictureModel = dataProvider.getModel("Picture");
-
 //http://www.graphicsmagick.org/INSTALL-windows.html#installing-using-installer-package
 //using node gm libaray we need to first install graphicsmagick libaray
 //test>>: gm convert logo: logo.gif
 //https://github.com/aheckmann/gm
 //
-var gm = require("gm");
+var gm = require('gm');
+var logger = require('../helpers/log');
+var utility = require('../helpers/utility');
 
-var fs = require("fs");
+// data provider singleton.
+var dataProvider = require("../dataProvider");
 
-var pictureCfg = dataProvider.getConfig("picture");
-
-var pictureCfgCrawl = dataProvider.getConfigNode(pictureCfg, "crawl_config");
-
-var pictureCfgUpload = dataProvider.getConfigNode(pictureCfg, "upload_config");
-
-// picture spider service.
-var pictureSpiderDal = dataProvider.getDataAccess("spider", "Picture");
+var PictureModel = dataProvider.getModel("Picture");
 
 function PictureDataProvider() {
+
+    var pictureCfgUpload = dataProvider.getConfigNode("picture", "upload_config");
+    // picture spider service.
+    var pictureSpiderDal = dataProvider.getDataAccess("spider", "Picture");
+
+    var pictureDal = dataProvider.getDataAccess("Picture");
+
     /**
      * Update picture information
      * @param  {object} picture PictureModel instance.

@@ -43,7 +43,8 @@ function getCurrentSpiderRepository(dalName) {
 };
 module.exports = {
     /**
-     * Get data service singleton constructor.
+     * Get data service singleton constructor.please make sure that we invoke getService in each invoke method, 
+     * otherwise it will get instance cache in nodejs.
      * @param  {string} serviceName  the service name, e.g.  product, user
      * @return {constructor}
      */

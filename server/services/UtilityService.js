@@ -1,12 +1,11 @@
 var logger = require('../helpers/log');
 var dataProvider = require("../dataProvider");
 var Q = require("q");
-var productAttribtsDal = dataProvider.getDataAccess("ProductAttribute");
-var manufacturerDal = dataProvider.getDataAccess("Manufacturer");
-var catalogDal = dataProvider.getDataAccess("Catalog");
-
 // product data model.
 function UtilityDataProvider() {
+    var productAttribtsDal = dataProvider.getDataAccess("ProductAttribute");
+    var manufacturerDal = dataProvider.getDataAccess("Manufacturer");
+    var catalogDal = dataProvider.getDataAccess("Catalog");
     /**
      * 返回所有的ProductAttributes
      * @return promise List<ProductAttribute> Model.

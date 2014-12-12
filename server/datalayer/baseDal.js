@@ -10,9 +10,7 @@ var utility = require('../helpers/utility');
 var BaseModel = dataProvider.getModel("BaseModel");
 
 // get current context database configs
-var contextCfg = dataProvider.getConfig("context");
-
-var clothesgate_conn = dataProvider.getConfigNode(contextCfg, "db_config", "db_clothesgate_config");
+var clothesgate_conn = dataProvider.getConfigNode("context", "db_config", "db_clothesgate_config");
 
 logger.debug("DB Config: ", clothesgate_conn);
 

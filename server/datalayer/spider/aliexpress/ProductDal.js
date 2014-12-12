@@ -11,16 +11,9 @@ var utility = require("../../../helpers/utility");
 
 var dataProvider = require("../../../dataProvider");
 
-// product configuraitons.
-var productCfg = dataProvider.getConfig("product");
-var productAutoUploadCfg = dataProvider.getConfigNode(productCfg, "autoupload_config");
-
 var Q = require("q");
 
 var skuStyleContent = "";
-
-// module product extract config.
-var productCfg = dataProvider.getConfig("product").crawl_config.configs;
 
 function rgbConvert2Hex(rgb) {
     if (!rgb) return "";
@@ -48,6 +41,8 @@ function rgbConvert2Hex(rgb) {
 function fetchSkuColorStyleContent() {
     var deferred = Q.defer();
     if (!skuStyleContent) {
+        // re-fetch configuration.
+        var productCfg = dataProvider.getConfigNode("product", "crawl_config");
         var sku_color_url = productCfg.sku_color_css_url.value;
         utility.loadHtmlDocument(sku_color_url).then(function(body) {
             skuStyleContent = body;
@@ -177,6 +172,7 @@ function fetchProductSpecOther($, $lis) {
  * @return promise.
  */
 function fetchProductDescriptions(productId) {
+    var productCfg = dataProvider.getConfigNode("product", "crawl_config");
     var product_description_url = productCfg.product_description_url.value.replace("{pid}", productId);
     var deferred = Q.defer();
 
@@ -513,10 +509,9 @@ _.extend(ProductSpiderService.prototype, {
         //     return desc;
         // });
 
-        // each time, we need to refetch this configurations.
-        var _productCfg = dataProvider.getConfig("product");
-        var _productAutoUploadCfg = dataProvider.getConfigNode(_productCfg, "autoupload_config");
-        var defaultTemplateFile = _productAutoUploadCfg.defaultProductSizeTableTemplate.value || "";
+        // each time, we need to refetch this configurations. 
+        var productAutoUploadCfg = dataProvider.getConfigNode("product", "autoupload_config");
+        var defaultTemplateFile = productAutoUploadCfg.defaultProductSizeTableTemplate.value || "";
 
         return fetchProductSizeTableTemplate(defaultTemplateFile);
     }
