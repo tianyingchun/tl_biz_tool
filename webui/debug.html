@@ -20,20 +20,7 @@
 <body style="margin: 0;padding:0;">
     <!-- show spinner within main controller -->
     <div class="wrapper" data-ng-controller="MainCtrl">
-        <div class="ui-spinner skin-default loading-wrapper" data-counter="spinnerCounter" data-x-spinner="showLoading" data-message="message || '加载中...'" data-skin="skin-default">
-            <div class="loading-wrapper">
-                <div class="loading">
-                    <div class="spinner-animation"></div>
-                    <div class="spinnerLogo"></div>
-                </div>
-                <div class="message ng-binding" ng-bind="message">加载中...</div>
-            </div>
-        </div>
-        <!-- dialog -->
-        <div id="help" class="hidden">
-            <input type="file" id="file_upload" />
-        </div>
-        <!-- <div data-dialog></div> -->
+
         <div class="header navbar navbar-inverse navbar-fixed-top" id="header" ng-controller="HeaderCtrl">
             <div class="navbar-inner header-wrap">
                 <div class="logo">
@@ -48,19 +35,32 @@
             </div>
         </div>
         <div class="container-fluid">
-            <div class="">
-                <div id="left-container" class="left-container" ng-controller="NavCtrl">
-                    <ng-navigation id="left" close-others=false class="navbar" categories="categories"></ng-navigation>
-                </div>
-                <div id="split" class="split"></div>
-                <div id="right" class="right-container">
-                    <div data-ng-view class="view-container"></div>
-                </div>
+            <div id="left" class="left-container" ng-controller="NavCtrl">
+                <ng-navigation close-others=false class="navbar" categories="categories"></ng-navigation>
+            </div>
+            <div id="split" class="split"></div>
+            <div id="right" class="right-container">
+                <div data-ng-view class="view-container"></div>
             </div>
         </div>
-        <div class="footer" id="footer">
-            This is footer
+        <div class="footer" id="footer"></div>
+
+
+        <!-- help div block -->
+        <div class="ui-spinner skin-default loading-wrapper" data-counter="spinnerCounter" data-x-spinner="showLoading" data-message="message || '加载中...'" data-skin="skin-default">
+            <div class="loading-wrapper">
+                <div class="loading">
+                    <div class="spinner-animation"></div>
+                    <div class="spinnerLogo"></div>
+                </div>
+                <div class="message ng-binding" ng-bind="message">加载中...</div>
+            </div>
         </div>
+        <!-- dialog -->
+        <div id="help" class="hidden">
+            <input type="file" id="file_upload" />
+        </div>
+        <!-- <div data-dialog></div> -->
 
         <!-- <div data-app-cache></div> -->
     </div>

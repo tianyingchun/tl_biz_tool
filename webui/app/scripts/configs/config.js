@@ -40,7 +40,7 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
             })
             .when('/product/product-upload', {
                 templateUrl: appConfig.getTemplateUrl('app/views/product-upload.html'),
-                controller: 'AutoUploadCtrl',
+                controller: 'ProductCtrl',
                 controllerAs: 'controller'
             })
             .when('/configuration/:category/:config', {

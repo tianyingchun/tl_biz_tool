@@ -38,25 +38,29 @@ var app = angular.module('tl_biz_tools', [
 
         console.log("enyo || jquery dom ready....");
 
-        var $split = $('#split');
-        var $left = $('#left');
-        var $right = $('#right');
-        var $footer = $('#footer');
-        var $header = $('#header');
+        var $container = $(".container-fluid");
+        var $left      = $('#left');
+        var $split     = $('#split');
+        var $right     = $('#right');
+        var $header    = $('#header');
+        var $footer    = $('#footer');
 
         $split.mousedown(function(event) {
             if (event.which == 1){
                 $(document).on("selectstart dragstart", function () {
                     return false;
                 })
+                var clientWidth = $container.width();
+                var id = null;
                 $(document).on("mousemove", function(e) {
-                    var clientWidth = $(window).outerWidth();
-                    var $left = $('#left');
-                    var $right = $('#right');
-                    var leftWidth = e.pageX - 8;
-                    var rightWidth = clientWidth - leftWidth - $split.width() - 6 - 2;
-                    $left.width(leftWidth);
-                    $right.width(rightWidth);
+                    clearTimeout(id);
+                    id = setTimeout(function () {
+                        var leftWidth = (e.pageX) / clientWidth * 100 + '%';
+                        var rightWidth = (clientWidth - e.pageX) / clientWidth * 100 + '%';
+                        $left.css({width: leftWidth});
+                        $split.css({left: leftWidth});
+                        $right.css({left: leftWidth, width: rightWidth});
+                    }, 10);
                 })
             }
         });
@@ -70,17 +74,11 @@ var app = angular.module('tl_biz_tools', [
             clearTimeout(resizeTimeoutId);
             var $window = $(this);
             resizeTimeoutId = setTimeout(function() {
-                var $left = $('#left');
-                var $right = $('#right');
-                var height = $window.height() - $header.outerHeight() - $footer.outerHeight() - 8;
-                var clientWidth = $window.outerWidth();
-                var leftWidth = $left.outerWidth();
-                var rightWidth = clientWidth - leftWidth - $split.width() - 6;
-                $right.height(height + 2);
+                var height = $container.height();
                 $left.height(height);
-                $split.height(height + 2);
-                $right.width(rightWidth);
-            }, 50);
+                $split.height(height);
+                $right.height(height);
+            }, 10);
 
         });
     });
