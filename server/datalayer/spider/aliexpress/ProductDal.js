@@ -320,9 +320,10 @@ _.extend(ProductSpiderService.prototype, {
         logger.debug("filter to get title content...");
         this.productCrawlInfo.title = this.$dom("h1.product-name").text();
         if (!this.productCrawlInfo.title) {
-            logger.error("fetchTitle", "can't find correct title for this product!");
+            var _msg = "can't find correct title for this product," + this.url;
+            logger.error("fetchTitle", _msg);
             this.productCrawlInfo.errors.push({
-                "fetchTitle": "can't find correct title for this product," + this.url
+                "fetchTitle": _msg
             });
         }
     },
@@ -353,9 +354,10 @@ _.extend(ProductSpiderService.prototype, {
             this.productCrawlInfo.nowPrice = this.productCrawlInfo.oldPrice;
         }
         if (!(this.productCrawlInfo.nowPrice.length && this.productCrawlInfo.nowPrice[0])) {
-            logger.error("fetchNowPriceList", "can't find now sell price for this product!");
+            var _msg = "can't find now sell price for this product, url:" + this.url;
+            logger.error("fetchNowPriceList", _msg);
             this.productCrawlInfo.errors.push({
-                "fetchNowPriceList": "can't find now sell price for this product, url:" + this.url
+                "fetchNowPriceList": _msg
             });
         }
     },
