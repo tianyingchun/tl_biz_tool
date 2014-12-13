@@ -312,14 +312,12 @@ function ProductDataProvider() {
      */
     this.updateProductSpecificationAttributes = function(sku, specAttribts) {
         // find existed product info.
-        this.getProductIdBySku(sku).then(function(productId) {
+        return this.getProductIdBySku(sku).then(function(productId) {
 
-            productDal.addProductSpecificationAttributes(productId, specAttribts)
+            return productDal.addProductSpecificationAttributes(productId, specAttribts)
                 .then(function(result) {
                     logger.debug("updateProductSpecificationAttributes finished!");
-                    callback(null, result);
-                }, function(err) {
-                    callback(err);
+                    return result;
                 });
         });
     };
