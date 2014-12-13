@@ -166,6 +166,18 @@ function fetchProductSpecOther($, $lis) {
     }
     return result;
 };
+/**
+ * if true current product specification attribute name is in black list, return false.
+ * @param  {string}  productSpecAttributeName prodcut specification attribute name.
+ */
+function isBlackProductSpecList(productSpecAttributeName) {
+    productSpecAttributeName = productSpecAttributeName.toLowerCase();
+    // get blacklist from configuration file.
+    var productCfg = dataProvider.getConfigNode("product", "crawl_config");
+    var blackList = productCfg.product_spec_attributes_name_blacklist.value.split(",");
+    logger.debug("Product specification attribute blacklist: ", blackList);
+    return _.contains(blackList, productSpecAttributeName);
+};
 
 /**
  * Fetch product description without html tag, remved http link.
@@ -418,20 +430,23 @@ _.extend(ProductSpiderService.prototype, {
                 title = title ? title.replace(/[^a-z\sA-Z0-9]/g, '').toLowerCase() : "";
                 // trim empty.
                 title = utility.capitalize(utility.trim(title));
-                // TODO. BUG< Material:Cashmere,Wool,Polyester,Lycra,Nylon>
-                // WE need to manaully use ',' to split `Material` into multiple spec attribute options.
-                // 
-                var value = $(item).find("dd").text();
-                if (value) {
-                    var allChildSpecOptions = value.split(",");
-                    for (var i = 0; i < allChildSpecOptions.length; i++) {
-                        var option = allChildSpecOptions[i];
-                        option = option ? option.toLowerCase() : "";
-                        result.push({
-                            title: title,
-                            value: utility.capitalize(utility.trim(option))
-                        });
-                    };
+                // check if current title is black list, if exist ignore it.
+                if (!isBlackProductSpecList(title)) {
+                    // TODO. BUG< Material:Cashmere,Wool,Polyester,Lycra,Nylon>
+                    // WE need to manaully use ',' to split `Material` into multiple spec attribute options.
+                    // 
+                    var value = $(item).find("dd").text();
+                    if (value) {
+                        var allChildSpecOptions = value.split(",");
+                        for (var i = 0; i < allChildSpecOptions.length; i++) {
+                            var option = allChildSpecOptions[i];
+                            option = option ? option.toLowerCase() : "";
+                            result.push({
+                                title: title,
+                                value: utility.capitalize(utility.trim(option))
+                            });
+                        };
+                    }
                 }
             });
         }
