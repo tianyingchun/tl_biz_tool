@@ -306,7 +306,23 @@ function ProductDataProvider() {
 
         return deferred.promise;
     };
+    /**
+     * provider single api to batch update product specification attributes for existed products.
+     * @param {string} productId     product variant sku.
+     */
+    this.updateProductSpecificationAttributes = function(sku, specAttribts) {
+        // find existed product info.
+        this.getProductIdBySku(sku).then(function(productId) {
 
+            productDal.addProductSpecificationAttributes(productId, specAttribts)
+                .then(function(result) {
+                    logger.debug("updateProductSpecificationAttributes finished!");
+                    callback(null, result);
+                }, function(err) {
+                    callback(err);
+                });
+        });
+    };
 
     //
     // helper methods: prepareProductTierPrice

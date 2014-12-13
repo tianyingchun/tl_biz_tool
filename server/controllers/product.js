@@ -70,4 +70,40 @@ router.post("/auto_extract_upload_products", function(req, res) {
     }
 });
 
+/**
+ * API: /product/update_product_specification_attributes
+ * provider single api to batch update product specification attributes for existed products.
+ */
+router.post("/update_product_specification_attributes", function(req, res) {
+    logger.debug('controller: auto_extract_upload_products...');
+    var reqBody = req.body;
+
+    var url;
+
+    if (reqBody) {
+        url = reqBody.url || "";
+    }
+    if (!url) {
+        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `url` is required!"));
+    } else {
+        // crawl product information.
+        productService.crawlProductInfo(url).then(function(crawlProductInfo) {
+            if (crawlProductInfo.hasErrors) {
+                base.apiErrorOutput(res, crawlProductInfo.errors);
+            } else {
+                // get crawl product infomation.
+                var specAttribts = crawlProductInfo.specAttribts;
+                var sku = crawlProductInfo.sku;
+                productService.updateProductSpecificationAttributes(sku, specAttribts).then(function(result) {
+                    base.apiOkOutput(res, result);
+                }, function(err) {
+                    base.apiErrorOutput(res, err);
+                });
+            }
+        }, function(err) {
+            base.apiErrorOutput(res, err);
+        });
+    }
+});
+
 module.exports = router;
