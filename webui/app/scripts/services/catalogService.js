@@ -1,18 +1,18 @@
 (function () {
     function CatalogService($log, BaseHttpRequest) {
 
-            // each service must be defined this key used to flag current request belong to.
-            this.logAPIUniqueKey = "[CatalogService]";
+        // each service must be defined this key used to flag current request belong to.
+        this.logAPIUniqueKey = "[CatalogService]";
 
-            // inherits base http request infrustrature.
-            BaseHttpRequest.call(this);
+        // inherits base http request infrustrature.
+        BaseHttpRequest.call(this);
 
-            //
-            // --------------------------------------------------
-            //  dto
-        }
         //
-        // Expose service request apis to consumer.
+        // --------------------------------------------------
+        //  dto
+    };
+
+    // Expose service request apis to consumer.
     angular.extend(CatalogService.prototype, {
         //上传产品
         addProducts2Category: function (product, categoryId) {
@@ -24,12 +24,16 @@
         },
 
         getAllCategories: function () {
-            var promise = this.getRequest("/utility/get_all_categoris", {}, {cache: true});
+            var promise = this.getRequest("/utility/get_all_categoris", {}, {
+                cache: true
+            });
             return promise;
         },
 
         getConfigData: function (url) {
-            return this.getRequest(url, {}, {cache: true});
+            return this.getRequest(url, {}, {
+                cache: true
+            });
         }
     });
 

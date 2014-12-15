@@ -36,8 +36,9 @@
     }
 }
 .container-fluid {
-    padding: 60px 0 40px 0;
-    border: 3px solid gray;
+    padding: 63px 0 0 0;
+    border-left: 3px solid gray;
+    border-right: 3px solid gray;
     height: 100%;
     .left-container {
         width: 25%;
@@ -59,25 +60,34 @@
         padding-right: 3px;
     }
     .split {
-        cursor: w-resize;
+        cursor: ew-resize;
         position: absolute;
         left: 25%;
         width: 5px;
-        background: gray;
         z-index: 10;
+        background: #CCC url(../../images/split.gif) no-repeat center;
     }
     .view-container {
         height: 100%;
     }
+}
+.footerSplit {
+    width: 100%;
+    height: 5px;
+    background: green;
+    position: absolute;
+    z-index: 10;
+    bottom: 40px;
+    cursor: ns-resize;
 }
 .footer {
     position: fixed;
     left: 0;
     bottom: 0;
     right: 0;
-    height: 43px;
+    height: 45px;
     background-color: red;
-    border-top: 3px solid gray;
+    // border-top: 3px solid gray;
 }
 .panel-title a {
     cursor: pointer;

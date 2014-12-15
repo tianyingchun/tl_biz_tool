@@ -1,5 +1,5 @@
 (function(app){
-	app.factory('FileService', ['$q', function($q){
+	app.factory('FileService', ['$q', function ($q){
 		var FileService = {};
 
 		if (window.require === undefined) {

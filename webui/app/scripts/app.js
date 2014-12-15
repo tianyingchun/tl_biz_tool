@@ -38,16 +38,18 @@ var app = angular.module('tl_biz_tools', [
 
         console.log("enyo || jquery dom ready....");
 
-        var $container = $(".container-fluid");
-        var $left      = $('#left');
-        var $split     = $('#split');
-        var $right     = $('#right');
-        var $header    = $('#header');
-        var $footer    = $('#footer');
+        var $container   = $(".container-fluid");
+        var $left        = $('#left');
+        var $split       = $('#split');
+        var $right       = $('#right');
+        var $header      = $('#header');
+        var $footer      = $('#footer');
+        var $footerSplit = $('#footerSplit');
 
         $split.mousedown(function(event) {
             if (event.which == 1){
                 $(document).on("selectstart dragstart", function () {
+                    console.log("container");
                     return false;
                 })
                 var clientWidth = $container.width();
@@ -64,6 +66,35 @@ var app = angular.module('tl_biz_tools', [
                 })
             }
         });
+
+        $footerSplit.mousedown(function (event) {
+           if (event.which == 1){
+                $(document).on("selectstart dragstart", function () {
+                    console.log("footer");
+                    return false;
+                })
+                var clientHeight = window.innerHeight;
+                var id = null;
+                $(document).on("mousemove", function(e) {
+                    clearTimeout(id);
+                    id = setTimeout(function () {
+                        var pageY = e.pageY;
+                        if (e.pageY > clientHeight) {
+                            pageY = clientHeight;
+                        }
+                        var containerHeight = pageY - 63;
+                        var footerHeight = clientHeight - pageY;
+                        $container.height(containerHeight);
+                        $left.height(containerHeight);
+                        $split.height(containerHeight);
+                        $right.height(containerHeight);
+
+                        $footer.height(footerHeight);
+                        $footerSplit.css({bottom: footerHeight + 'px'});
+                    }, 10);
+                })
+            } 
+        })
         $(document).mouseup(function() {
 
             $(this).off("mousemove selectstart dragstart");
@@ -74,7 +105,7 @@ var app = angular.module('tl_biz_tools', [
             clearTimeout(resizeTimeoutId);
             var $window = $(this);
             resizeTimeoutId = setTimeout(function() {
-                var height = $container.height();
+                var height = $container.height() - $footer.height();
                 $left.height(height);
                 $split.height(height);
                 $right.height(height);
