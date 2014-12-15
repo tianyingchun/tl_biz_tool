@@ -8,6 +8,8 @@ function PVAMapping() {
 
 	this.ProductAttributeId = 0;
 
+	this.ProductAttributeName = "";
+
 	this.TextPrompt = "Nothing";
 
 	this.IsRequired = true;

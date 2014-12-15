@@ -1,6 +1,7 @@
 var logger = require("../helpers/log");
 var exception = require("../helpers/exception");
 var product = require('../controllers/product');
+var productVariant = require('../controllers/productVariant');
 var catalog = require('../controllers/catalog');
 var picture = require('../controllers/picture');
 var utility = require('../controllers/utility');
@@ -52,6 +53,7 @@ module.exports = {
         // 
         _app.use('/configs', configs);
         _app.use('/product', product);
+        _app.use('/product/detail', productVariant);
         _app.use('/catalog', catalog);
         _app.use('/picture', picture);
         _app.use('/utility', utility);

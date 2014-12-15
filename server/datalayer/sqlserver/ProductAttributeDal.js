@@ -1,9 +1,12 @@
 // https://github.com/kriskowal/q
 var Q = require("q");
+var async = require("async");
 var logger = require('../../helpers/log');
 var utility = require('../../helpers/utility');
 var dataProvider = require("../../dataProvider");
 var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
+var ProductVariantAttributeValueModel = dataProvider.getModel("ProductVariantAttributeValue");
+var PVAMappingModel = dataProvider.getModel("PVAMapping");
 var baseDal = require("../baseDal");
 
 function ProductAttributeDal() {
@@ -109,12 +112,58 @@ function ProductAttributeDal() {
 	};
 
 	/**
-	 * 返回所有的ProductAttributes.
+	 * 返回指定产品SKU 的所有的Product Variant attribute list
 	 */
-	this.getAllProductAttributes = function() {
-		var sql = "SELECT Id, Name, Description FROM ProductAttribute;";
-		return baseDal.executeList(ProductAttributeModel, [sql]);
+	this.getProductVariantAttributesBySku = function(sku) {
+
+		var deferred = Q.defer();
+
+		var pvaMappingSql = "SELECT " +
+			" ppvm.Id,ppvm.ProductAttributeId,ppvm.ProductAttributeId,pa.Name AS ProductAttributeName,ppvm.TextPrompt,ppvm.IsRequired,ppvm.AttributeControlTypeId,ppvm.DisplayOrder " +
+			" FROM dbo.ProductVariant_ProductAttribute_Mapping ppvm INNER JOIN dbo.ProductAttribute pa ON ppvm.ProductAttributeId = pa.Id" +
+			" WHERE ProductVariantId IN (SELECT Id FROM dbo.ProductVariant WHERE Sku={0});";
+
+		baseDal.executeList(PVAMappingModel, [pvaMappingSql, sku]).then(function(listPVAMapping) {
+
+			var tasks = [];
+			if (listPVAMapping && listPVAMapping.length) {
+				for (var i = 0; i < listPVAMapping.length; i++) {
+					var pvaMapping = listPVAMapping[i];
+					var pvaMappingId = pvaMapping.Id;
+					var productAttributeName = pvaMapping.ProductAttributeName;
+					var currFn = (function(id, productAttributeName) {
+						return function(callback) {
+							getProductVariantAttributeValue(id, productAttributeName).then(function(result) {
+								callback(null, result);
+							}, function(err) {
+								callback(err);
+							});
+						};
+					})(pvaMappingId, productAttributeName);
+
+					tasks.push(currFn);
+				};
+			}
+
+			async.parallel(tasks, function(err, results) {
+				if (err) {
+					deferred.reject(err);
+				} else {
+					var _result = [];
+					if (results.length) {
+						results.forEach(function(item) {
+							_result = _result.concat(item);
+						});
+					}
+					deferred.resolve(_result);
+				}
+			});
+		}, function(err) {
+			deferred.reject(err);
+		});
+		return deferred.promise;
 	};
+
 	/**
 	 * Get product attribute by product attribute name.
 	 * @param  {string} name product attribute name
@@ -148,6 +197,25 @@ function ProductAttributeDal() {
 			"other": 1
 		});
 		return deferred.promise;
+	};
+
+
+	//
+	// helper methods
+	// ------------------------------------------------------------
+	// 
+	function getProductVariantAttributeValue(productVariantAttributeId, productAttributeName) {
+		var sql = "SELECT * FROM dbo.ProductVariantAttributeValue WHERE ProductVariantAttributeId ={0}";
+		return baseDal.executeList(ProductVariantAttributeValueModel, [sql, productVariantAttributeId]).then(function(results) {
+			var _results = [];
+			if (results && results.length) {
+				results.forEach(function(item) {
+					item.ProductAttributeName = productAttributeName;
+					_results.push(item);
+				});
+			}
+			return _results;
+		});
 	};
 };
 module.exports = ProductAttributeDal;

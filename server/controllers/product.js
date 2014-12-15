@@ -9,6 +9,10 @@ var dataProvider = require("../dataProvider");
 //  product service.
 var productService = dataProvider.getService("Product");
 
+//  product service.
+var productService = dataProvider.getService("Product");
+
+
 /**
  * API: /product/auto_extract_products
  * auto crawl product information.
@@ -72,6 +76,7 @@ router.post("/auto_extract_upload_products", function(req, res) {
 
 /**
  * API: /product/update_product_specification_attributes
+ * data:{url:""}
  * provider single api to batch update product specification attributes for existed products.
  */
 router.post("/update_product_specification_attributes", function(req, res) {
@@ -103,6 +108,51 @@ router.post("/update_product_specification_attributes", function(req, res) {
         }, function(err) {
             base.apiErrorOutput(res, err);
         });
+    }
+});
+/**
+ * API: /product/update_product_variant_attributes
+ *
+ * "productAttribts": {
+        "Color": [
+            {
+                "title": "Black",
+                "value": "000"
+            },
+            {
+                "title": "Khaki",
+                "value": "dac9b9"
+            }
+        ],
+        "Size": [
+            {
+                "title": "L",
+                "value": "L"
+            },
+            {
+                "title": "M",
+                "value": "M"
+            }
+        ]
+    }
+ * provider single api to batch update product specification attributes for existed products.
+ */
+router.post("/update_product_variant_attributes", function(req, res) {
+    logger.debug('controller: update_product_variant_attributes...');
+    var reqBody = req.body;
+
+    var sku, productId, productVariantId, specAttribts;
+
+    if (reqBody) {
+        sku = reqBody.url || "";
+        productId = reqBody.productId || "";
+        productVariantId = reqBody.productVariantId || "";
+        specAttribts = reqBody.specAttribts || null;
+    }
+    if (!sku || !productId || !productVariantId || !specAttribts) {
+        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `sku, productId, productVariantId, specAttribts` is required!"));
+    } else {
+        base.apiOkOutput(res, "oktestiong...");
     }
 });
 
