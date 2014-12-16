@@ -31,6 +31,9 @@ module.exports = {
      */
     writeJSONError: function(res, err) {
         debug("writeJSONError-> err:", err);
+        if (!err) {
+            err = new Error("Unknown Exception Throw from `writeJSONError`!");
+        }
         var status = err.status || 500;
         var message = err.message || "The request internal exception!";
         res.json(status, {
