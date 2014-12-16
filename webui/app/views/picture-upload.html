@@ -1,0 +1,42 @@
+<div class="panel panel-default auto-upload">
+    <div class="panel-body tool-bar">
+        <div class="pull-right">
+            <div class="search-bar">
+                <input ng-model="searchFilter" placeholder="过滤上传产品的URL" class="form-control search-query" ng-change="doFilter()">
+            </div>
+            <button class="btn btn-primary" ng-click="controller.uploadFile()">上传产品地址列表</button>
+            <button class="btn btn-primary" ng-click="controller.doBatch()">批量自动上传</button>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>地址</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="item in list | filter: searchFilter as finalList" ng-class="{success: item.success, danger: item.error}">
+                    <td class="number">{{$index + 1}}</td>
+                    <td class="url-content">
+                        <div>{{item.url}}</div>
+                    </td>
+                    <td class="status">
+                        <div>{{item.status}}</div>
+                    </td>
+                    <td class="action">
+                        <div class="action-content">
+                            <button ng-disabled="doingBatch" ng-click="controller.handle(item)" class="btn btn-default btn-xs">处理</button>
+                            <button ng-disabled="doingBatch" class="btn btn-danger btn-xs" ng-show="item.error" popover-trigger="click" popover-placement="left" popover="{{item.errorMessage}}">错误信息</button>
+                            <button ng-disabled="doingBatch" ng-click="controller.remove(item)" class="btn btn-default btn-xs">删除</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

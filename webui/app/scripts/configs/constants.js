@@ -1,5 +1,5 @@
 //This configures the routes and associates each route with a view and a controller
-app.factory("remoteApi", ["$location", "$log", function($location, $log) {
+app.factory("remoteApi", ["$location", "$log", function ($location, $log) {
 
     // common remote api resource definitions.
     var commonResource = {
@@ -76,7 +76,7 @@ app.constant("navigationConfig", {
             subCategories: [{
                 title: '查看分类列表',
                 path: ''
-            },{
+            }, {
                 title: '添加新分类',
                 path: ''
             }]
@@ -95,6 +95,19 @@ app.constant("navigationConfig", {
         }]
     },
     picture: {
-
+        categories: [{
+            title: '图片批量管理',
+            subCategories: [{
+                title: '批量抓取图片',
+                path: 'picture/picture-upload'
+            }, {
+                title: '图片绑定到数据库',
+                path: 'picture/picture-database'
+            }, {
+                title: '其他产品相关配置',
+                path: 'picture/picture-config'
+            }
+            ]
+        }]
     }
 });
