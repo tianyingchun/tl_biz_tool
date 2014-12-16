@@ -123,7 +123,7 @@ function downloadFile(url, dest) {
  * @param  {string}   saveto    the destination directory path
  * @param  {promise}
  */
-function downloadPicture(productId, url) {
+function downloadPicture(productId, url, destDir) {
     var deferred = Q.defer();
     loadHtmlDocument(url).then(function(body) {
         if (body) {
@@ -133,7 +133,7 @@ function downloadPicture(productId, url) {
                 normalizeWhitespace: true,
                 xmlMode: true
             });
-            var destDir = path.join(pictureCrawlCfg.saveto_dir.value, dateFormat(new Date(), "YYYY-MM-DD"));
+            destDir = destDir || path.join(pictureCrawlCfg.saveto_dir.value, dateFormat(new Date(), "YYYY-MM-DD"));
             // make sure has distination directory.
             fs.ensureDirSync(destDir);
 

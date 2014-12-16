@@ -78,10 +78,11 @@ function PictureDataProvider() {
     /**
      * crawl picture from specified http url.
      * @param  {string} httpUrl product http url.
+     * @param  {string} destDir product picture save target directory.
      * @return {promise}
      */
-    this.crawlPictures = function(httpUrl) {
-        return pictureSpiderDal.crawlPictures(httpUrl);
+    this.crawlPictures = function(httpUrl, destDir) {
+        return pictureSpiderDal.crawlPictures(httpUrl, destDir);
     };
 
     /**

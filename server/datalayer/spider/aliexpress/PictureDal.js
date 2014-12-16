@@ -13,7 +13,7 @@ function PictureSpiderService() {
      * start to crawl all pictures of speicifced product url.
      * @return {promise}
      */
-    this.crawlPictures = function(httpUrl) {
+    this.crawlPictures = function(httpUrl, destDir) {
         // current product id.
         this.productId = utility.extractProductId(httpUrl);
 
@@ -29,7 +29,7 @@ function PictureSpiderService() {
             picture_source_url = picture_source_url.replace("{pid}", this.productId);
             // run picture spider.
 
-            return utility.downloadPicture(this.productId, picture_source_url).then(function(result) {
+            return utility.downloadPicture(this.productId, picture_source_url, destDir).then(function(result) {
                 // flush cached result to client.
                 return result;
 
