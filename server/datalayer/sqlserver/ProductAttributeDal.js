@@ -90,7 +90,7 @@ function ProductAttributeDal() {
 				};
 				sql.push(_tmp);
 			}
-			params.push(productVariantAttributeMappingId, _productVariantOption.title, colorSqureRgb, 0, 0, false, 0);
+			params.push(productVariantAttributeMappingId, _productVariantOption.value, colorSqureRgb, 0, 0, false, 0);
 		};
 		params.unshift(sql.join(";"));
 
