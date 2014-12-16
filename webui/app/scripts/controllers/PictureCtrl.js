@@ -55,8 +55,8 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
         	return promise;
         };
 
-        this.remove = function (item) {
-            var index = $scope.list.indexOf(item);
+        this.remove = function (index) {
+            // var index = $scope.list.indexOf(item);
             if (index > -1) {
                 $scope.list.splice(index, 1);
             }

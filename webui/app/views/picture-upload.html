@@ -32,7 +32,7 @@
                         <div class="action-content">
                             <button ng-disabled="doingBatch" ng-click="controller.handle(item)" class="btn btn-default btn-xs">处理</button>
                             <button ng-disabled="doingBatch" class="btn btn-danger btn-xs" ng-show="item.error" popover-trigger="click" popover-placement="left" popover="{{item.errorMessage}}">错误信息</button>
-                            <button ng-disabled="doingBatch" ng-click="controller.remove(item)" class="btn btn-default btn-xs">删除</button>
+                            <button ng-disabled="doingBatch" ng-click="controller.remove($index)" class="btn btn-default btn-xs">删除</button>
                         </div>
                     </td>
                 </tr>
