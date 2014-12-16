@@ -40,6 +40,8 @@ router.post("/auto_extract_product_pictures", function(req, res) {
             } else {
                 base.apiErrorOutput(res, base.getErrorModel(400, utility.stringFormat("ignored this product sku:`{0}`, url: `{1}`, we can't find it in database!", sku, url)));
             }
+        }, function(err) {
+            base.apiErrorOutput(res, err);
         });
 
     } else {
