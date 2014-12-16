@@ -27,11 +27,21 @@ router.post("/auto_extract_product_pictures", function(req, res) {
     }
 
     if (url) {
-        pictureService.crawlPictures(url, destDir).then(function(result) {
-            base.apiOkOutput(res, result);
-        }, function error(err) {
-            base.apiErrorOutput(res, err);
+        // make sure that current product has been existed in our system
+        var sku = utility.extractProductId(url);
+
+        productService.getProductIdBySku(sku).then(function(productId) {
+            if (productId && productId > 0) {
+                pictureService.crawlPictures(url, destDir).then(function(result) {
+                    base.apiOkOutput(res, result);
+                }, function error(err) {
+                    base.apiErrorOutput(res, err);
+                });
+            } else {
+                base.apiErrorOutput(res, base.getErrorModel(400, utility.stringFormat("ignored this product sku:`{0}`, url: `{1}`, we can't find it in database!", sku, url)));
+            }
         });
+
     } else {
         base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
     }

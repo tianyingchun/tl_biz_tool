@@ -7,10 +7,10 @@
                 "title": "数据库名称[Clothesgate]",
                 "description": "SqlServer Clothesgate数据库连接配置",
                 "value": {
-                    "user": "clothesgate_test",
-                    "password": "clothesgate_test",
-                    "server": "calantha.arvixe.com",
-                    "database": "clothesgate_test",
+                    "user": "sa",
+                    "password": "19861121.lr",
+                    "server": "TERENCE-PC",
+                    "database": "Nop28_test",
                     "connectionTimeout":300000,
                     "requestTimeout":300000
                 },
