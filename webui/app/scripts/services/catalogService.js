@@ -10,7 +10,7 @@
         //
         // --------------------------------------------------
         //  dto
-    };
+    }
 
     // Expose service request apis to consumer.
     angular.extend(CatalogService.prototype, {

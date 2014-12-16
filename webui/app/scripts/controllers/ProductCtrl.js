@@ -38,10 +38,10 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
         this.uploadFile = function() {
             helper.file_upload.click();
             var scope = $scope;
-            helper.file_upload.change(function() {
+            helper.file_upload.change(function () {
                 var self = this;
                 // not in angular $scope. so need use $apply to exec this callback
-                $scope.$apply(function() {
+                $scope.$apply(function () {
                     var path = $(self).val();
                     $(self).val('');
 
@@ -61,7 +61,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                                     }
                                 };
                                 if (hasFound) {
-                                    // return;
+                                    return;
                                 }
                                 temp.url = item;
                                 list.push(temp);
@@ -141,7 +141,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                 })
 
                 if (categoryIds.length > 0) {
-
+                    initStatus(product);
                     var data = {
                         url: product.url,
                         categoryIds: categoryIds,
@@ -166,6 +166,13 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
             }
         };
 
+        function initStatus(item) {
+            item.status = statusEnum.PROCESSING;
+            item.error = false;
+            item.errorMessage = null;
+            item.success = false;
+        }
+
 
         this.handle = function (item) {
             if (item.url && item.url.length > 0) {
@@ -178,7 +185,6 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                     $scope.$emit('changeSpinnerStatus', false);
                     return;
                 }
-                item.status = statusEnum.PROCESSING;
                 promise.then(function (results) {
                     item.success = true;
                     item.status = statusEnum.PROCESS_SUCCESS;

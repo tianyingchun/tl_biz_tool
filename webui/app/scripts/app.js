@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc overview
  * @name Paf_E90
@@ -23,6 +21,7 @@ var app = angular.module('tl_biz_tools', [
 ]);
 
 (function(window) {
+    "use strict";
     window.helper = {};
 
     helper.file_upload = $("#file_upload");
@@ -47,11 +46,11 @@ var app = angular.module('tl_biz_tools', [
         var $footerSplit = $('#footerSplit');
 
         $split.mousedown(function(event) {
-            if (event.which == 1){
+            if (event.which === 1){
                 $(document).on("selectstart dragstart", function () {
                     console.log("container");
                     return false;
-                })
+                });
                 var clientWidth = $container.width();
                 var id = null;
                 $(document).on("mousemove", function(e) {
@@ -63,16 +62,16 @@ var app = angular.module('tl_biz_tools', [
                         $split.css({left: leftWidth});
                         $right.css({left: leftWidth, width: rightWidth});
                     }, 10);
-                })
+                });
             }
         });
 
         $footerSplit.mousedown(function (event) {
-           if (event.which == 1){
+           if (event.which === 1){
                 $(document).on("selectstart dragstart", function () {
                     console.log("footer");
                     return false;
-                })
+                });
                 var clientHeight = window.innerHeight;
                 var id = null;
                 $(document).on("mousemove", function(e) {
@@ -92,9 +91,9 @@ var app = angular.module('tl_biz_tools', [
                         $footer.height(footerHeight);
                         $footerSplit.css({bottom: footerHeight + 'px'});
                     }, 10);
-                })
+                });
             } 
-        })
+        });
         $(document).mouseup(function() {
 
             $(this).off("mousemove selectstart dragstart");
@@ -114,4 +113,4 @@ var app = angular.module('tl_biz_tools', [
         });
     });
 
-})(window)
+})(window);

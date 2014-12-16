@@ -1,4 +1,4 @@
-(function() {
+(function () {
     function PictureService($log, BaseHttpRequest) {
 
         // each service must be defined this key used to flag current request belong to.
@@ -10,22 +10,20 @@
         //
         // --------------------------------------------------
         //  dto
-    };
-    //
+    }
+
     // Expose service request apis to consumer.
     angular.extend(PictureService.prototype, {
         /**
          * 上传图片
          * [addPictures2Product description]
-         * @param {array} pictures  picture ids.
-         * @param {object} product   [description]
+         * @param {array} pictures  picture obj contain url.
          */
-        addPictures2Product: function(pictures, product, sucess_cb, failed_cb) {
-            var promise = this.postRequest("/picture/add_pictures", {
-                pictures: pictures,
-                categoryId: categoryId
+        extractPicture: function (picture) {
+            var promise = this.postRequest("/picture/auto_extract_product_pictures", picture, {
+                timeout: 1000 * 60 * 10
             });
-            promise.then(sucess_cb, failed_cb || sucess_cb);
+            return promise;
         }
     });
 

@@ -9,7 +9,7 @@ app.factory('configService', ['FileService', 'CatalogService', function (FileSer
     };
     configService.getConfigDataByAPI = function (url) {
         return CatalogService.getConfigData(url);
-    }
+    };
     return configService;
 
-}])
+}]);

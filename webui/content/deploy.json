@@ -1,6 +1,0 @@
-{
-    "name": "build `/content`",
-    "target": "content/",
-    "ignoreMinify": true,
-    "assets": ["spinner.css"]
-}

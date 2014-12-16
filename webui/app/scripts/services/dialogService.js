@@ -8,11 +8,11 @@ app.factory('DialogService', ['ngDialog', function (ngDialog) {
             ngDialog.open({
                 template: content,
                 plain: true
-            })
+            });
         },
 
-        showConfirmDialog: function (argument) {
+        showConfirmDialog: function () {
             // body...
         }
     };
-}])
+}]);
