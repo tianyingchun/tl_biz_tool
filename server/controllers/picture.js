@@ -47,14 +47,15 @@ router.post("/auto_sync_product_pictures_2database", function(req, res) {
     var reqBody = req.body;
 
     var url = reqBody && reqBody.url || "";
+
     // get product sku by given product url.
     var sku = utility.extractProductId(url);
 
     var pictureUploadCfg = dataProvider.getConfigNode("picture", "upload_config");
     // picture source directory.
-    var picture_source_dir = pictureUploadCfg.picture_source_dir.value;
+    var picture_source_dir = reqBody.sourceDir || pictureUploadCfg.picture_source_dir.value;
     // picture synced to directory.
-    var picture_synced_to_dir = pictureUploadCfg.picture_synced_to_dir.value;
+    var picture_synced_to_dir = reqBody.syncedToDir || pictureUploadCfg.picture_synced_to_dir.value;
 
     logger.debug("sku: %s, picture_source_dir: %s ", sku, picture_source_dir);
 
