@@ -277,6 +277,7 @@ function PictureDataProvider() {
         var lastPart = parts[parts.length - 1];
         switch (lastPart) {
             case "pjpeg":
+            case "jpeg":
                 lastPart = "jpg";
                 break;
             case "x-png":
