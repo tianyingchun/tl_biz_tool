@@ -30,7 +30,7 @@
       "picture_synced_to_dir": {
         "title": "图片同步到后台后保存的路径?",
         "description": "当图片和产品数据绑定到DB 后需要重命名这些图片到指定的目录,以被FTP上传到产线",
-        "value": "D:\\Github_Works\\syncto_dir",
+        "value": "D:\\Deployment\\picture_synced_to_dir",
         "type": "textbox"
       },
       "picture_maximum_size": {
