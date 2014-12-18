@@ -13,9 +13,6 @@ var sizeOf = require('image-size');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
-var pictureCfg = dataProvider.getConfig("picture");
-var pictureCrawlCfg = dataProvider.getConfigNode(pictureCfg, "crawl_config");
-
 /**
  * Escape sql query string
  * @param  {any} fieldValue sql parameter
@@ -158,6 +155,10 @@ function downloadFileWithBinary(url, dest) {
  * @param  {promise}
  */
 function downloadPicture(productId, url, destDir) {
+
+    // picture crawl configuration.
+    var pictureCrawlCfg = dataProvider.getConfigNode("picture", "crawl_config");
+
     var deferred = Q.defer();
     loadHtmlDocument(url).then(function(body) {
         if (body) {

@@ -5,9 +5,6 @@ var Q = require("q");
 // data provider singleton.
 var dataProvider = require("../../../dataProvider");
 
-// picture configurations.
-var pictureCfg = dataProvider.getConfig("picture");
-
 function PictureSpiderService() {
     /**
      * start to crawl all pictures of speicifced product url.
@@ -17,7 +14,7 @@ function PictureSpiderService() {
         // current product id.
         this.productId = utility.extractProductId(httpUrl);
 
-        var picture_source_url = dataProvider.getConfigNode(pictureCfg, "crawl_config", "picture_source_url");
+        var picture_source_url = dataProvider.getConfigNode("picture", "crawl_config", "picture_source_url");
 
         if (!picture_source_url) {
             logger.error("can't fetch picture source url from picture_config.json!");
