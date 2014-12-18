@@ -65,8 +65,9 @@ function stringFormatSql(iteratorFn, scope, sqlAndParameters) {
 };
 
 function isUrl(url) {
+    url = url.toLowerCase();
     var regexp = /(ftp|http|https):\/\/[A-Za-z0-9\.-]{3,}\.[A-Za-z]{3}/;
-    return regexp.test(url);
+    return regexp.test(url); // && /[jpg|jpeg|png]$/.test(url);
 };
 /**
  * download html source code helper function.
