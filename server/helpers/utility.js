@@ -130,7 +130,7 @@ function downloadFile(url, dest) {
  * @param  {string} dest destination filepath
  * @return {promise}
  */
-function downloadPictureFile(url, dest) {
+function downloadFileWithBinary(url, dest) {
     var deferred = Q.defer();
     request.get({
         url: url,
@@ -178,7 +178,7 @@ function downloadPicture(productId, url, destDir) {
                 if (src && isUrl(src)) {
                     tasks.push(function(callback) {
                         // do download picture file.
-                        downloadPictureFile(src, filePath).then(function(downloadFilePath) {
+                        downloadFileWithBinary(src, filePath).then(function(downloadFilePath) {
                             logger.debug("filePath: ", downloadFilePath);
                             try {
                                 var dimensions = sizeOf(downloadFilePath);
