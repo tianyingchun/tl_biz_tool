@@ -205,6 +205,9 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                 var list = $scope.finalList;
                 $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
+                    if (item.status === statusEnum.PROCESS_SUCCESS) {
+                        callback();
+                    }
                     var promise = uploadProduct(item);
                     if (promise === null) {
                         callback();
@@ -217,7 +220,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                         callback();
                     }, function (err) {
                         item.error = true;
-                        item.errorMessage = err.data.message;
+                        item.errorMessage = err.message;
                         item.status = statusEnum.PROCESS_FAILED;
                         callback();
                     })

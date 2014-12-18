@@ -94,6 +94,9 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                 var list = $scope.finalList;
                 $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
+                	if (item.status === statusEnum.PROCESS_SUCCESS) {
+                		callback();
+                	}
                     var promise = extractPicture(item);
                     promise.then(function (results) {
                         item.success = true;
@@ -101,7 +104,7 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                         callback();
                     }, function (err) {
                         item.error = true;
-                        item.errorMessage = err.data.message;
+                        item.errorMessage = err.message;
                         item.status = statusEnum.PROCESS_FAILED;
                         callback();
                     })
