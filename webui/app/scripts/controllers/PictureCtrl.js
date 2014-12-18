@@ -79,7 +79,7 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                     item.status = statusEnum.PROCESS_SUCCESS;
                 }, function (err) {
                     item.error = true;
-                    item.errorMessage = err.data || err.data.message;
+                    item.errorMessage = err.message;
                     item.status = statusEnum.PROCESS_FAILED;
                 }).finally(function () {
                     $scope.$emit('changeSpinnerStatus', false);
@@ -87,13 +87,18 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
             }
         };
 
+        var stopBatchFlag = false;
         this.doBatch = function () {
             $scope.doingBatch = true;
             if ($scope.finalList && $scope.finalList.length > 0) {
                 $log.info("start do a batch");
+                stopBatchFlag = false;
                 var list = $scope.finalList;
-                $scope.$emit('changeSpinnerStatus', true);
+                // $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
+                	if (stopBatchFlag === true) {
+                		callback("停止批处理");
+                	}
                 	if (item.status === statusEnum.PROCESS_SUCCESS) {
                 		callback();
                 	}
@@ -110,7 +115,7 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                     })
                 }, function (err) {
                     $scope.doingBatch = false;
-                    $scope.$emit('changeSpinnerStatus', false);
+                    // $scope.$emit('changeSpinnerStatus', false);
                     $log.error(err);
                 })
             } else {
@@ -119,6 +124,10 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                 $scope.doingBatch = false;
             }
         };
+
+        this.stopBatch = function () {
+        	stopBatchFlag = true;
+        }
 
     }
 ]);
