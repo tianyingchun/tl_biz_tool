@@ -1,5 +1,6 @@
 var http = require('http');
 var fs = require("fs-extra");
+var request = require("request");
 var path = require("path");
 var _ = require("underscore");
 var cheerio = require('cheerio');
@@ -110,7 +111,7 @@ function downloadFile(url, dest) {
             file.end();
             file.close(function() {
                 // close() is async, call cb after close completes.
-                deferred.resolve("success");
+                deferred.resolve(dest);
             });
         });
     }).on('error', function(err) {
@@ -122,6 +123,32 @@ function downloadFile(url, dest) {
     });
     return deferred.promise;
 };
+/**
+ * Download picture file to specifict dest filename.
+ * in this one it's diferent from downloadFile, it indicates the encoding="binary"
+ * @param  {string} url  the http file path
+ * @param  {string} dest destination filepath
+ * @return {promise}
+ */
+function downloadPictureFile(url, dest) {
+    var deferred = Q.defer();
+    request.get({
+        url: url,
+        encoding: 'binary'
+    }, function(err, response, body) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            fs.writeFile(dest, body, 'binary', function(err) {
+                if (err)
+                    deferred.reject(err);
+                else
+                    deferred.resolve(dest);
+            });
+        }
+    });
+    return deferred.promise;
+}
 /**
  * download picture utility, used to download all specificed product pictures within a webpage comes from given http page/desc url
  *
@@ -151,24 +178,28 @@ function downloadPicture(productId, url, destDir) {
                 if (src && isUrl(src)) {
                     tasks.push(function(callback) {
                         // do download picture file.
-                        downloadFile(src, filePath).then(function(result) {
-                            logger.debug("filePath: ", filePath);
-                            var dimensions = sizeOf(filePath);
-                            if (dimensions.width < 300 || dimensions.height < 300) {
-                                try {
+                        downloadPictureFile(src, filePath).then(function(downloadFilePath) {
+                            logger.debug("filePath: ", downloadFilePath);
+                            try {
+                                var dimensions = sizeOf(downloadFilePath);
+                                if (dimensions.width < 300 || dimensions.height < 300) {
                                     //TODO..delete it.
                                     fs.removeSync(filePath);
-                                    logger.warn("delete picture `" + filePath + "` cause of the size is small!");
-                                } catch (e) {
-                                    logger.error("remove file exception! filePath:", filePath);
+                                    logger.warn("delete picture `" + downloadFilePath + "` cause of the size is small!");
+                                    callback(null, {
+                                        status: "failed",
+                                        path: src
+                                    });
+                                } else {
+                                    callback(null, {
+                                        status: "success",
+                                        path: src
+                                    });
                                 }
+                            } catch (e) {
+                                logger.error("remove file exception! filePath:", downloadFilePath);
                                 callback(null, {
                                     status: "failed",
-                                    path: src
-                                });
-                            } else {
-                                callback(null, {
-                                    status: "success",
                                     path: src
                                 });
                             }
