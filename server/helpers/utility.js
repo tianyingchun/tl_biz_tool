@@ -8,6 +8,7 @@ var exception = require("./exception");
 var dateFormat = require("./dateformat");
 var Q = require("q");
 var async = require("async");
+var sizeOf = require('image-size');
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
@@ -146,10 +147,21 @@ function downloadPicture(productId, url, destDir) {
                         // do download picture file.
                         downloadFile(src, filePath).then(function(result) {
                             logger.debug("filePath: ", filePath);
-                            callback(null, {
-                                status: "success",
-                                path: src
-                            });
+                            var dimensions = sizeOf('images/funny-cats.png');
+                            if (dimensions.width < 300 || dimensions.height < 300) {
+                                //TODO..delete it.
+
+                                logger.warn("delete picture `" + filePath + "` cause of the size is small!");
+                                callback(null, {
+                                    status: "failed",
+                                    path: src
+                                });
+                            } else {
+                                callback(null, {
+                                    status: "success",
+                                    path: src
+                                });
+                            }
                         }, function(err) {
                             callback(null, {
                                 status: "failed",

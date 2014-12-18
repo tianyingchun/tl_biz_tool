@@ -57,16 +57,22 @@ app.factory("utility", ["$log", "$window",
         function httpRespDataConverter(data, status, headers, config) {
             if (status == 200) {
                 return {
-                    code: data.retCode,// if code equlas 1 request exec ok!
+                    code: data.retCode, // if code equlas 1 request exec ok!
                     message: data.message,
                     data: data.info
                 };
             } else {
-                return {
+                var _result = {
                     code: status,
                     message: "HTTP 接口访问错误 [code]: " + status,
                     data: data
                 };
+                if (data) {
+                    _result.code = data.retCode || status;
+                    _result.message = data.message || "Api未知访问错误!";
+                    _result.data = data.info;
+                }
+                return _result;
             }
         };
         /**

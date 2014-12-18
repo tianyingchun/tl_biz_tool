@@ -190,7 +190,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                     item.status = statusEnum.PROCESS_SUCCESS;
                 }, function (err) {
                     item.error = true;
-                    item.errorMessage = err.data.message;
+                    item.errorMessage = err.message;
                     item.status = statusEnum.PROCESS_FAILED;
                 }).finally(function () {
                     $scope.$emit('changeSpinnerStatus', false);
@@ -203,8 +203,11 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
             if ($scope.finalList && $scope.finalList.length > 0) {
                 $log.info("start do a batch");
                 var list = $scope.finalList;
-                $scope.$emit('changeSpinnerStatus', true);
+                // $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
+                    if (item.status === statusEnum.PROCESS_SUCCESS) {
+                        callback();
+                    }
                     var promise = uploadProduct(item);
                     if (promise === null) {
                         callback();
@@ -217,13 +220,13 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                         callback();
                     }, function (err) {
                         item.error = true;
-                        item.errorMessage = err.data.message;
+                        item.errorMessage = err.message;
                         item.status = statusEnum.PROCESS_FAILED;
                         callback();
                     })
                 }, function (err) {
                     $scope.doingBatch = false;
-                    $scope.$emit('changeSpinnerStatus', false);
+                    // $scope.$emit('changeSpinnerStatus', false);
                     $log.error(err);
                 })
             } else {

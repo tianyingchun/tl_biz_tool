@@ -29,6 +29,7 @@
         "crypto": "*",
         "atma-formatter": "*",
         "fs-finder": "*",
-        "gm":"*"
+        "gm":"*",
+        "image-size":"*"
     }
 }
