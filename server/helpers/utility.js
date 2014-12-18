@@ -147,11 +147,15 @@ function downloadPicture(productId, url, destDir) {
                         // do download picture file.
                         downloadFile(src, filePath).then(function(result) {
                             logger.debug("filePath: ", filePath);
-                            var dimensions = sizeOf('images/funny-cats.png');
+                            var dimensions = sizeOf(filePath);
                             if (dimensions.width < 300 || dimensions.height < 300) {
-                                //TODO..delete it.
-
-                                logger.warn("delete picture `" + filePath + "` cause of the size is small!");
+                                try {
+                                    //TODO..delete it.
+                                    fs.removeSync(filePath);
+                                    logger.warn("delete picture `" + filePath + "` cause of the size is small!");
+                                } catch (e) {
+                                    logger.error("remove file exception! filePath:", filePath);
+                                }
                                 callback(null, {
                                     status: "failed",
                                     path: src
