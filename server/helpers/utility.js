@@ -63,6 +63,11 @@ function stringFormatSql(iteratorFn, scope, sqlAndParameters) {
     // return the formatted string
     return fmt;
 };
+
+function isUrl(url) {
+    var regexp = /(ftp|http|https):\/\/[A-Za-z0-9\.-]{3,}\.[A-Za-z]{3}/;
+    return regexp.test(url);
+};
 /**
  * download html source code helper function.
  * @param  {string} url webiste product detail page absolute url
@@ -142,7 +147,7 @@ function downloadPicture(productId, url, destDir) {
             $("img").each(function(i, item) {
                 var src = $(item).attr("src");
                 var filePath = path.join(destDir, productId + "_{0}.jpg".replace("{0}", i));
-                if (src) {
+                if (src && isUrl(src)) {
                     tasks.push(function(callback) {
                         // do download picture file.
                         downloadFile(src, filePath).then(function(result) {
