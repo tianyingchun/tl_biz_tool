@@ -98,9 +98,11 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                 async.eachSeries(list, function (item, callback) {
                 	if (stopBatchFlag === true) {
                 		callback("停止批处理");
+                		return;
                 	}
                 	if (item.status === statusEnum.PROCESS_SUCCESS) {
                 		callback();
+                		return;
                 	}
                     var promise = extractPicture(item);
                     promise.then(function (results) {
