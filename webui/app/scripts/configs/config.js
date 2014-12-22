@@ -48,8 +48,13 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
                 controller: 'ProductCtrl',
                 controllerAs: 'controller'
             })
-            .when('/picture/picture-upload', {
+            .when('/picture/picture-extract', {
                 templateUrl: appConfig.getTemplateUrl('app/views/picture/extract.html'),
+                controller: 'PictureCtrl',
+                controllerAs: 'controller'
+            })
+            .when('/picture/picture-binding', {
+                templateUrl: appConfig.getTemplateUrl('app/views/picture/bind2db.html'),
                 controller: 'PictureCtrl',
                 controllerAs: 'controller'
             })

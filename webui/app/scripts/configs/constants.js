@@ -99,10 +99,10 @@ app.constant("navigationConfig", {
             title: '图片批量管理',
             subCategories: [{
                 title: '批量抓取图片',
-                path: 'picture/picture-upload'
+                path: 'picture/picture-extract'
             }, {
                 title: '图片绑定到数据库',
-                path: 'picture/picture-database'
+                path: 'picture/picture-binding'
             }, {
                 title: '其他产品相关配置',
                 path: 'picture/picture-config'
