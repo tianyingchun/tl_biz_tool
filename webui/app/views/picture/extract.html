@@ -5,7 +5,7 @@
                 <input ng-model="searchFilter" placeholder="过滤抓取图片地址" class="form-control search-query" ng-change="doFilter()">
             </div>
             <button class="btn btn-primary" ng-click="controller.uploadFile()">上传抓取图片地址列表</button>
-            <button class="btn btn-primary" ng-click="controller.doBatch()">批量抓取</button>
+            <button class="btn btn-primary" ng-click="controller.doBatch()" ng-disabled="doingBatch">批量抓取</button>
             <button class="btn btn-primary" ng-click="controller.stopBatch()" ng-show="doingBatch">停止</button>
         </div>
     </div>

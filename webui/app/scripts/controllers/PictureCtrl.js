@@ -56,7 +56,6 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
         };
 
         this.remove = function (index) {
-            // var index = $scope.list.indexOf(item);
             if (index > -1) {
                 $scope.list.splice(index, 1);
             }
@@ -94,7 +93,6 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                 $log.info("start do a batch");
                 stopBatchFlag = false;
                 var list = $scope.finalList;
-                // $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
                 	if (stopBatchFlag === true) {
                 		callback("停止批处理");
@@ -117,7 +115,6 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
                     })
                 }, function (err) {
                     $scope.doingBatch = false;
-                    // $scope.$emit('changeSpinnerStatus', false);
                     $log.error(err);
                 })
             } else {
@@ -129,7 +126,7 @@ app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum",
 
         this.stopBatch = function () {
         	stopBatchFlag = true;
-        }
+        };
 
     }
 ]);

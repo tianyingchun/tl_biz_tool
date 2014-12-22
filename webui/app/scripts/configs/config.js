@@ -38,18 +38,18 @@ app.config(["$routeProvider", "$logProvider", "$sceDelegateProvider", "appConfig
                 controller: 'IndexCtrl',
                 controllerAs: 'controller'
             })
-            .when('/product/product-upload', {
-                templateUrl: appConfig.getTemplateUrl('app/views/product-upload.html'),
-                controller: 'ProductCtrl',
-                controllerAs: 'controller'
-            })
             .when('/configuration/:category/:config', {
-                templateUrl: appConfig.getTemplateUrl('app/views/configuration.html'),
+                templateUrl: appConfig.getTemplateUrl('app/views/config/configuration.html'),
                 controller: 'ConfigCtrl',
                 controllerAs: 'controller'
             })
+            .when('/product/product-upload', {
+                templateUrl: appConfig.getTemplateUrl('app/views/product/upload.html'),
+                controller: 'ProductCtrl',
+                controllerAs: 'controller'
+            })
             .when('/picture/picture-upload', {
-                templateUrl: appConfig.getTemplateUrl('app/views/picture-upload.html'),
+                templateUrl: appConfig.getTemplateUrl('app/views/picture/extract.html'),
                 controller: 'PictureCtrl',
                 controllerAs: 'controller'
             })

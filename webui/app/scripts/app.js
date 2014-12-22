@@ -83,7 +83,7 @@ var app = angular.module('tl_biz_tools', [
                         }
                         var containerHeight = pageY - 63;
                         var footerHeight = clientHeight - pageY;
-                        $container.height(containerHeight);
+                        // $container.height(containerHeight);
                         $left.height(containerHeight);
                         $split.height(containerHeight);
                         $right.height(containerHeight);

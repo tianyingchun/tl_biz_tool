@@ -149,18 +149,17 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                     }
                     return ProductService.uploadProduct(data);
                 } else {
-                    console.log("product don't select category");
+                    $log.log("product don't select category");
                     return null;
                 }
             } else {
                 // TODO: how to deal with none categories product
-                console.log("product don't have category!");
+                $log.log("product don't have category!");
                 return null;
             }
         };
 
-        this.remove = function (item) {
-            var index = $scope.list.indexOf(item);
+        this.remove = function (index) {
             if (index > -1) {
                 $scope.list.splice(index, 1);
             }
@@ -198,15 +197,21 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
             }
         };
 
+        var stopBatchFlag = false;
         this.doBatch = function () {
             $scope.doingBatch = true;
             if ($scope.finalList && $scope.finalList.length > 0) {
                 $log.info("start do a batch");
+                stopBatchFlag = false;
                 var list = $scope.finalList;
-                // $scope.$emit('changeSpinnerStatus', true);
                 async.eachSeries(list, function (item, callback) {
+                    if (stopBatchFlag === true) {
+                        callback("停止批处理");
+                        return;
+                    }
                     if (item.status === statusEnum.PROCESS_SUCCESS) {
                         callback();
+                        return;
                     }
                     var promise = uploadProduct(item);
                     if (promise === null) {
@@ -226,7 +231,6 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                     })
                 }, function (err) {
                     $scope.doingBatch = false;
-                    // $scope.$emit('changeSpinnerStatus', false);
                     $log.error(err);
                 })
             } else {
@@ -234,6 +238,10 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                 DialogService.showAlertDialog("没有可以处理的产品!");
                 $scope.doingBatch = false;
             }
+        };
+
+        this.stopBatch = function () {
+            stopBatchFlag = true;
         };
 
     }
