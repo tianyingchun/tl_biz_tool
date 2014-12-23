@@ -24,7 +24,15 @@
                 timeout: 1000 * 60 * 10
             });
             return promise;
+        },
+
+        bindPictureAttr: function (data) {
+            var promise = this.postRequest("/picture/auto_sync_product_pictures_2database", data, {
+                timeout: 1000 * 60 * 10
+            });
+            return promise;
         }
+
     });
 
     // expose service contract.

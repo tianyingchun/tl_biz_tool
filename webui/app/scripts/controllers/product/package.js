@@ -1,0 +1,3 @@
+enyo.depends(
+	"ProductCtrl.js"
+);

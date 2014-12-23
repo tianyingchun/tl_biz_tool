@@ -1,4 +1,4 @@
-app.controller("PictureCtrl", ["$scope", "$log", "PictureService", "statusEnum", "FileService", "regexRules", "DialogService",
+app.controller("PictureExtractCtrl", ["$scope", "$log", "PictureService", "statusEnum", "FileService", "regexRules", "DialogService",
     function ($scope, $log, PictureService, statusEnum, FileService, regexRules, DialogService) {
 
         // $scope.$emit("changeSpinnerStatus", true);

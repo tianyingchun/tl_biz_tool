@@ -1,9 +1,9 @@
 enyo.depends(
 	"MainCtrl.js",
-	"ProductCtrl.js",
-	"PictureCtrl.js",
-	"IndexCtrl.js",
 	"HeaderCtrl.js",
 	"NavCtrl.js",
-	"ConfigCtrl.js"
+	"IndexCtrl.js",
+	"config/",
+	"product/",
+	"picture/"
 );
