@@ -266,6 +266,23 @@ function trim(s) {
 };
 
 /**
+ * 移除句子中在黑名单中出现的单词列表
+ * @param  {string} sentence
+ * @param  {string} words    words list split with ','
+ * @return {string}          replaced new string.
+ */
+function replaceWhiteListWords(sentence, words) {
+    // if not defined the words list, direct return
+    if (!words) return sentence;
+    if (!sentence) return "";
+    var collect = words.split(',');
+    while (collect.length) {
+        sentence = sentence.replace(new RegExp('\\b' + collect.pop().trim() + '\\b', 'g'), '');
+    }
+    return sentence.replace(/\s+/ig, " ");
+};
+
+/**
  * Get formatted dal access result messages.
  * @param  {string} methodKey method name
  * @param  {string} status    success, failed.
