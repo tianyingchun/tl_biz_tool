@@ -17,7 +17,8 @@ var app = angular.module('tl_biz_tools', [
     // 'ngUpload',
     // 'ui.bootstrap.tabs'
     "ui.bootstrap",
-    "ngDialog"
+    "ngDialog",
+    "rt.popup"
 ]);
 
 (function(window) {

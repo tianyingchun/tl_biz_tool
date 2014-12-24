@@ -5,17 +5,7 @@
                 <input ng-model="searchFilter" placeholder="过滤上传产品的URL" class="form-control search-query" ng-change="doFilter()">
             </div>
             <button class="btn btn-primary" ng-click="controller.uploadFile()">上传产品地址列表</button>
-            <div class="btn-group" dropdown>
-                <button class="btn btn-default dropdown-toggle">选择分类 <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu catalog-list-content" role="menu">
-                    <li class="category-filter">
-                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="categoryFilter">
-                    </li>
-                    <li ng-repeat='category in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(category)'><a href>{{category.displayName}}</a>
-                    </li>
-                </ul>
-            </div>
+            <button popup-show="template/categoriesSelect.html" popup-placement="bottom" class="btn btn-primary dropdown-toggle">选择分类 <span class="caret"></span></button>
             <button class="btn btn-primary" ng-click="controller.doBatch()" ng-disabled="doingBatch">批量自动上传</button>
             <button class="btn btn-primary" ng-click="controller.stopBatch()" ng-show="doingBatch">停止</button>
         </div>
@@ -41,15 +31,7 @@
                     <td class="catalog-list">
                         <div>
                             <div class="btn-group" dropdown>
-                                <button class="btn btn-primary btn-xs dropdown-toggle">选择分类 <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu catalog-list-content" role="menu">
-                                    <li class="category-filter">
-                                        <input class="form-control" ng-click="$event.stopPropagation()" ng-model="categoryFilter">
-                                    </li>
-                                    <li ng-repeat='category in categoryList | filter: categoryFilter' ng-click='controller.selectCategory(category,item)'><a href>{{category.displayName}}</a>
-                                    </li>
-                                </ul>
+                                <a popup-show="template/categoriesSelect.html" popup-placement="bottom" class="btn btn-primary btn-xs dropdown-toggle">选择分类 <span class="caret"></span></a>
                             </div>
                             <button ng-show="item.categories && item.categories.length > 0" class="btn btn-default btn-xs" ng-click="controller.editCategory(item)">编辑已选分类</button>
                         </div>

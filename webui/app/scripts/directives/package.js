@@ -8,5 +8,6 @@ enyo.depends(
 	// "otpVerification.js",
 	"formFields.js",
 	"ngNavigation.js",
-	"configuration.js"
+	"configuration.js",
+	"template.js"
 );
