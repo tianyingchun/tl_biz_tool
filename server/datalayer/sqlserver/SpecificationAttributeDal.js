@@ -17,7 +17,8 @@ function SpecificationAttributeDal() {
      * @return {promise}
      */
     this.getSpecificationAttributeByName = function(name) {
-        var sql = "SELECT* FROM SpecificationAttribute WHERE Name = {0}";
+        // make color, colors, 4 colors as the same attribute. using like.
+        var sql = "SELECT* FROM SpecificationAttribute WHERE Name LIKE '%{0}%'";
         return baseDal.executeEntity(SpecificationAttributeModel, [sql, name]);
     };
 
