@@ -172,9 +172,19 @@ function fetchProductSpecOther($, $lis) {
  */
 function isBlackProductSpecList(productSpecAttributeName) {
     productSpecAttributeName = productSpecAttributeName.toLowerCase();
+    // brand Name ==> brandname
+    if (productSpecAttributeName) {
+        productSpecAttributeName = productSpecAttributeName.replace(/\s+/ig, "");
+    }
+
+
     // get blacklist from configuration file.
     var productCfg = dataProvider.getConfigNode("product", "crawl_config");
     var blackList = productCfg.product_spec_attributes_name_blacklist.value.split(",");
+    
+    _.map(blackList, function(item) {
+        return item ? item.replace(/\s+/ig, "").toLowerCase() : "";
+    });
     // logger.debug("Product specification attribute blacklist: ", blackList);
     return _.contains(blackList, productSpecAttributeName);
 };
