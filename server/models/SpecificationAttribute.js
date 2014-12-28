@@ -11,7 +11,7 @@ function SpecificationAttribute(name) {
 
 	this.Remarks = "工具自动创建";
 
-	this.DisplayOrder = 0;
+	this.DisplayOrder = 20;
 };
 
 util.inherits(SpecificationAttribute, BaseModel);
