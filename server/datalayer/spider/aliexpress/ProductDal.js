@@ -175,6 +175,11 @@ function isBlackProductSpecList(productSpecAttributeName) {
     // get blacklist from configuration file.
     var productCfg = dataProvider.getConfigNode("product", "crawl_config");
     var blackList = productCfg.product_spec_attributes_name_blacklist.value.split(",");
+    // add color, size into blacklist.
+    
+    blackList.push("color");
+    blackList.push("colors");
+    blackList.push("size");
 
     // logger.debug("Product specification attribute blacklist: ", blackList);
     return utility.isExistedInArray(productSpecAttributeName, blackList);
@@ -439,6 +444,8 @@ _.extend(ProductSpiderService.prototype, {
                 // trim empty.
                 title = utility.capitalize(utility.trim(title));
                 // check if current title is black list, if exist ignore it.
+                // color, size it basicly always existed in product specification attribute, don't need to added to specification attribute
+                // again.
                 if (!isBlackProductSpecList(title)) {
                     // TODO. BUG< Material:Cashmere,Wool,Polyester,Lycra,Nylon>
                     // WE need to manaully use ',' to split `Material` into multiple spec attribute options.
