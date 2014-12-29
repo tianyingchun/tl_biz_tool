@@ -18,7 +18,7 @@
       "product_spec_attributes_name_blacklist": {
         "title": "产品SpecificationAttributeName 黑名单(小写逗号隔开)",
         "description": "凡是在这个黑名单数组内,则当前的SpecAttributeName会被忽略",
-        "value": "color, size, model number, brand, brand name,country of maunfacture,countryregion of manufacture,online wholesale websit",
+        "value": "model number, brand, brand name,country of maunfacture,countryregion of manufacture,online wholesale websit",
         "type": "textbox"
       },
       "title_words_filter_black_list": {

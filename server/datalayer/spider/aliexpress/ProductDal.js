@@ -175,11 +175,6 @@ function isBlackProductSpecList(productSpecAttributeName) {
     // get blacklist from configuration file.
     var productCfg = dataProvider.getConfigNode("product", "crawl_config");
     var blackList = productCfg.product_spec_attributes_name_blacklist.value.split(",");
-    // add color, size into blacklist.
-    
-    blackList.push("color");
-    blackList.push("colors");
-    blackList.push("size");
 
     // logger.debug("Product specification attribute blacklist: ", blackList);
     return utility.isExistedInArray(productSpecAttributeName, blackList);
