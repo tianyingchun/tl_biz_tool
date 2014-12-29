@@ -271,7 +271,7 @@ function trim(s) {
  * @param  {string} words    words list split with ','
  * @return {string}          replaced new string.
  */
-function replaceWhiteListWords(sentence, words) {
+function replaceBlackListWords(sentence, words) {
     // if not defined the words list, direct return
     if (!words) return sentence;
     if (!sentence) return "";
@@ -282,6 +282,22 @@ function replaceWhiteListWords(sentence, words) {
     return sentence.replace(/\s+/ig, " ");
 };
 
+/**
+ * check the word if existd in array
+ * @param  {string}  word
+ * @param  {array}   wordList words list
+ * @return {Boolean} true: existed, false:don't existed in array.
+ */
+function isExistedInArray(word, wordList) {
+    if (word) {
+        word = word.toLowerCase().replace(/\s+/ig, "");
+        wordList = _.map(wordList, function(item) {
+            return item ? item.replace(/\s+/ig, "").toLowerCase() : "";
+        });
+        return _.contains(wordList, word);
+    }
+    return false;
+};
 /**
  * Get formatted dal access result messages.
  * @param  {string} methodKey method name
@@ -358,5 +374,7 @@ module.exports = {
     downloadPicture: downloadPicture,
     downloadFile: downloadFile,
     capitalize: capitalize,
+    isExistedInArray: isExistedInArray,
+    replaceBlackListWords: replaceBlackListWords,
     buildResultMessages: buildResultMessages
 };

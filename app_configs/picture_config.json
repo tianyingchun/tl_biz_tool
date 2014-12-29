@@ -12,7 +12,7 @@
       "saveto_dir": {
         "title": "图片抓取到哪儿?",
         "description": "用来保存图片抓取后临到保存到当前电脑的指定目录",
-        "value": "D:\\Github_Works\\extract_dir",
+        "value": "D:\\BaiduYunDownload\\tops_tees_91_113",
         "type": "textbox"
       }
     }

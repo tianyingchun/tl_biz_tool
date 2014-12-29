@@ -1,7 +1,7 @@
 var util = require('util');
 var BaseModel = require("./BaseModel");
 
-function Product_SpecificationAttribute_Mapping(productId, specificationAttributeOptionId) {
+function Product_SpecificationAttribute_Mapping(productId, specificationAttributeOptionId, allowFiltering) {
 
 	BaseModel.call(this, "Product_SpecificationAttribute_Mapping");
 
@@ -10,8 +10,8 @@ function Product_SpecificationAttribute_Mapping(productId, specificationAttribut
 	this.SpecificationAttributeOptionId = specificationAttributeOptionId || 0;
 
 	this.CustomValue = null;
-
-	this.AllowFiltering = true;
+	// default is false, true only current specification attribute name is contained in specification_attribute_white_list.
+	this.AllowFiltering = allowFiltering || false;
 
 	this.ShowOnProductPage = true;
 

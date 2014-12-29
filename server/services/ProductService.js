@@ -178,7 +178,7 @@ function ProductDataProvider() {
                 productVariant.SourcePrice = crawlProduct.nowPrice[0];
                 productVariant.ProductCost = productVariant.SourcePrice;
                 productVariant.SourceUrl = crawlProduct.providerUrl;
-                productVariant.SourceInfoComment = crawlProduct.title;
+                productVariant.SourceInfoComment = "[不要修改此选项]" + crawlProduct.title;
 
                 productVariant.ProductAttribts = crawlProduct.productAttribts || {};
                 // prepare tier price.

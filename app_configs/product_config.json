@@ -21,6 +21,12 @@
         "value": "model number, brand, brand name,country of maunfacture,countryregion of manufacture,online wholesale websit",
         "type": "textbox"
       },
+      "title_words_filter_black_list": {
+        "title": "当前产品标题黑名单列表(小写逗号隔开)",
+        "description": "针对当前分类的所有产品如果标题单词在这个黑名单则直接remove掉",
+        "value": "aliexpress, express",
+        "type": "textbox"
+      },
       "price_rate": {
         "title": "产品价格比率",
         "description": "当前产品价格制定比率 = 当前抓取价格*倍率(2)",
@@ -59,6 +65,12 @@
           "valueTextNode": "Id",
           "displayTextNode": "Name"
         }
+      },
+      "specification_attribute_white_list": {
+        "title": "当前产品SpecificationAttribute AllowFiltering==True 的列表",
+        "description": "必须在这个列表内才设置AllowFiltering=true, 默认设置AllowFiltering=false ",
+        "value": "Material,Neckline,Sleeve Style,Dresses Length,Pattern Type,Style,Fabric Type,Silhouette,Sleeve Length,Color,Decoration,Size",
+        "type": "textbox"
       },
       "defaultProductSizeTableTemplate": {
         "title": "默认上传的产品尺寸模版TABLE",

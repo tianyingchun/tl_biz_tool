@@ -7,7 +7,7 @@ var dataProvider = require("../../dataProvider");
 var ProductModel = dataProvider.getModel("Product");
 var ProductVariantModel = dataProvider.getModel("ProductVariant");
 var baseDal = require("../baseDal");
- 
+
 var SpecificationAttributeModel = dataProvider.getModel("SpecificationAttribute");
 var SpecificationAttributeOptionModel = dataProvider.getModel("SpecificationAttributeOption");
 var Product_SpecificationAttribute_MappingModel = dataProvider.getModel("Product_SpecificationAttribute_Mapping");
@@ -230,7 +230,13 @@ function ProductDal() {
      * @return {promise}
      */
     this.addProductSpecificationAttributes = function(productId, specificationAttributes) {
-        
+
+        var productAutoUploadCfg = dataProvider.getConfigNode("product", "autoupload_config", "specification_attribute_white_list");
+
+        var specAttributeWhiteList = productAutoUploadCfg.split(",");
+
+        logger.debug("specification_attribute_white_list:", productAutoUploadCfg);
+
         var productSpecificationAttributeDal = dataProvider.getDataAccess("SpecificationAttribute");
         var deferred = Q.defer();
 
@@ -253,7 +259,8 @@ function ProductDal() {
                         .then(function(newSpecificationAttributeOption) {
 
                             // mapping instance.
-                            var productSpecAttributeMapping = new Product_SpecificationAttribute_MappingModel(productId, newSpecificationAttributeOption.Id);
+                            var allowFiltering = utility.isExistedInArray(specAttributeName, specAttributeWhiteList);
+                            var productSpecAttributeMapping = new Product_SpecificationAttribute_MappingModel(productId, newSpecificationAttributeOption.Id, allowFiltering);
 
                             productSpecificationAttributeDal.addOrUpdateProductSpecificationAttributesMapping(productSpecAttributeMapping)
                                 .then(function(newPSAMapping) {
@@ -353,7 +360,7 @@ function ProductDal() {
     // -----------------------------------------------------------------
     // 
     function insertProduct(product) {
-        var preFix = "Need To Refine :";
+        var preFix = "";
         //Short Description.
         product.ShortDescription = preFix + product.ShortDescription;
         //Insert Product
@@ -382,7 +389,7 @@ function ProductDal() {
      * @return {promise}promise with parameter
      */
     function insertProductVariant(product, variant) {
-        var preFix = "Need To Refine :";
+        var preFix = "";
         variant.ProductId = product.Id;
         variant.Name = preFix + product.Name;
         variant.Description = preFix + variant.Description;

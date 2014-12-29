@@ -12,14 +12,14 @@ var baseDal = require("../baseDal");
 
 function SpecificationAttributeDal() {
     /**
-     * Get specification attribute by name
+     * Get specification attributes by name using similarity
      * @param  {string}  name specification attribute name
      * @return {promise}
      */
-    this.getSpecificationAttributeByName = function(name) {
-        // make color, colors, 4 colors as the same attribute. using like.
-        var sql = "SELECT* FROM SpecificationAttribute WHERE Name LIKE '%{0}%'";
-        return baseDal.executeEntity(SpecificationAttributeModel, [sql, name]);
+    this.getSpecificationAttributesByName = function(name) {
+        // make color, colors as the same attribute. similarity <2  
+        var sql = "SELECT* FROM SpecificationAttribute WHERE dbo.edit_distance(Name, {0})<2";
+        return baseDal.executeList(SpecificationAttributeModel, [sql, name]);
     };
 
     /**
@@ -52,10 +52,10 @@ function SpecificationAttributeDal() {
         var _this = this;
         var name = specificationAttribute.Name.toLowerCase();
 
-        this.getSpecificationAttributeByName(name).then(function(find) {
-            if (find && find.Id) {
+        this.getSpecificationAttributesByName(name).then(function(find) {
+            if (find && find.length) {
                 logger.debug("found exist product specification attribute..", name);
-                deferred.resolve(find);
+                deferred.resolve(find[0]);
             } else {
                 _this.addNewSpecificationAttribute(specificationAttribute).then(function(newSpecificationAttribute) {
                     logger.debug("add new product specification attribute..", name);

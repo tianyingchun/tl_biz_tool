@@ -171,22 +171,13 @@ function fetchProductSpecOther($, $lis) {
  * @param  {string}  productSpecAttributeName prodcut specification attribute name.
  */
 function isBlackProductSpecList(productSpecAttributeName) {
-    productSpecAttributeName = productSpecAttributeName.toLowerCase();
-    // brand Name ==> brandname
-    if (productSpecAttributeName) {
-        productSpecAttributeName = productSpecAttributeName.replace(/\s+/ig, "");
-    }
-
 
     // get blacklist from configuration file.
     var productCfg = dataProvider.getConfigNode("product", "crawl_config");
     var blackList = productCfg.product_spec_attributes_name_blacklist.value.split(",");
-    blackList = _.map(blackList, function(item) {
-        return item ? item.replace(/\s+/ig, "").toLowerCase() : "";
-    });
 
     // logger.debug("Product specification attribute blacklist: ", blackList);
-    return _.contains(blackList, productSpecAttributeName);
+    return utility.isExistedInArray(productSpecAttributeName, blackList);
 };
 
 /**
@@ -340,8 +331,15 @@ _.extend(ProductSpiderService.prototype, {
     },
     fetchTitle: function() {
         logger.debug("filter to get title content...");
-        this.productCrawlInfo.title = this.$dom("h1.product-name").text();
-        if (!this.productCrawlInfo.title) {
+        var _title = this.$dom("h1.product-name").text();
+
+        // women, famale aliexpress.
+        var blackWordsList = dataProvider.getConfigNode("product", "crawl_config", "title_words_filter_black_list");
+        
+        _title = utility.replaceBlackListWords(_title, blackWordsList);
+
+        this.productCrawlInfo.title = _title;
+        if (!_title) {
             var _msg = "can't find correct title for this product," + this.url;
             logger.error("fetchTitle", _msg);
             this.productCrawlInfo.errors.push({
