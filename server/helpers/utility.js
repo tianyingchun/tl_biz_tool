@@ -289,7 +289,7 @@ function replaceBlackListWords(sentence, words) {
         // only keep one space in each words.
         new_sentence = new_sentence.replace(/\s+/ig, " ");
     }
-    return trim(new_sentence);
+    return capitalize(trim(new_sentence));
 };
 
 /**
