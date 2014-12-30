@@ -180,6 +180,7 @@ function isBlackProductSpecList(productSpecAttributeName) {
     blackList.push('color');
     blackList.push('colour');
     blackList.push('size');
+    blackList.push('sizes');
 
     // logger.debug("Product specification attribute blacklist: ", blackList);
     return utility.isExistedInArray(productSpecAttributeName, blackList);
