@@ -24,7 +24,7 @@
       "title_words_filter_black_list": {
         "title": "当前产品标题黑名单列表(小写逗号隔开)",
         "description": "针对当前分类的所有产品如果标题单词在这个黑名单则直接remove掉",
-        "value": "aliexpress, express",
+        "value": "aliexpress, express,2014,New,Women,Slim,Medium,Length,Short Sleeve,Lady,Vestidos,Red,11032834,spring and summer,female,Free shipping,women's,withsexy side slits,pattern,light,gray,D117,Hot Selling,!,b7,CB030466,Hot,new,round neck,short-sleeved,(ED26),FOR,New Arrival,and,Long Sleeve,Womens,Loose,Ladies,b4,Autumn,Winter,Package Hip,style,robe,femme,designer,brands,ED39,50%off,Lowest Price,Online,Top Quality,2015,With Adjustable Waist,Autumn and winter,mesh waist,Novelty,Peplum,Hot Sale,GD083,Free Shipping&Wholesales,, White, Gray, Navy Blue, Black, S, M, L, XL, XXL,femininos,L-XXXL,SV03 CB029088,2X E2737,Dark Blue,XXXL 3XL See-through,[Unbeatable At $X.99],Black /BrownRed, &,M XL XXL CB9558,Solid color,1PC,Kimisohand,, Blue, Apricot, S, M, L, XL,XXL, 1019,clothing,, Red+Black, S, M, L, XL, XXL,Ladies,3 SIZE,Black White,Package Hip,, S, M, L, XL,D0076,, Bronzing Evening Clothes,WC0344,Designer Stylish,Hot,Pink/Black,2pcs/set,Spring,Autumn,Hot Selling,or Solid,de festa Free Shipping S-XXL,de fiesta,Hot sale,,Block Stretchy Bow Bodycon,de praia longo,Three Fourth Sleeves,autum - winter dress,Dark Blue Garment,Best Quality,B16 SV004804,new designer 0126,Free shipping, WD1077,B19 SV00,free ship,hot sale HL8675,2014 Autumn,good quality autumn long sleeve ,style 1927,Slim Hip,Sequins Paillette,2X E2751,90%cotton S to XXLSIZE NO017",
         "type": "textbox"
       },
       "price_rate": {
