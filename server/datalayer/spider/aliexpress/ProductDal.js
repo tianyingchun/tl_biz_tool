@@ -176,6 +176,11 @@ function isBlackProductSpecList(productSpecAttributeName) {
     var productCfg = dataProvider.getConfigNode("product", "crawl_config");
     var blackList = productCfg.product_spec_attributes_name_blacklist.value.split(",");
 
+    // force add 'color', 'colour', 'size', we need to force user to manully to add 'color','size'
+    blackList.push('color');
+    blackList.push('colour');
+    blackList.push('size');
+
     // logger.debug("Product specification attribute blacklist: ", blackList);
     return utility.isExistedInArray(productSpecAttributeName, blackList);
 };
