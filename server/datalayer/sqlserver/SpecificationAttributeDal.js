@@ -76,7 +76,7 @@ function SpecificationAttributeDal() {
      * @return {promise}
      */
     this.addOrUpdateSpecificationAttributeOption = function(specificationAttributeOption) {
-        var checkExistRecordSql = "SELECT  * FROM  SpecificationAttributeOption WHERE SpecificationAttributeId={0} AND Name = {1} ";
+        var checkExistRecordSql = "SELECT  * FROM  SpecificationAttributeOption WHERE SpecificationAttributeId={0} AND dbo.edit_distance(Name, {1})<2 ";
         var insertRecordSql = "INSERT INTO SpecificationAttributeOption( SpecificationAttributeId , Name , Remarks , DisplayOrder ) VALUES ({0},{1},{2},{3})";
         // finnaly sql command string.
         var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " " + checkExistRecordSql + " END ELSE BEGIN " + checkExistRecordSql + " END;";
