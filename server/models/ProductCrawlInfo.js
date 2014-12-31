@@ -8,6 +8,8 @@ function ProductCrawlInfo(url) {
 	BaseModel.call(this, "ProductCrawlInfo");
 	// page title
 	this.title = "";
+	// used to store origin title fetched from aliexpress.
+	this.originTitle = "";
 
 	this.url = url;
 
@@ -38,6 +40,7 @@ function ProductCrawlInfo(url) {
 			sku: this.sku,
 			providerUrl: this.url,
 			title: this.title,
+			originTitle: this.originTitle,
 			productId: this.productId,
 			categories: this.categories,
 			oldPrice: this.oldPrice,

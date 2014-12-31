@@ -151,6 +151,10 @@ function ProductDataProvider() {
                 // asign product spec attributes
                 productModel.SpecAttribts = crawlProduct.specAttribts || [];
 
+                productModel.MetaTitle = name;
+                productModel.MetaKeywords = name;
+                productModel.MetaDescription = name; 
+
                 //productId, name, sku, description
                 var productVariant = new ProductVariantModel(0, name, sku, name);
                 // make sure that if now price eqauls 0 we need to throw error.
@@ -178,7 +182,7 @@ function ProductDataProvider() {
                 productVariant.SourcePrice = crawlProduct.nowPrice[0];
                 productVariant.ProductCost = productVariant.SourcePrice;
                 productVariant.SourceUrl = crawlProduct.providerUrl;
-                productVariant.SourceInfoComment = "[不要修改此选项]" + crawlProduct.title;
+                productVariant.SourceInfoComment = "[不要修改此选项]" + crawlProduct.originTitle;
 
                 productVariant.ProductAttribts = crawlProduct.productAttribts || {};
                 // prepare tier price.

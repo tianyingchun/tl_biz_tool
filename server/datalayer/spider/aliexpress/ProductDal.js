@@ -341,10 +341,14 @@ _.extend(ProductSpiderService.prototype, {
 
         // women, famale aliexpress.
         var blackWordsList = dataProvider.getConfigNode("product", "crawl_config", "title_words_filter_black_list");
-        
+
+        // keep origin title here we will save it into `sourceInfoComment`
+        this.productCrawlInfo.originTitle = _title;
+
         _title = utility.replaceBlackListWords(_title, blackWordsList);
 
         this.productCrawlInfo.title = _title;
+
         if (!_title) {
             var _msg = "can't find correct title for this product," + this.url;
             logger.error("fetchTitle", _msg);
