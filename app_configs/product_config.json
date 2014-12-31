@@ -69,7 +69,7 @@
       "specification_attribute_white_list": {
         "title": "当前产品SpecificationAttribute AllowFiltering==True 的列表",
         "description": "必须在这个列表内才设置AllowFiltering=true, 默认设置AllowFiltering=false ",
-        "value": "Material,Pattern Type,Style,Fabric Type,Silhouette,Sleeve Length,Color,Decoration,Size",
+        "value": "Material,Sleeve Style,Neckline,Dresses Length,Pattern Type,Style,Neckline,Fabric Type,Silhouette,Sleeve Length,Color,Decoration,Size",
         "type": "textbox"
       },
       "defaultProductSizeTableTemplate": {
