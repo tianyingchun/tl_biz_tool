@@ -95,8 +95,10 @@ function SpecificationAttributeDal() {
      * @return {promise}
      */
     this.updateProductSpecificatinAttributeAllowFiltering2False = function(productId) {
-        // first we need to update all product AllowFiltering = False.
-        var updateAllAllowFiltering2False = "UPDATE Product_SpecificationAttribute_Mapping SET AllowFiltering=0 WHERE ProductId={0}";
+        // first we need to update all product AllowFiltering = False. Except 'color'||'size'
+        // we need to keep color, size as AllowFiltering = True. because color size is manully added.
+        // the specification attribute 'color','size' has been added in blacklist in <crawl_config.product_spec_attributes_name_blacklist>
+        var updateAllAllowFiltering2False = "UPDATE Product_SpecificationAttribute_Mapping SET AllowFiltering=0 WHERE SpecificationAttributeOptionId NOT IN (SELECT Id FROM dbo.SpecificationAttributeOption WHERE SpecificationAttributeId IN (SELECT Id FROM dbo.SpecificationAttribute WHERE  dbo.edit_distance(Name, 'size')<2 OR dbo.edit_distance(Name, 'color')<2 )) AND ProductId={0}";
 
         return baseDal.executeNoneQuery([updateAllAllowFiltering2False, productId]);
 

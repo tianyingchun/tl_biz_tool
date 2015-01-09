@@ -72,6 +72,7 @@ function _executeSql(sqlParams, queryType, connectionCfg) {
                         logger.warn("retry sql.connection times: ", retryTime);
                         if (retryTime < 3) {
                             _sqlConnection(callback);
+                            return;
                         } else {
                             callback(err);
                         }
