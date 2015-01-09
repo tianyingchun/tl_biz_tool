@@ -60,35 +60,43 @@ function _executeSql(sqlParams, queryType, connectionCfg) {
 
     // callback(err, connection), if has err, connect is undefined.
     function _sqlConnection(callback) {
-        var connection = sql.connect(connectionCfg || clothesgate_conn, function(err) {
-            if (err) {
-                logger.error("sql connection excetion: ", err);
-                switch (err.code.toUpperCase().trim()) {
-                    //Socket error. retry once.
-                    case "ESOCKET":
-                    case "ETIMEOUT":
-                        // time ++;
-                        retryTime++;
-                        logger.warn("retry sql.connection times: ", retryTime);
-                        if (retryTime < 3) {
-                            _sqlConnection(callback);
-                            return;
-                        } else {
-                            callback(err);
-                        }
-                        break;
+        try {
+            var connection = sql.connect(connectionCfg || clothesgate_conn, function(err) {
+                if (err) {
+                    logger.error("sql connection excetion: ", err);
+                    switch (err.code.toUpperCase().trim()) {
+                        //Socket error. retry once.
+                        case "ESOCKET":
+                        case "ETIMEOUT":
+                            // time ++;
+                            retryTime++;
+                            logger.warn("retry sql.connection times: ", retryTime);
+                            if (retryTime < 3) {
+                                _sqlConnection(callback);
+                                return;
+                            } else {
+                                callback(err);
+                            }
+                            break;
+                    }
+                    callback(err);
+                } else {
+                    // reset retryTime while connect successfully!
+                    retryTime = 0;
+                    callback(null, connection);
                 }
-                callback(err);
-            } else {
-                // reset retryTime while connect successfully!
-                retryTime = 0;
-                callback(null, connection);
-            }
-        });
+            });
+        } catch (ex) {
+            retryTime++;
+            logger.error("sql connection excetion occurs: then retry again ", ex);
+            logger.warn("retry sql.connection times: ", retryTime);
+            _sqlConnection(callback);
+            return;
+        }
     };
     _sqlConnection(function(err, connection) {
         if (err) {
-            logger.error("sql connection excetion in _sqlConnection: ", err);
+            logger.error("sql connection excetion in _sqlConnection(): ", err);
             deferred.reject(err);
         } else {
             var request = new sql.Request(connection); // or: var request = connection.request();
