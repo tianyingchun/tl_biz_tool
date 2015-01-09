@@ -14,6 +14,8 @@ var clothesgate_conn = dataProvider.getConfigNode("context", "db_config", "db_cl
 
 logger.debug("DB Config: ", clothesgate_conn);
 
+// while sql connection failed, retryTime.
+var retryTime = 0;
 /**
  * Parepare sql parameters using built-in with SQL injection protection.
  * @param  {object} request new sql.Request()
@@ -55,9 +57,37 @@ function _prepareSqlParameters(request, sqlData) {
  */
 function _executeSql(sqlParams, queryType, connectionCfg) {
     var deferred = Q.defer();
-    var connection = sql.connect(connectionCfg || clothesgate_conn, function(err) {
+
+    // callback(err, connection), if has err, connect is undefined.
+    function _sqlConnection(callback) {
+        var connection = sql.connect(connectionCfg || clothesgate_conn, function(err) {
+            if (err) {
+                logger.error("sql connection excetion: ", err);
+                switch (err.code.toUpperCase().trim()) {
+                    //Socket error. retry once.
+                    case "ESOCKET":
+                    case "ETIMEOUT":
+                        // time ++;
+                        retryTime++;
+                        logger.warn("retry sql.connection times: ", retryTime);
+                        if (retryTime < 3) {
+                            _sqlConnection(callback);
+                        } else {
+                            callback(err);
+                        }
+                        break;
+                }
+                callback(err);
+            } else {
+                // reset retryTime while connect successfully!
+                retryTime = 0;
+                callback(null, connection);
+            }
+        });
+    };
+    _sqlConnection(function(err, connection) {
         if (err) {
-            logger.error("sql connection excetion: ", err);
+            logger.error("sql connection excetion in _sqlConnection: ", err);
             deferred.reject(err);
         } else {
             var request = new sql.Request(connection); // or: var request = connection.request();

@@ -241,48 +241,55 @@ function ProductDal() {
         var deferred = Q.defer();
 
         var resultMessages = [];
-        // loop all specificate attributes.
-        async.eachSeries(specificationAttributes, function(specAttribute, callback) {
 
-            // get spec attribute name.
-            var specAttributeName = specAttribute.title;
-            var specificationAttributeModel = new SpecificationAttributeModel(specAttributeName);
+        // first update all specification attribute 'AllowFiltering' ==False.
+        productSpecificationAttributeDal.updateProductSpecificatinAttributeAllowFiltering2False(productId).then(function(affectedRows) {
 
-            // get specification attribute instance if not auto insert it into database.
-            productSpecificationAttributeDal.autoCreatedSpecificationAttributeIfNotExist(specificationAttributeModel)
-                .then(function(newSpecificationAttribute) {
-                    // find specification attribute option name.
-                    var specificationAttributeOptionName = specAttribute.value;
-                    var specificationAttributeOption = new SpecificationAttributeOptionModel(newSpecificationAttribute.Id, specificationAttributeOptionName);
+            // loop all specificate attributes.
+            async.eachSeries(specificationAttributes, function(specAttribute, callback) {
 
-                    productSpecificationAttributeDal.addOrUpdateSpecificationAttributeOption(specificationAttributeOption)
-                        .then(function(newSpecificationAttributeOption) {
+                // get spec attribute name.
+                var specAttributeName = specAttribute.title;
+                var specificationAttributeModel = new SpecificationAttributeModel(specAttributeName);
 
-                            // mapping instance.
-                            var allowFiltering = utility.isExistedInArray(specAttributeName, specAttributeWhiteList);
-                            var productSpecAttributeMapping = new Product_SpecificationAttribute_MappingModel(productId, newSpecificationAttributeOption.Id, allowFiltering);
+                // get specification attribute instance if not auto insert it into database.
+                productSpecificationAttributeDal.autoCreatedSpecificationAttributeIfNotExist(specificationAttributeModel)
+                    .then(function(newSpecificationAttribute) {
+                        // find specification attribute option name.
+                        var specificationAttributeOptionName = specAttribute.value;
+                        var specificationAttributeOption = new SpecificationAttributeOptionModel(newSpecificationAttribute.Id, specificationAttributeOptionName);
 
-                            productSpecificationAttributeDal.addOrUpdateProductSpecificationAttributesMapping(productSpecAttributeMapping)
-                                .then(function(newPSAMapping) {
-                                    resultMessages.push(utility.stringFormat("ProductSpecificationAttribute Item Finished -> ProductId: `{0}`,  Name: `{1}`,  SpecificationAttributeOptionName:`{2}`", productId, specAttributeName, specificationAttributeOptionName));
-                                    callback();
-                                }, function(err) {
-                                    callback(err);
-                                });
-                        }, function(err) {
-                            callback(err);
-                        });
+                        productSpecificationAttributeDal.addOrUpdateSpecificationAttributeOption(specificationAttributeOption)
+                            .then(function(newSpecificationAttributeOption) {
 
-                }, function(err) {
-                    callback(err);
-                });
+                                // mapping instance.
+                                var allowFiltering = utility.isExistedInArray(specAttributeName, specAttributeWhiteList);
+                                var productSpecAttributeMapping = new Product_SpecificationAttribute_MappingModel(productId, newSpecificationAttributeOption.Id, allowFiltering);
+
+                                productSpecificationAttributeDal.addOrUpdateProductSpecificationAttributesMapping(productSpecAttributeMapping)
+                                    .then(function(newPSAMapping) {
+                                        resultMessages.push(utility.stringFormat("ProductSpecificationAttribute Item Finished -> ProductId: `{0}`,  Name: `{1}`,  SpecificationAttributeOptionName:`{2}`", productId, specAttributeName, specificationAttributeOptionName));
+                                        callback();
+                                    }, function(err) {
+                                        callback(err);
+                                    });
+                            }, function(err) {
+                                callback(err);
+                            });
+
+                    }, function(err) {
+                        callback(err);
+                    });
+            }, function(err) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    var finnalyResultMessage = baseDal.buildResultMessages("AddProductSpecificationAttributes", resultMessages).getResult();
+                    deferred.resolve(finnalyResultMessage);
+                }
+            });
         }, function(err) {
-            if (err) {
-                deferred.reject(err);
-            } else {
-                var finnalyResultMessage = baseDal.buildResultMessages("AddProductSpecificationAttributes", resultMessages).getResult();
-                deferred.resolve(finnalyResultMessage);
-            }
+            deferred.reject(err);
         });
         return deferred.promise;
     };
