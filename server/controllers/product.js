@@ -9,9 +9,6 @@ var dataProvider = require("../dataProvider");
 //  product service.
 var productService = dataProvider.getService("Product");
 
-//  product service.
-var productService = dataProvider.getService("Product");
-
 
 /**
  * API: /product/auto_extract_products
