@@ -19,13 +19,13 @@
 ``` window batch
 
   -"start": "set DEBUG=express:* & supervisor tl_server.js"
-  
+  -"start": "set DEBUG=tl_biz_tool_server & supervisor --debug forever start tl_server.js"
   -"start": "set DEBUG=tl_biz_tool_server & supervisor tl_server.js"   --only show all logs belong to tl_biz_tool_server
 
 ```
 
 ``` shell command
-
+>>npm install -g forever   -- while process uncaughtException, forever will clean resource, then try to restart this server.
 >>npm install -g node-inspector 
 >>npm install -g express
 >>npm install -g supervisor

@@ -3,7 +3,8 @@ var winston = require('winston');
 var fs = require("fs-extra");
 var dateFormat = require("./dateformat");
 var path = require("path");
-winston.emitErrs = true;
+
+winston.emitErrs = false;
 // data provider singleton.
 var dataProvider = require("../dataProvider");
 
@@ -24,7 +25,7 @@ fs.ensureFileSync(_filename);
 var logger = new winston.Logger({
 	transports: [
 		new winston.transports.File({
-			level: 'info',
+			level: 'error',
 			filename: _filename || './logs/all-logs.log',
 			handleExceptions: true,
 			json: true,
@@ -35,11 +36,11 @@ var logger = new winston.Logger({
 		new winston.transports.Console({
 			level: 'debug',
 			handleExceptions: true,
-			json: false,
+			json: true,
 			colorize: true
 		})
 	],
-	exitOnError: false
+	exitOnError: true
 });
 module.exports = logger;
 module.exports.stream = {
