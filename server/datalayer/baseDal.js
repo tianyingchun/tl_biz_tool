@@ -62,24 +62,21 @@ function _executeSql(sqlParams, queryType, connectionCfg) {
     function _sqlConnection(callback) {
 
         var connection = sql.connect(connectionCfg || clothesgate_conn, function(err) {
-            if (err) {
-                logger.error("sql connection excetion: ", err);
-                switch (err.code.toUpperCase().trim()) {
-                    //Socket error. retry once.
-                    case "ESOCKET":
-                    case "ETIMEOUT":
-                        // time ++;
-                        retryTime++;
-                        logger.warn("retry sql.connection times: ", retryTime);
-                        if (retryTime < 3) {
-                            _sqlConnection(callback);
-                            return;
-                        } else {
-                            callback(err);
-                        }
-                        break;
+            if (err) { 
+                var code = err.code.toUpperCase().trim();
+                //Socket error. retry once.
+                if(code == "ESOCKET" || code == "ETIMEOUT") {
+                    // time ++;
+                    retryTime++;
+                    if (retryTime < 3) {
+                        logger.error("sql.connection exception retry times: ", retryTime);
+                        _sqlConnection(callback);
+                    } else {
+                        callback(err);
+                    }
+                } else {
+                    callback(err);
                 }
-                callback(err);
             } else {
                 // reset retryTime while connect successfully!
                 retryTime = 0;
