@@ -36,7 +36,7 @@ var logger = new winston.Logger({
 		new winston.transports.Console({
 			level: 'debug',
 			handleExceptions: true,
-			json: true,
+			json: false,
 			colorize: true
 		})
 	],
