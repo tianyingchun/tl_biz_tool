@@ -43,3 +43,12 @@
 in package.json-->
 "start": "set DEBUG=tl_biz_tool_server & supervisor --debug tl_server.js"
 
+
+
+GM 插件支持:需要在对应系统安装graphicsmagick
+
+//http://www.graphicsmagick.org/INSTALL-windows.html#installing-using-installer-package
+//using node gm libaray we need to first install graphicsmagick libaray
+//test>>: gm convert logo: logo.gif
+//https://github.com/aheckmann/gm
+
