@@ -30,7 +30,7 @@
       "price_rate": {
         "title": "产品价格比率",
         "description": "当前产品价格制定比率 = 当前抓取价格*倍率(2)",
-        "value": 2,
+        "value": 2.65,
         "type": "textbox"
       },
       "old_price_rate": {
