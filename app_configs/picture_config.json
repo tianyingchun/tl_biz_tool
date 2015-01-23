@@ -12,7 +12,7 @@
       "saveto_dir": {
         "title": "图片抓取到哪儿?",
         "description": "用来保存图片抓取后临到保存到当前电脑的指定目录",
-        "value": "D:\\BaiduYunDownload\\tops_tees_91_113",
+        "value": "D:\\BaiduYunDownload\\已修改-dresses-41-63.zip等多个文件\\已修改-dresses-1-20-水印",
         "type": "textbox"
       }
     }
@@ -30,7 +30,7 @@
       "picture_synced_to_dir": {
         "title": "图片同步到后台后保存的路径?",
         "description": "当图片和产品数据绑定到DB 后需要重命名这些图片到指定的目录,以被FTP上传到产线",
-        "value": "D:\\Deployment\\picture_synced_to_dir",
+        "value": "D:\\Deployment\\picture_synced_to_dir\\dresses",
         "type": "textbox"
       },
       "picture_maximum_size": {

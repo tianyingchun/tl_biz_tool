@@ -275,16 +275,19 @@ function replaceBlackListWords(sentence, words) {
     // if not defined the words list, direct return
     if (!words) return sentence;
     if (!sentence) return "";
+    // remove specical characters, e.g. !,&,*,`,`,only remain english character A-Za-z0-9
+    sentence = sentence.replace(/[^0-9A-Za-z\s]+/g, '');
+    sentence = sentence.toLowerCase();
     var collect = words.split(',');
     while (collect.length) {
         var _pop = trim(collect.pop());
+        _pop = _pop.replace(/[^0-9A-Za-z\s]+/g, '');
         if (_pop) {
-            sentence = sentence.replace(new RegExp('\\b' + _pop + '\\b', 'g'), ' ');
+            sentence = sentence.replace(new RegExp('\\b' + _pop + '\\b', 'ig'), ' ');
         }
     }
     var new_sentence = sentence.replace(/\s+/ig, " ");
-    // remove specical characters, e.g. !,&,*,`,`,only remain english character A-Za-z0-9
-    new_sentence = new_sentence.replace(/[^0-9A-Za-z\s]+/g, '');
+   
     if (new_sentence) {
         // only keep one space in each words.
         new_sentence = new_sentence.replace(/\s+/ig, " ");
