@@ -30,13 +30,18 @@
       "price_rate": {
         "title": "产品价格比率",
         "description": "当前产品价格制定比率 = 当前抓取价格*倍率(2)",
-        "value": 2.65,
+        "value": {
+          "down_10": 2.65,
+          "down_20": 2.4,
+          "down_30": 2.1,
+          "down_40": 2
+        },
         "type": "textbox"
       },
       "old_price_rate": {
         "title": "产品卖价上浮比率",
         "description": "当前产品显示价格 = 当前产品计算后的最终卖价*比率(1.8)",
-        "value": 1.8,
+        "value": "1.8",
         "type": "textbox"
       },
       "tier_price_rate": {

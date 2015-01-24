@@ -153,13 +153,15 @@ function ProductDataProvider() {
 
                 productModel.MetaTitle = name;
                 productModel.MetaKeywords = name;
-                productModel.MetaDescription = name; 
+                productModel.MetaDescription = name;
 
                 //productId, name, sku, description
                 var productVariant = new ProductVariantModel(0, name, sku, name);
                 // make sure that if now price eqauls 0 we need to throw error.
                 var _price = crawlProduct.nowPrice.length ? crawlProduct.nowPrice[0] : 0;
-                _price = _price * parseFloat(productCrawlCfg.price_rate.value);
+
+                // calculate now sale price by price  rate...
+                _price = prepareProductSalePriceFromRateTier(sku, _price);
 
                 // if current price less than 10USD, alway use 9.9$ we can make some activity for this.
                 if (_price < 10) {
@@ -329,6 +331,28 @@ function ProductDataProvider() {
     //
     // helper methods: prepareProductTierPrice
     // ------------------------------------------------------------------------
+    function prepareProductSalePriceFromRateTier(sku, originalPrice) {
+        var values = productCrawlCfg.price_rate.value;
+        //  {"down_10": 2.65,"down_20": 2.4,"down_30": 2.1,"down_40": 2}
+        var newPrice = originalPrice * 2;
+        if (!originalPrice) {
+            logger.error("sku:" + sku + "originalPrice is not specificted!");
+        }
+
+        if (originalPrice < 10) {
+            newPrice = originalPrice * parseFloat(values["down_10"]);
+        } else if (originalPrice < 20) {
+            newPrice = originalPrice * parseFloat(values["down_20"]);
+        } else if (originalPrice < 30) {
+            newPrice = originalPrice * parseFloat(values["down_30"]);
+        } else if (originalPrice < 40) {
+            newPrice = originalPrice * parseFloat(values["down_40"]);
+        } else {
+            newPrice = originalPrice * 1.8;
+        }
+        return newPrice;
+    };
+
     function prepareProductTierPrice(nowPrice) {
         // tier price list.
         var values = productCrawlCfg.tier_price_rate.value;
