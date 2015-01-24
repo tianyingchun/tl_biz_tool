@@ -72,7 +72,7 @@ app.run(['$templateCache', function($templateCache){
 		                	"<div ng-if=\"isObject(configValue.value)\">"+
 		                		"<div data-ng-repeat=\"(key, value) in configValue.value\" class=\"form-group\">"+
                 					"<label class=\"col-lg-3 col-md-4 col-sm-5 control-label\">{{key}}</label>"+
-                					"<div class=\"col-lg-9 col-md-8 col-sm-7\"><input type=\"text\" ng-model=\"value\" class=\"form-control\"></div>"+
+                					"<div class=\"col-lg-9 col-md-8 col-sm-7\"><input type=\"text\" ng-model=\"configValue.value[key]\" class=\"form-control\"></div>"+
                 				"</div>"+
 							"</div>"+
 		                "</div>"+	
