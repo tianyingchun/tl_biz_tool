@@ -108,7 +108,7 @@ router.post("/update_product_specification_attributes", function(req, res) {
     }
 });
 /**
- * API: /product/update_product_variant_attributes
+ * API: /product/update_product_attributes
  *
  * "productAttribts": {
         "Color": [
@@ -134,23 +134,45 @@ router.post("/update_product_specification_attributes", function(req, res) {
     }
  * provider single api to batch update product specification attributes for existed products.
  */
-router.post("/update_product_variant_attributes", function(req, res) {
-    logger.debug('controller: update_product_variant_attributes...');
+router.post("/update_product_attributes", function(req, res) {
+    logger.debug('controller: update_product_attributes...');
     var reqBody = req.body;
 
-    var sku, productId, productVariantId, specAttribts;
+    var sku, productId, specAttribts;
 
     if (reqBody) {
         sku = reqBody.url || "";
         productId = reqBody.productId || "";
-        productVariantId = reqBody.productVariantId || "";
         specAttribts = reqBody.specAttribts || null;
     }
-    if (!sku || !productId || !productVariantId || !specAttribts) {
-        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `sku, productId, productVariantId, specAttribts` is required!"));
+    if (!sku || !productId || !specAttribts) {
+        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `sku, productId, specAttribts` is required!"));
     } else {
         base.apiOkOutput(res, "oktestiong...");
     }
 });
 
+/**
+ *API: /product/get_product_attribtues
+ * data:{sku:'38004517023'}
+ */
+router.post("/get_product_attribtues", function(req, res) {
+    logger.debug('controller: get_product_attribtues...');
+    var reqBody = req.body;
+
+    var sku;
+
+    if (reqBody) {
+        sku = reqBody.sku || "";
+    }
+    if (!sku) {
+        base.apiErrorOutput(res, base.getErrorModel(400, "make sure that `sku` is required!"));
+    } else {
+        productService.getProductAttributesBySku(sku).then(function(results) {
+            base.apiOkOutput(res, results);
+        }, function(err) {
+            base.apiErrorOutput(res, err);
+        });
+    }
+});
 module.exports = router;

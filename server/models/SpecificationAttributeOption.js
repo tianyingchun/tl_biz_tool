@@ -9,8 +9,6 @@ function SpecificationAttributeOption(specificationAttributeId, name) {
 
 	this.Name = name || "";
 
-	this.Remarks = "工具自动创建";
-
 	this.DisplayOrder = 0;
 };
 

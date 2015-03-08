@@ -13,8 +13,6 @@ var dataProvider = require("../dataProvider");
 var ProductModel = dataProvider.getModel('Product');
 // tier price model.
 var TierPriceModel = dataProvider.getModel("TierPrice");
-// product variant model.
-var ProductVariantModel = dataProvider.getModel('ProductVariant');
 
 function ProductDataProvider() {
     // crawl configuration.
@@ -49,12 +47,12 @@ function ProductDataProvider() {
      */
     this.getProductIdBySku = function(sku) {
 
-        return productDal.getProductVariantBySku(sku).then(function(productVariant) {
-            if (productVariant) {
-                return productVariant.ProductId;
+        return productDal.getProductBySku(sku).then(function(product) {
+            if (product) {
+                return product.ProductId;
             } else {
-                logger.debug("Can't find product varant by sku:" + sku);
-                throw new Error("Can't find product varant by sku:" + sku);
+                logger.debug("Can't find product by sku:" + sku);
+                throw new Error("Can't find product by sku:" + sku);
             }
         });
     };
@@ -135,7 +133,7 @@ function ProductDataProvider() {
         // first we need to check if existed the same product with provider sku(productId).
         var sku = crawlProduct.sku;
         var deferred = Q.defer();
-        productDal.getProductVariantBySku(sku).then(function(testProductVariant) {
+        productDal.getProductBySku(sku).then(function(testProductVariant) {
             // logger.debug("getProductVariantBySku: ", testProductVariant);
             if (!testProductVariant || !testProductVariant.Id) {
                 // product name.
@@ -154,9 +152,8 @@ function ProductDataProvider() {
                 productModel.MetaTitle = name;
                 productModel.MetaKeywords = name;
                 productModel.MetaDescription = name;
+                productModel.Sku = sku;
 
-                //productId, name, sku, description
-                var productVariant = new ProductVariantModel(0, name, sku, name);
                 // make sure that if now price eqauls 0 we need to throw error.
                 var _price = crawlProduct.nowPrice.length ? crawlProduct.nowPrice[0] : 0;
 
@@ -171,31 +168,31 @@ function ProductDataProvider() {
                     _price = 9.9;
 
                     // use random rate for old price if sale price equals 9.9
-                    productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value) * (Math.random() / 2 + 1);
+                    productModel.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value) * (Math.random() / 2 + 1);
 
                 } else {
                     // show the old price to customer.
-                    productVariant.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value);
+                    productModel.OldPrice = _price * parseFloat(productCrawlCfg.old_price_rate.value);
                 }
 
-                productVariant.Price = _price;
+                productModel.Price = _price;
 
                 // the price we need paid!
-                productVariant.SourcePrice = crawlProduct.nowPrice[0];
-                productVariant.ProductCost = productVariant.SourcePrice;
-                productVariant.SourceUrl = crawlProduct.providerUrl;
-                productVariant.SourceInfoComment = "[不要修改此选项]" + crawlProduct.originTitle;
+                productModel.SourcePrice = crawlProduct.nowPrice[0];
+                productModel.ProductCost = productModel.SourcePrice;
+                productModel.SourceUrl = crawlProduct.providerUrl;
+                productModel.SourceInfoComment = "[不要修改此选项]" + crawlProduct.originTitle;
 
-                productVariant.ProductAttribts = crawlProduct.productAttribts || {};
+                productModel.ProductAttribts = crawlProduct.productAttribts || {};
                 // prepare tier price.
-                productVariant.TierPrices = prepareProductTierPrice(productVariant.Price);
+                productModel.TierPrices = prepareProductTierPrice(productModel.Price);
 
-                logger.debug("Product Vairant Info: priceRate: `%s`, nowPrice: `%s`, oldPrice:`%s`, producCost:`%s` ", productCrawlCfg.price_rate.value, _price, productVariant.OldPrice, productVariant.ProductCost);
+                logger.debug("Product Vairant Info: priceRate: `%s`, nowPrice: `%s`, oldPrice:`%s`, producCost:`%s` ", productCrawlCfg.price_rate.value, _price, productModel.OldPrice, productModel.ProductCost);
 
                 var finnalResultMessage;
 
                 // Add product basic information and product variant information.
-                productDal.addNewProduct(productModel, productVariant).then(function(result) {
+                productDal.addNewProduct(productModel, productModel).then(function(result) {
 
                     // temporary save add new product completed result messages.
                     finnalResultMessage = result;
@@ -327,7 +324,31 @@ function ProductDataProvider() {
                 });
         });
     };
+    /**
+     * 返回当前SKU下的所有的ProductAttribtues列表
+     * @param  {string} sku product variant sku
+     * @return {promise}
+     */
+    this.getProductAttributesBySku = function(sku) {
+        return productAttributeDal.getProductAttributesBySku(sku).then(function(results) {
+            // 重新组织产品详情的ProductAttribtue列表
 
+            var _newResult = {};
+
+            if (results && results.length) {
+                results.forEach(function(item) {
+                    if (!_newResult[item.ProductAttributeName]) {
+                        _newResult[item.ProductAttributeName] = [];
+                    }
+                    _newResult[item.ProductAttributeName].push({
+                        "title": item.Name,
+                        "value": item.ProductAttributeName.toLowerCase() == "color" ? item.ColorSquaresRgb : item.Name
+                    });
+                });
+            }
+            return _newResult;
+        });
+    };
     //
     // helper methods: prepareProductTierPrice
     // ------------------------------------------------------------------------

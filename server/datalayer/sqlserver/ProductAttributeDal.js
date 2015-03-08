@@ -5,7 +5,7 @@ var logger = require('../../helpers/log');
 var utility = require('../../helpers/utility');
 var dataProvider = require("../../dataProvider");
 var ProductAttributeModel = dataProvider.getModel("ProductAttribute");
-var ProductVariantAttributeValueModel = dataProvider.getModel("ProductVariantAttributeValue");
+var ProductAttributeValueModel = dataProvider.getModel("ProductAttributeValue");
 var PVAMappingModel = dataProvider.getModel("PVAMapping");
 var baseDal = require("../baseDal");
 
@@ -51,10 +51,10 @@ function ProductAttributeDal() {
         return deferred.promise;
     };
     /**
-	 * Add productVariant attribute values
-	 * @param {id} productVariantAttributeMappingId productVariant AttributeMappingId.[[dbo].[ProductVariant_ProductAttribute_Mapping]]
-	 * @param {string}  productVariantAttributeKey  productvariant attribute key .e.g  color:
-	 * @param {array} productVariantAttributeValues
+	 * Add product attribute values
+	 * @param {id} productAttributeMappingId product AttributeMappingId.[[dbo].[ProductVariant_ProductAttribute_Mapping]]
+	 * @param {string}  productAttributeKey  product attribute key .e.g  color:
+	 * @param {array} productAttributeValues
 	 *         color:->[{  
                     "title": "Camel",
                     "value": ""
@@ -64,50 +64,50 @@ function ProductAttributeDal() {
                     "value": ""
                 }]
 	 */
-    this.addProductVariantAttributeValues = function(productVariantAttributeMappingId, productVariantAttributeKey, productVariantAttributeValues) {
+    this.addProductAttributeValues = function(productAttributeMappingId, productAttributeKey, productAttributeValues) {
         var deferred = Q.defer();
-        var productVariantAttribute_values_sql = "INSERT INTO dbo.ProductVariantAttributeValue( ProductVariantAttributeId , Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment , IsPreSelected , DisplayOrder)VALUES  ({0},{1},{2},{3},{4},{5},{6})";
+        var productAttribute_values_sql = "INSERT INTO dbo.ProductAttributeValue( ProductAttributeMappingId ,AttributeValueTypeId,AssociatedProductId, Name , ColorSquaresRgb ,  PriceAdjustment , WeightAdjustment ,Cost, Quantity, IsPreSelected , DisplayOrder, PictureId) VALUES  ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})";
         // product attributes.
         var sql = [];
         var params = [];
-        var seed = 7;
+        var seed = 12;
 
-        var len = productVariantAttributeValues.length;
+        var len = productAttributeValues.length;
 
         for (var i = 0; i < len; i++) {
             // color|size...
-            var _productVariantOption = productVariantAttributeValues[i];
+            var _productVariantOption = productAttributeValues[i];
             // speical deal with color option.
             var colorSqureRgb = "";
             // get variant option name.
             var productVariantOptionName = _productVariantOption.value;
 
             // if it is color, we need to user title as the option name.
-            if (productVariantAttributeKey.toLowerCase() == "color") {
+            if (productAttributeKey.toLowerCase() == "color") {
                 productVariantOptionName = _productVariantOption.title;
                 colorSqureRgb = "#" + _productVariantOption.value;
             }
 
 
             if (i == 0) {
-                sql.push(productVariantAttribute_values_sql);
+                sql.push(productAttribute_values_sql);
             } else {
-                var _tmp = productVariantAttribute_values_sql;
+                var _tmp = productAttribute_values_sql;
                 for (var j = 0; j < seed; j++) {
                     var replaceRegex = new RegExp('\\{' + j + '\\}', "g");
                     _tmp = _tmp.replace(replaceRegex, "{" + (i * seed + j) + "}");
                 };
                 sql.push(_tmp);
             }
-            params.push(productVariantAttributeMappingId, productVariantOptionName, colorSqureRgb, 0, 0, false, 0);
+            params.push(productAttributeMappingId, 0, 0, productVariantOptionName, colorSqureRgb, 0, 0, 0, 1, false, 0, 0);
         };
         params.unshift(sql.join(";"));
 
         baseDal.executeNoneQuery(params).then(function() {
 
-            var resultMsgObj = baseDal.buildResultMessages("addProductVariantAttributeValues", {
-                productVariantAttributeKey: productVariantAttributeKey,
-                VariantAttributeMappingId: productVariantAttributeMappingId,
+            var resultMsgObj = baseDal.buildResultMessages("addProductAttributeValues", {
+                productAttributeKey: productAttributeKey,
+                VariantAttributeMappingId: productAttributeMappingId,
                 VariantAttributeValuesCounts: len
             });
 
@@ -123,14 +123,14 @@ function ProductAttributeDal() {
     /**
      * 返回指定产品SKU 的所有的Product Variant attribute list
      */
-    this.getProductVariantAttributesBySku = function(sku) {
+    this.getProductAttributesBySku = function(sku) {
 
         var deferred = Q.defer();
 
         var pvaMappingSql = "SELECT " +
-            " ppvm.Id,ppvm.ProductAttributeId,ppvm.ProductAttributeId,pa.Name AS ProductAttributeName,ppvm.TextPrompt,ppvm.IsRequired,ppvm.AttributeControlTypeId,ppvm.DisplayOrder " +
-            " FROM dbo.ProductVariant_ProductAttribute_Mapping ppvm INNER JOIN dbo.ProductAttribute pa ON ppvm.ProductAttributeId = pa.Id" +
-            " WHERE ProductVariantId IN (SELECT Id FROM dbo.ProductVariant WHERE Sku={0});";
+            " ppvm.Id,ppvm.ProductAttributeId,pa.Name AS ProductAttributeName,ppvm.TextPrompt,ppvm.IsRequired,ppvm.AttributeControlTypeId,ppvm.DisplayOrder " +
+            " FROM dbo.Product_ProductAttribute_Mapping ppvm INNER JOIN dbo.ProductAttribute pa ON ppvm.ProductAttributeId = pa.Id" +
+            " WHERE ProductId IN (SELECT Id FROM dbo.Product WHERE Sku={0});";
 
         baseDal.executeList(PVAMappingModel, [pvaMappingSql, sku]).then(function(listPVAMapping) {
 
@@ -142,7 +142,7 @@ function ProductAttributeDal() {
                     var productAttributeName = pvaMapping.ProductAttributeName;
                     var currFn = (function(id, productAttributeName) {
                         return function(callback) {
-                            getProductVariantAttributeValue(id, productAttributeName).then(function(result) {
+                            getProductAttributeValue(id, productAttributeName).then(function(result) {
                                 callback(null, result);
                             }, function(err) {
                                 callback(err);
@@ -213,9 +213,9 @@ function ProductAttributeDal() {
     // helper methods
     // ------------------------------------------------------------
     // 
-    function getProductVariantAttributeValue(productVariantAttributeId, productAttributeName) {
-        var sql = "SELECT * FROM dbo.ProductVariantAttributeValue WHERE ProductVariantAttributeId ={0}";
-        return baseDal.executeList(ProductVariantAttributeValueModel, [sql, productVariantAttributeId]).then(function(results) {
+    function getProductAttributeValue(productAttributeMappingId, productAttributeName) {
+        var sql = "SELECT * FROM dbo.ProductAttributeValue WHERE ProductAttributeMappingId ={0}";
+        return baseDal.executeList(ProductAttributeValueModel, [sql, productAttributeMappingId]).then(function(results) {
             var _results = [];
             if (results && results.length) {
                 results.forEach(function(item) {

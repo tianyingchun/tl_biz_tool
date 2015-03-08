@@ -17,6 +17,7 @@ function Manufacturer(i) {
 	this.PageSizeOptions = "24,18,30,60,90";
 	this.PriceRanges = "0-15;16-30;31-50;51-70;71-90;91-";
 	this.SubjectToAcl = false;
+	this.LimitedToStores = false;
 	this.Published = false;
 	this.Deleted = false;
 	this.DisplayOrder = 0;

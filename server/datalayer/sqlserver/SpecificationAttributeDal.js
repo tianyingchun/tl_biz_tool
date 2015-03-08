@@ -28,12 +28,10 @@ function SpecificationAttributeDal() {
      * @return {promise}
      */
     this.addNewSpecificationAttribute = function(specificationAttribute) {
-        var sql = "INSERT INTO SpecificationAttribute( Name ,ParticalViewName ,Remarks ,DisplayOrder) VALUES ({0},{1},{2},{3});SELECT SCOPE_IDENTITY() AS Id;";
+        var sql = "INSERT INTO SpecificationAttribute( Name ,DisplayOrder) VALUES ({0},{1});SELECT SCOPE_IDENTITY() AS Id;";
         return baseDal.executeEntity(SpecificationAttributeModel, [
             sql,
             specificationAttribute.Name,
-            specificationAttribute.ParticalViewName,
-            specificationAttribute.Remarks,
             specificationAttribute.DisplayOrder
         ]).then(function(newSpecificationAttribute) {
             specificationAttribute.Id = newSpecificationAttribute.Id || 0;
@@ -77,7 +75,7 @@ function SpecificationAttributeDal() {
      */
     this.addOrUpdateSpecificationAttributeOption = function(specificationAttributeOption) {
         var checkExistRecordSql = "SELECT  * FROM  SpecificationAttributeOption WHERE SpecificationAttributeId={0} AND dbo.edit_distance(Name, {1})<2 ";
-        var insertRecordSql = "INSERT INTO SpecificationAttributeOption( SpecificationAttributeId , Name , Remarks , DisplayOrder ) VALUES ({0},{1},{2},{3})";
+        var insertRecordSql = "INSERT INTO SpecificationAttributeOption( SpecificationAttributeId , Name , DisplayOrder ) VALUES ({0},{1},{2})";
         // finnaly sql command string.
         var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " " + checkExistRecordSql + " END ELSE BEGIN " + checkExistRecordSql + " END;";
 
@@ -85,7 +83,6 @@ function SpecificationAttributeDal() {
             sql,
             specificationAttributeOption.SpecificationAttributeId,
             specificationAttributeOption.Name,
-            specificationAttributeOption.Remarks,
             specificationAttributeOption.DisplayOrder
         ]);
     };

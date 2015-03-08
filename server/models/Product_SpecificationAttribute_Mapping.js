@@ -7,6 +7,8 @@ function Product_SpecificationAttribute_Mapping(productId, specificationAttribut
 
 	this.ProductId = productId || 0;
 
+	this.AttributeTypeId = 0;
+
 	this.SpecificationAttributeOptionId = specificationAttributeOptionId || 0;
 
 	this.CustomValue = null;

@@ -5,7 +5,6 @@ var logger = require('../../helpers/log');
 var utility = require('../../helpers/utility');
 var dataProvider = require("../../dataProvider");
 var ProductModel = dataProvider.getModel("Product");
-var ProductVariantModel = dataProvider.getModel("ProductVariant");
 var baseDal = require("../baseDal");
 
 var SpecificationAttributeModel = dataProvider.getModel("SpecificationAttribute");
@@ -20,52 +19,18 @@ function ProductDal() {
      * @param  {number} productId 获取指定产品的信息
      */
     this.getProduct = function(productId) {
-        var sql = "SELECT Id,Name,ShortDescription,FullDescription,AdminComment,ProductTemplateId,ShowOnHomePage,MetaKeywords,MetaDescription,MetaTitle,AllowCustomerReviews,ApprovedRatingSum,NotApprovedRatingSum,ApprovedTotalReviews,NotApprovedTotalReviews,SubjectToAcl,Published,Deleted,CreatedOnUtc,UpdatedOnUtc FROM  Product WHERE id={0}";
+        var sql = "Id,ProductTypeId,ParentGroupedProductId,VisibleIndividually,Name,ShortDescription,FullDescription,ProductTemplateId,VendorId,ShowOnHomePage,MetaKeywords,MetaDescription,MetaTitle,AllowCustomerReviews,ApprovedRatingSum,NotApprovedRatingSum,ApprovedTotalReviews,NotApprovedTotalReviews,SubjectToAcl,LimitedToStores,Sku,ManufacturerPartNumber,Gtin,IsGiftCard,GiftCardTypeId,RequireOtherProducts,RequiredProductIds,AutomaticallyAddRequiredProducts,IsDownload,DownloadId,UnlimitedDownloads,MaxNumberOfDownloads,DownloadExpirationDays,DownloadActivationTypeId,HasSampleDownload,SampleDownloadId,HasUserAgreement,UserAgreementText,IsRecurring,RecurringCycleLength,RecurringCyclePeriodId,RecurringTotalCycles,IsRental,RentalPriceLength,RentalPricePeriodId,IsShipEnabled,IsFreeShipping,ShipSeparately,AdditionalShippingCharge,DeliveryDateId,IsTaxExempt,TaxCategoryId,IsTelecommunicationsOrBroadcastingOrElectronicServices,ManageInventoryMethodId,UseMultipleWarehouses,WarehouseId,StockQuantity,DisplayStockAvailability,DisplayStockQuantity,MinStockQuantity,LowStockActivityId,NotifyAdminForQuantityBelow,BackorderModeId,AllowBackInStockSubscriptions,OrderMinimumQuantity,OrderMaximumQuantity,AllowedQuantities,AllowAddingOnlyExistingAttributeCombinations,DisableBuyButton,DisableWishlistButton,AvailableForPreOrder,PreOrderAvailabilityStartDateTimeUtc,CallForPrice,Price,OldPrice,SourcePrice,ProductCost,SpecialPrice,SpecialPriceStartDateTimeUtc,SpecialPriceEndDateTimeUtc,CustomerEntersPrice,MinimumCustomerEnteredPrice,MaximumCustomerEnteredPrice,HasTierPrices,HasDiscountsApplied,Weight,Length,Width,Height,AvailableStartDateTimeUtc,AvailableEndDateTimeUtc,DisplayOrder,Published,Deleted,CreatedOnUtc,UpdatedOnUtc,SourceUrl,SourceInfoComment FROM  Product WHERE id={0}";
         return baseDal.executeEntity(ProductModel, [sql, productId]);
     };
 
     /**
-     * 根据Product sku获取ProductVariant 对象
+     * 根据Product sku获取Product 对象
      * @param  {string} sku 产品唯一的SKU 编号
      */
-    this.getProductVariantBySku = function(sku) {
-        var sql = "SELECT Id,ProductId,Name,Sku,[Description],AdminComment,ManufacturerPartNumber," +
-            " Gtin,IsGiftCard,GiftCardTypeId,RequireOtherProducts,RequiredProductVariantIds," +
-            " AutomaticallyAddRequiredProductVariants,IsDownload,DownloadId,UnlimitedDownloads," +
-            " MaxNumberOfDownloads,DownloadExpirationDays,DownloadActivationTypeId,HasSampleDownload," +
-            " WithDeliveryFee,SampleDownloadId,HasUserAgreement,UserAgreementText,IsRecurring,RecurringCycleLength," +
-            " RecurringCyclePeriodId,RecurringTotalCycles,IsShipEnabled,IsFreeShipping," +
-            " AdditionalShippingCharge,IsTaxExempt,TaxCategoryId,ManageInventoryMethodId," +
-            " StockQuantity,DisplayStockQuantity,MinStockQuantity,LowStockActivityId,NotifyAdminForQuantityBelow," +
-            " BackorderModeId,AllowBackInStockSubscriptions,OrderMinimumQuantity,OrderMaximumQuantity,AllowedQuantities,DisableBuyButton,DisableWishlistButton," +
-            " CallForPrice,Price,OldPrice,ProductCost,SpecialPrice,SpecialPriceStartDateTimeUtc," +
-            " SpecialPriceEndDateTimeUtc,CustomerEntersPrice,MinimumCustomerEnteredPrice,MaximumCustomerEnteredPrice," +
-            " [Weight],[Length],Width,Height,PictureId,AvailableStartDateTimeUtc,AvailableEndDateTimeUtc," +
-            " Published,Deleted,DisplayOrder,CreatedOnUtc,UpdatedOnUtc,AvailableForPreOrder,SourceUrl,SourceInfoComment" +
-            " FROM dbo.ProductVariant WHERE Sku={0}";
-        return baseDal.executeEntity(ProductVariantModel, [sql, sku])
-    };
-
-    /**
-     * 根据Product variant id获取ProductVariant 对象
-     * @param  {number} productVariantId 产品variantId
-     */
-    this.getProductVariantByVariantId = function(productVariantId) {
-        var sql = "SELECT Id,ProductId,Name,Sku,[Description],AdminComment,ManufacturerPartNumber," +
-            " Gtin,IsGiftCard,GiftCardTypeId,RequireOtherProducts,RequiredProductVariantIds," +
-            " AutomaticallyAddRequiredProductVariants,IsDownload,DownloadId,UnlimitedDownloads," +
-            " MaxNumberOfDownloads,DownloadExpirationDays,DownloadActivationTypeId,HasSampleDownload," +
-            " WithDeliveryFee,SampleDownloadId,HasUserAgreement,UserAgreementText,IsRecurring,RecurringCycleLength," +
-            " RecurringCyclePeriodId,RecurringTotalCycles,IsShipEnabled,IsFreeShipping," +
-            " AdditionalShippingCharge,IsTaxExempt,TaxCategoryId,ManageInventoryMethodId," +
-            " StockQuantity,DisplayStockQuantity,MinStockQuantity,LowStockActivityId,NotifyAdminForQuantityBelow," +
-            " BackorderModeId,AllowBackInStockSubscriptions,OrderMinimumQuantity,OrderMaximumQuantity,AllowedQuantities,DisableBuyButton,DisableWishlistButton," +
-            " CallForPrice,Price,OldPrice,ProductCost,SpecialPrice,SpecialPriceStartDateTimeUtc," +
-            " SpecialPriceEndDateTimeUtc,CustomerEntersPrice,MinimumCustomerEnteredPrice,MaximumCustomerEnteredPrice," +
-            " [Weight],[Length],Width,Height,PictureId,AvailableStartDateTimeUtc,AvailableEndDateTimeUtc," +
-            " Published,Deleted,DisplayOrder,CreatedOnUtc,UpdatedOnUtc,AvailableForPreOrder,SourceUrl,SourceInfoComment" +
-            " FROM dbo.ProductVariant  WHERE Id={0}";
-        return baseDal.executeEntity(ProductVariantModel, [sql, productVariantId]);
+    this.getProductBySku = function(sku) {
+        var sql = "Id,ProductTypeId,ParentGroupedProductId,VisibleIndividually,Name,ShortDescription,FullDescription,ProductTemplateId,VendorId,ShowOnHomePage,MetaKeywords,MetaDescription,MetaTitle,AllowCustomerReviews,ApprovedRatingSum,NotApprovedRatingSum,ApprovedTotalReviews,NotApprovedTotalReviews,SubjectToAcl,LimitedToStores,Sku,ManufacturerPartNumber,Gtin,IsGiftCard,GiftCardTypeId,RequireOtherProducts,RequiredProductIds,AutomaticallyAddRequiredProducts,IsDownload,DownloadId,UnlimitedDownloads,MaxNumberOfDownloads,DownloadExpirationDays,DownloadActivationTypeId,HasSampleDownload,SampleDownloadId,HasUserAgreement,UserAgreementText,IsRecurring,RecurringCycleLength,RecurringCyclePeriodId,RecurringTotalCycles,IsRental,RentalPriceLength,RentalPricePeriodId,IsShipEnabled,IsFreeShipping,ShipSeparately,AdditionalShippingCharge,DeliveryDateId,IsTaxExempt,TaxCategoryId,IsTelecommunicationsOrBroadcastingOrElectronicServices,ManageInventoryMethodId,UseMultipleWarehouses,WarehouseId,StockQuantity,DisplayStockAvailability,DisplayStockQuantity,MinStockQuantity,LowStockActivityId,NotifyAdminForQuantityBelow,BackorderModeId,AllowBackInStockSubscriptions,OrderMinimumQuantity,OrderMaximumQuantity,AllowedQuantities,AllowAddingOnlyExistingAttributeCombinations,DisableBuyButton,DisableWishlistButton,AvailableForPreOrder,PreOrderAvailabilityStartDateTimeUtc,CallForPrice,Price,OldPrice,SourcePrice,ProductCost,SpecialPrice,SpecialPriceStartDateTimeUtc,SpecialPriceEndDateTimeUtc,CustomerEntersPrice,MinimumCustomerEnteredPrice,MaximumCustomerEnteredPrice,HasTierPrices,HasDiscountsApplied,Weight,Length,Width,Height,AvailableStartDateTimeUtc,AvailableEndDateTimeUtc,DisplayOrder,Published,Deleted,CreatedOnUtc,UpdatedOnUtc,SourceUrl,SourceInfoComment" +
+            " FROM dbo.Product WHERE Sku={0}";
+        return baseDal.executeEntity(ProductModel, [sql, sku])
     };
     /**
      * add product picture mappings.
@@ -310,47 +275,36 @@ function ProductDal() {
             });
 
             if (newProduct.Id) {
-                // 2. add product variant.
-                insertProductVariant(newProduct, productVariant).then(function(newProductVariant) {
 
-                    // push new message to queue
-                    resultMessagesObj.pushNewMessage("addNewProductVariant", {
-                        productVariantId: newProductVariant.Id
+                var productRelatedTasks = [];
+                // task: add product variant tier price.
+                productRelatedTasks.push(function(callback) {
+                    insertProductTierPrice(newProduct).then(function(result) {
+                        callback(null, result);
+                    }, function(err) {
+                        callback(err);
                     });
+                });
+                // task: add product attributes.
+                productRelatedTasks.push(function(callback) {
+                    insertProductAttributes(newProduct).then(function(result) {
+                        callback(null, result);
+                    }, function(err) {
+                        callback(err);
+                    });
+                });
+                // run product variant related info tasks.
+                async.parallel(productRelatedTasks, function(err, results) {
+                    if (err) {
+                        logger.error("async.parallel within addNewProduct failed!", err);
+                        deferred.reject(err);
+                    } else {
+                        logger.debug("async.parallel within addNewProduct finished!", results);
 
-                    var productRelatedTasks = [];
-                    // task: add product variant tier price.
-                    productRelatedTasks.push(function(callback) {
-                        insertProductVariantTierPrice(newProductVariant).then(function(result) {
-                            callback(null, result);
-                        }, function(err) {
-                            callback(err);
-                        });
-                    });
-                    // task: add product variant attributes.
-                    productRelatedTasks.push(function(callback) {
-                        insertProductVariantAttributes(newProductVariant).then(function(result) {
-                            callback(null, result);
-                        }, function(err) {
-                            callback(err);
-                        });
-                    });
-                    // run product variant related info tasks.
-                    async.parallel(productRelatedTasks, function(err, results) {
-                        if (err) {
-                            logger.error("async.parallel within addNewProduct failed!", err);
-                            deferred.reject(err);
-                        } else {
-                            logger.debug("async.parallel within addNewProduct finished!", results);
+                        resultMessagesObj.pushNewMessage("variantTasks", results, "addNewProductVariant");
 
-                            resultMessagesObj.pushNewMessage("variantTasks", results, "addNewProductVariant");
-
-                            deferred.resolve(resultMessagesObj.getResult());
-                        }
-                    });
-                }, function(err) {
-                    logger.error("insertProductVariant error:", err);
-                    deferred.reject(err);
+                        deferred.resolve(resultMessagesObj.getResult());
+                    }
                 });
             } else {
                 deferred.reject(new Error("insertProduct(product) failed,can't find the new uploaded product id !"));
@@ -371,16 +325,42 @@ function ProductDal() {
         //Short Description.
         product.ShortDescription = preFix + product.ShortDescription;
         //Insert Product
-        var sql = "INSERT INTO Product ( Name , ShortDescription ,  FullDescription , AdminComment , ProductTemplateId ," +
-            " ShowOnHomePage , MetaKeywords , MetaDescription , MetaTitle ," +
-            " AllowCustomerReviews , ApprovedRatingSum , NotApprovedRatingSum ," +
-            " ApprovedTotalReviews , NotApprovedTotalReviews ,SubjectToAcl, Published , Deleted , CreatedOnUtc , UpdatedOnUtc )" +
-            " VALUES  ( {0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18} );SELECT SCOPE_IDENTITY() AS Id;";
+        var sql = "INSERT INTO Product (ProductTypeId,ParentGroupedProductId,VisibleIndividually,Name,ShortDescription,FullDescription,ProductTemplateId,VendorId,ShowOnHomePage,MetaKeywords,MetaDescription,MetaTitle,AllowCustomerReviews,ApprovedRatingSum,NotApprovedRatingSum,ApprovedTotalReviews,NotApprovedTotalReviews,SubjectToAcl,LimitedToStores,Sku,ManufacturerPartNumber,Gtin,IsGiftCard,GiftCardTypeId,RequireOtherProducts,RequiredProductIds,AutomaticallyAddRequiredProducts,IsDownload,DownloadId,UnlimitedDownloads,MaxNumberOfDownloads,DownloadExpirationDays,DownloadActivationTypeId,HasSampleDownload,SampleDownloadId,HasUserAgreement,UserAgreementText,IsRecurring,RecurringCycleLength,RecurringCyclePeriodId,RecurringTotalCycles,IsRental,RentalPriceLength,RentalPricePeriodId,IsShipEnabled,IsFreeShipping,ShipSeparately,AdditionalShippingCharge,DeliveryDateId,IsTaxExempt,TaxCategoryId,IsTelecommunicationsOrBroadcastingOrElectronicServices,ManageInventoryMethodId,UseMultipleWarehouses,WarehouseId,StockQuantity,DisplayStockAvailability,DisplayStockQuantity,MinStockQuantity,LowStockActivityId,NotifyAdminForQuantityBelow,BackorderModeId,AllowBackInStockSubscriptions,OrderMinimumQuantity,OrderMaximumQuantity,AllowedQuantities,AllowAddingOnlyExistingAttributeCombinations,DisableBuyButton,DisableWishlistButton,AvailableForPreOrder,PreOrderAvailabilityStartDateTimeUtc,CallForPrice,Price,OldPrice,SourcePrice,ProductCost,SpecialPrice,SpecialPriceStartDateTimeUtc,SpecialPriceEndDateTimeUtc,CustomerEntersPrice,MinimumCustomerEnteredPrice,MaximumCustomerEnteredPrice,HasTierPrices,HasDiscountsApplied,Weight,Length,Width,Height,AvailableStartDateTimeUtc,AvailableEndDateTimeUtc,DisplayOrder,Published,Deleted,CreatedOnUtc,UpdatedOnUtc,SourceUrl,SourceInfoComment )" +
+            " VALUES  ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}," +
+            "{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31}," +
+            "{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43},{44},{45},{46},{47},{48},{49},{50},{51}," +
+            "{52},{53},{54},{55},{56},{57},{58},{59},{60},{61},{62},{63},{64},{65},{66},{67},{68},{69},{70},{71},{72},{73},{74},{75},{76},{77},{78},{79},{80},{81},{82},{83},{84},{85},{86},{87},{88},{89},{90},{91},{92},{93},{94},{95},{96} );SELECT SCOPE_IDENTITY() AS Id;";
 
-        return baseDal.executeEntity(ProductModel, [sql, product.Name, product.ShortDescription, product.FullDescription, product.AdminComment, product.ProductTemplateId,
+        return baseDal.executeEntity(ProductModel, [sql,
+            product.ProductTypeId, product.ParentGroupedProductId, product.VisibleIndividually, product.Name,
+            product.ShortDescription, product.FullDescription, product.ProductTemplateId, product.VendorId,
             product.ShowOnHomePage, product.MetaKeywords, product.MetaDescription, product.MetaTitle,
             product.AllowCustomerReviews, product.ApprovedRatingSum, product.NotApprovedRatingSum,
-            product.ApprovedTotalReviews, product.NotApprovedTotalReviews, product.SubjectToAcl, product.Published, product.Deleted, product.CreatedOnUtc, product.UpdatedOnUtc
+            product.ApprovedTotalReviews, product.NotApprovedTotalReviews, product.SubjectToAcl,
+            product.LimitedToStores, product.Sku, product.ManufacturerPartNumber, product.Gtin,
+            product.IsGiftCard, product.GiftCardTypeId, product.RequireOtherProducts,
+            product.RequiredProductIds, product.AutomaticallyAddRequiredProducts, product.IsDownload,
+            product.DownloadId, product.UnlimitedDownloads, product.MaxNumberOfDownloads,
+            product.DownloadExpirationDays, product.DownloadActivationTypeId,
+            product.HasSampleDownload, product.SampleDownloadId, product.HasUserAgreement,
+            product.UserAgreementText, product.IsRecurring, product.RecurringCycleLength,
+            product.RecurringCyclePeriodId, product.RecurringTotalCycles, product.IsRental,
+            product.RentalPriceLength, product.RentalPricePeriodId, product.IsShipEnabled,
+            product.IsFreeShipping, product.ShipSeparately, product.AdditionalShippingCharge,
+            product.DeliveryDateId, product.IsTaxExempt, product.TaxCategoryId,
+            product.IsTelecommunicationsOrBroadcastingOrElectronicServices, product.ManageInventoryMethodId,
+            product.UseMultipleWarehouses, product.WarehouseId, product.StockQuantity, product.DisplayStockAvailability,
+            product.DisplayStockQuantity, product.MinStockQuantity, product.LowStockActivityId,
+            product.NotifyAdminForQuantityBelow, product.BackorderModeId, product.AllowBackInStockSubscriptions,
+            product.OrderMinimumQuantity, product.OrderMaximumQuantity, product.AllowedQuantities,
+            product.AllowAddingOnlyExistingAttributeCombinations, product.DisableBuyButton, product.DisableWishlistButton,
+            product.AvailableForPreOrder, product.PreOrderAvailabilityStartDateTimeUtc, product.CallForPrice, product.Price,
+            product.OldPrice, product.SourcePrice, product.ProductCost, product.SpecialPrice,
+            product.SpecialPriceStartDateTimeUtc, product.SpecialPriceEndDateTimeUtc, product.CustomerEntersPrice,
+            product.MinimumCustomerEnteredPrice, product.MaximumCustomerEnteredPrice, product.HasTierPrices,
+            product.HasDiscountsApplied, product.Weight, product.Length, product.Width, product.Height,
+            product.AvailableStartDateTimeUtc, product.AvailableEndDateTimeUtc, product.DisplayOrder, product.Published,
+            product.Deleted, product.CreatedOnUtc, product.UpdatedOnUtc, product.SourceUrl, product.SourceInfoComment
         ]).then(function success(newProduct) {
             if (newProduct != null) {
                 product.Id = newProduct.Id;
@@ -388,76 +368,21 @@ function ProductDal() {
             return product;
         });
     };
-
+ 
     /**
-     * 添加ProductVariant 子产品信息
-     * @param  {object} product ProductModel instance.
-     * @param  {object} variant ProductVariantModel instance.
-     * @return {promise}promise with parameter
+     * 添加产品的Tier Price 给Product
+     * @param  {object} newProduct ProductModel instance.
      */
-    function insertProductVariant(product, variant) {
-        var preFix = "";
-        variant.ProductId = product.Id;
-        variant.Name = preFix + product.Name;
-        variant.Description = preFix + variant.Description;
-        //InsertProductVariant
-        var sql = "INSERT INTO dbo.ProductVariant ( ProductId , Name ,  Sku ,  [Description] ,  AdminComment ," +
-            " ManufacturerPartNumber ,   Gtin ,  IsGiftCard ,   GiftCardTypeId ," +
-            " RequireOtherProducts ,  RequiredProductVariantIds , AutomaticallyAddRequiredProductVariants ," +
-            " IsDownload , DownloadId ,  UnlimitedDownloads , MaxNumberOfDownloads ," +
-            " DownloadExpirationDays , DownloadActivationTypeId , HasSampleDownload , SampleDownloadId ," +
-            " HasUserAgreement ,  UserAgreementText , IsRecurring ,  RecurringCycleLength ," +
-            " RecurringCyclePeriodId , RecurringTotalCycles , IsShipEnabled , IsFreeShipping , AdditionalShippingCharge ," +
-            " WithDeliveryFee , IsTaxExempt ,  TaxCategoryId , ManageInventoryMethodId , StockQuantity ," +
-            " DisplayStockAvailability , DisplayStockQuantity ,  MinStockQuantity , LowStockActivityId ," +
-            " NotifyAdminForQuantityBelow , BackorderModeId , AllowBackInStockSubscriptions ," +
-            " OrderMinimumQuantity , OrderMaximumQuantity ,AllowedQuantities, DisableBuyButton , DisableWishlistButton , CallForPrice ," +
-            " Price ,  OldPrice , ProductCost ,  SpecialPrice , SpecialPriceStartDateTimeUtc , SpecialPriceEndDateTimeUtc ," +
-            " CustomerEntersPrice ,  MinimumCustomerEnteredPrice , MaximumCustomerEnteredPrice , [Weight] ,[Length] ," +
-            " Width , Height , PictureId ,  AvailableStartDateTimeUtc , AvailableEndDateTimeUtc ," +
-            " Published ,  Deleted , DisplayOrder , CreatedOnUtc , UpdatedOnUtc ,  AvailableForPreOrder , SourceUrl , SourceInfoComment" +
-            ") VALUES  ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20}," +
-            "{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31}," +
-            "{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43},{44},{45},{46},{47},{48},{49},{50},{51}," +
-            "{52},{53},{54},{55},{56},{57},{58},{59},{60},{61},{62},{63},{64},{65},{66},{67},{68},{69},{70});SELECT SCOPE_IDENTITY() AS Id;";
-        return baseDal.executeEntity(ProductVariantModel, [sql, variant.ProductId, variant.Name, variant.Sku, variant.Description, variant.AdminComment,
-            variant.ManufacturerPartNumber, variant.Gtin, variant.IsGiftCard, variant.GiftCardTypeId,
-            variant.RequireOtherProducts, variant.RequiredProductVariantIds, variant.AutomaticallyAddRequiredProductVariants,
-            variant.IsDownload, variant.DownloadId, variant.UnlimitedDownloads, variant.MaxNumberOfDownloads,
-            variant.DownloadExpirationDays, variant.DownloadActivationTypeId, variant.HasSampleDownload, variant.SampleDownloadId,
-            variant.HasUserAgreement, variant.UserAgreementText, variant.IsRecurring, variant.RecurringCycleLength,
-            variant.RecurringCyclePeriodId, variant.RecurringTotalCycles, variant.IsShipEnabled, variant.IsFreeShipping, variant.AdditionalShippingCharge, variant.WithDeliveryFee,
-            variant.IsTaxExempt, variant.TaxCategoryId, variant.ManageInventoryMethodId, variant.StockQuantity,
-            variant.DisplayStockAvailability, variant.DisplayStockQuantity, variant.MinStockQuantity, variant.LowStockActivityId,
-            variant.NotifyAdminForQuantityBelow, variant.BackorderModeId, variant.AllowBackInStockSubscriptions,
-            variant.OrderMinimumQuantity, variant.OrderMaximumQuantity, variant.AllowedQuantities, variant.DisableBuyButton, variant.DisableWishlistButton, variant.CallForPrice, ["Decimal", variant.Price],
-            ["Decimal", variant.OldPrice],
-            ["Decimal", variant.ProductCost],
-            ["Decimal", variant.SpecialPrice], variant.SpecialPriceStartDateTimeUtc, variant.SpecialPriceEndDateTimeUtc,
-            variant.CustomerEntersPrice, variant.MinimumCustomerEnteredPrice, variant.MaximumCustomerEnteredPrice, variant.Weight, variant.Length,
-            variant.Width, variant.Height, variant.PictureId, variant.AvailableStartDateTimeUtc, variant.AvailableEndDateTimeUtc,
-            variant.Published, variant.Deleted, variant.DisplayOrder, variant.CreatedOnUtc, variant.UpdatedOnUtc, variant.AvailableForPreOrder, variant.SourceUrl, variant.SourceInfoComment
-        ]).then(function(newVariant) {
-            if (newVariant != null) {
-                variant.Id = newVariant.Id;
-            }
-            return variant;
-        });
-    };
-    /**
-     * 添加产品的Tier Price 给ProductVariant
-     * @param  {object} newVariant ProductVariantModel instance.
-     */
-    function insertProductVariantTierPrice(newVariant) {
+    function insertProductTierPrice(newProduct) {
 
         var deferred = Q.defer();
 
-        var sqlTierPrice = "INSERT INTO dbo.TierPrice (ProductVariantId ,CustomerRoleId,Quantity,Price) VALUES({0},{1},{2},{3})";
+        var sqlTierPrice = "INSERT INTO dbo.TierPrice (ProductId ,StoreId, CustomerRoleId,Quantity,Price) VALUES({0},{1},{2},{3},{4})";
 
-        var tierPrice = newVariant.TierPrices;
+        var tierPrice = newProduct.TierPrices;
         var sql = [];
         var params = [];
-        var seed = 4;
+        var seed = 5;
 
         logger.debug("tierPrice:", tierPrice);
 
@@ -473,13 +398,13 @@ function ProductDal() {
                 };
                 sql.push(_tmp);
             }
-            params.push(newVariant.Id, null, item.Quantity, ["Decimal", item.Price]);
+            params.push(newProduct.Id, 0, null, item.Quantity, ["Decimal", item.Price]);
         };
         params.unshift(sql.join(";"));
 
         baseDal.executeNoneQuery(params).then(function(affectedRows) {
 
-            deferred.resolve("insertProductVariantTierPrice success variantId: `" + newVariant.Id + "`");
+            deferred.resolve("insertProductTierPrice success variantId: `" + newProduct.Id + "`");
 
         }, function(err) {
 
@@ -489,10 +414,10 @@ function ProductDal() {
         return deferred.promise;
     };
     /**
-     * 添加ProductVariant 的attributes 信息,e.g. colorList, sizeList.
-     * @param  {object} newVariant ProductVariantModel instance.
+     * 添加Product 的attributes 信息,e.g. colorList, sizeList.
+     * @param  {object} newProduct ProductModel instance.
      */
-    function insertProductVariantAttributes(newVariant) {
+    function insertProductAttributes(newProduct) {
         // product attributes dal, can be invoid instance cache.
         var productAttribtsDal = dataProvider.getDataAccess("ProductAttributeDal");
 
@@ -501,15 +426,15 @@ function ProductDal() {
         // outscope result messages.
         var resultMessagesObj;
 
-        var pVAMappingSql = "INSERT INTO dbo.ProductVariant_ProductAttribute_Mapping " +
-            "(ProductVariantId , ProductAttributeId ,TextPrompt,IsRequired ,AttributeControlTypeId , DisplayOrder)" +
+        var pVAMappingSql = "INSERT INTO dbo.Product_ProductAttribute_Mapping " +
+            "(ProductId , ProductAttributeId ,TextPrompt,IsRequired ,AttributeControlTypeId , DisplayOrder)" +
             " VALUES ({0},{1},{2},{3},{4},{5}); SELECT SCOPE_IDENTITY() AS Id; ";
 
         productAttribtsDal.getAttributControlTypeIds().then(function(paIds) {
             // { "color": 40, "size": 1, "other": 1 }
             var productAttributeIds = paIds;
             // all attributs. {"color": [  { "title": "Black", "value": "000" }],"size"...}
-            var productAttribts = newVariant.ProductAttribts;
+            var productAttribts = newProduct.ProductAttribts;
 
             var productAttribtsKeys = Object.keys(productAttribts);
 
@@ -535,7 +460,7 @@ function ProductDal() {
                         // product attributes.
                         var attributeAttribtsValues = productAttribts[key];
 
-                        productAttribtsDal.addProductVariantAttributeValues(pvaMapping.Id, key, attributeAttribtsValues).then(function(execResult) {
+                        productAttribtsDal.addProductAttributeValues(pvaMapping.Id, key, attributeAttribtsValues).then(function(execResult) {
                             resultMessages.push(execResult);
                             callback(null);
                         }, function(err) {
@@ -543,19 +468,19 @@ function ProductDal() {
                         });
 
                     }, function(err) {
-                        logger.error("Inoke Insert ProductVariant_ProductAttribute_Mapping Error: ", err);
-                        callback("Inoke Insert ProductVariant_ProductAttribute_Mapping failed!");
+                        logger.error("Inoke Insert Product_ProductAttribute_Mapping Error: ", err);
+                        callback("Inoke Insert Product_ProductAttribute_Mapping failed!");
                     });
                 }, function(err) {
                     logger.error("Invoke AutoCreatedIfNotExist Error: ", err);
-                    callback("Insert ProductVariant Attribute AutoCreatedIfNotExist() failed!" + key);
+                    callback("Insert Product Attribute AutoCreatedIfNotExist() failed!" + key);
                 });
             }, function finnaly(err) {
                 if (err) {
                     deferred.reject(err);
                 } else {
-                    logger.debug("InsertProductVariantAttributes finished!");
-                    resultMessagesObj = baseDal.buildResultMessages("InsertProductVariantAttributes", resultMessages);
+                    logger.debug("InsertProductAttributes finished!");
+                    resultMessagesObj = baseDal.buildResultMessages("InsertProductAttributes", resultMessages);
                     deferred.resolve(resultMessagesObj.getResult());
                 }
             });

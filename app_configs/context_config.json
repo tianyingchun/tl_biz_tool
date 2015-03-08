@@ -10,9 +10,9 @@
           "user": "sa",
           "password": "19861121.lr",
           "server": "TERENCE-PC",
-          "database": "Nop28_test",
-          "connectionTimeout":300000,
-          "requestTimeout":300000
+          "database": "clothesgate_36_test",
+          "connectionTimeout": 300000,
+          "requestTimeout": 300000
         },
         "type": "dropdown",
         "api": {

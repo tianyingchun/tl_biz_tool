@@ -4,7 +4,7 @@ var BaseModel = require("./BaseModel");
 function PVAMapping() {
 	BaseModel.call(this, "PVAMapping");
 
-	this.ProductVariantId = 0;
+	this.ProductId = 0;
 
 	this.ProductAttributeId = 0;
 

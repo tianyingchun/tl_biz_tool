@@ -5,12 +5,8 @@ function SpecificationAttribute(name) {
 
 	BaseModel.call(this, "SpecificationAttribute");
 
-	this.Name = name || "";
-
-	this.ParticalViewName = "_FilterSpecItemCheckbox";
-
-	this.Remarks = "工具自动创建";
-
+	this.Name = name || ""; 
+	
 	this.DisplayOrder = 20;
 };
 

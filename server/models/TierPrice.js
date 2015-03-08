@@ -7,12 +7,18 @@ var BaseModel = require("./BaseModel");
  * @param {number} parentCategoryId parent category id.
  * @param {number} displayOrder     display order.
  */
-function TierPrice(productVariantId, quantity, price) {
+function TierPrice(productId, quantity, price) {
 	BaseModel.call(this, "TierPrice");
 	/// <summary>
 	/// Gets or sets the product variant identifier
 	/// </summary>
-	this.ProductVariantId = productVariantId;
+	this.ProductId = productId;
+
+	/// <summary>
+	/// Gets or sets default store id.
+	/// </summary>
+	this.StoreId = 0;
+
 	/// <summary>
 	/// Gets or sets the customer role identifier  default is NULL for all customer roles.
 	/// </summary>
