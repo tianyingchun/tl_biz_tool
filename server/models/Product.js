@@ -37,9 +37,9 @@ function Product(productId, name, sku, description, price, oldPrice, sourcePrice
 	this.FullDescription = description;
 
 	/// <summary>
-	/// Default value=2
+	/// Default value=1
 	/// </summary>
-	this.ProductTemplateId = 2;
+	this.ProductTemplateId = 1;
 
 	/// <summary>
 	/// Gets or sets a vendor identifier
@@ -230,7 +230,7 @@ function Product(productId, name, sku, description, price, oldPrice, sourcePrice
 	/// <summary>
 	/// Gets or sets a value indicating whether the entity is free shipping
 	/// </summary>
-	this.IsFreeShipping = true;
+	this.IsFreeShipping = false;
 
 	/// <summary>
 	/// Gets or sets a value this product should be shipped separately (each item)
@@ -370,7 +370,7 @@ function Product(productId, name, sku, description, price, oldPrice, sourcePrice
 	/// <summary>
 	/// 产品抓取的时候ALIBABA来源的单件产品的价格
 	/// </summary>
-	this.SourcePrice = sourcePrice;
+	this.SourcePrice = sourcePrice || 0;
 	/// <summary>
 	/// Gets or sets the product cost
 	/// </summary>

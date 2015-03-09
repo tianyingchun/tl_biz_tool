@@ -129,17 +129,21 @@ function ProductDataProvider() {
      */
     this.addNewProduct = function(crawlProduct, categoryIds, manufacturerIds) {
 
-        manufacturerIds = (manufacturerIds && manufacturerIds.length) ? manufacturerIds : [productAutoUploadCfg.defaultManufacturerId.value];
+        // manufacturerIds = (manufacturerIds && manufacturerIds.length) ? manufacturerIds : [productAutoUploadCfg.defaultManufacturerId.value];
+        // now we don't need manufacturerids.
+        manufacturerIds = [];
+
         // first we need to check if existed the same product with provider sku(productId).
         var sku = crawlProduct.sku;
         var deferred = Q.defer();
-        productDal.getProductBySku(sku).then(function(testProductVariant) {
-            // logger.debug("getProductVariantBySku: ", testProductVariant);
-            if (!testProductVariant || !testProductVariant.Id) {
+        productDal.getProductBySku(sku).then(function(testProduct) {
+            // logger.debug("getProductBySku: ", testProduct);
+            if (!testProduct || !testProduct.Id) {
                 // product name.
                 var name = crawlProduct.title;
 
-                var productModel = new ProductModel();
+                //Product(productId, name, sku, description,....)
+                var productModel = new ProductModel(0, name, sku);
 
                 productModel.Name = name;
 
@@ -192,7 +196,7 @@ function ProductDataProvider() {
                 var finnalResultMessage;
 
                 // Add product basic information and product variant information.
-                productDal.addNewProduct(productModel, productModel).then(function(result) {
+                productDal.addNewProduct(productModel).then(function(result) {
 
                     // temporary save add new product completed result messages.
                     finnalResultMessage = result;

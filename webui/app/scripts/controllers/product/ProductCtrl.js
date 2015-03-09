@@ -5,24 +5,29 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
         $scope.list = [];
         var allCategories = {};
         var promise = CatalogService.getAllCategories();
-        promise.then(function (result) {
+        promise.then(function(result) {
 
             result = result.data;
-            angular.forEach(result, function (item) {
+            angular.forEach(result, function(item) {
                 item.Name = item.Name.trim();
                 allCategories[item.Id] = angular.copy(item);
             })
 
-            angular.forEach(result, function (item) {
+            angular.forEach(result, function(item) {
                 var temp = item;
                 item.displayName = item.Name;
-                while (temp.ParentCategoryId != 0) {
-                    item.displayName = allCategories[temp.ParentCategoryId].Name + ' -> ' + item.displayName.trim();
-                    temp = allCategories[temp.ParentCategoryId];
+                while (temp && temp.ParentCategoryId != 0) {
+                    var parent = allCategories[temp.ParentCategoryId];
+                    if (parent) {
+                        item.displayName = parent.Name + ' -> ' + item.displayName.trim();
+                    } else {
+                        item.displayName = item.displayName.trim();
+                    }
+                    temp = parent;
                 }
             })
 
-            result.sort(function (a, b) {
+            result.sort(function(a, b) {
                 if (a.displayName >= b.displayName) {
                     return 1;
                 } else {
@@ -31,17 +36,17 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
             })
             $scope.categoryList = angular.copy(result);
 
-        }).finally(function () {
+        }).finally(function() {
             $scope.$emit("changeSpinnerStatus", false);
         });
 
         this.uploadFile = function() {
             helper.file_upload.click();
             var scope = $scope;
-            helper.file_upload.change(function () {
+            helper.file_upload.change(function() {
                 var self = this;
                 // not in angular $scope. so need use $apply to exec this callback
-                $scope.$apply(function () {
+                $scope.$apply(function() {
                     var path = $(self).val();
                     $(self).val('');
 
@@ -95,18 +100,18 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                 if (product) {
                     product.categories = angular.copy(data);
                 } else { // select categor for all product url
-                    angular.forEach($scope.list, function (item) {
+                    angular.forEach($scope.list, function(item) {
                         item.categories = angular.copy(data);
                     })
                 }
 
                 console.log(category);
-            }, function (data) {
+            }, function(data) {
                 console.log(data)
             })
         };
 
-        this.editCategory = function (item) {
+        this.editCategory = function(item) {
             var product = item;
             if (product.categories && product.categories.length > 0) {
                 var dialogScope = $scope.$new();
@@ -116,11 +121,11 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                     template: "selectCategory"
                 });
 
-                dialog.then(function (data) {
+                dialog.then(function(data) {
                     if (product) {
                         product.categories = data;
                     }
-                }, function (data) {
+                }, function(data) {
                     console.log(data)
                 })
             }
@@ -134,7 +139,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
         function uploadProduct(product) {
             if (product.categories && product.categories.length > 0) {
                 var categoryIds = [];
-                angular.forEach(product.categories, function (item) {
+                angular.forEach(product.categories, function(item) {
                     if (item.selected === true) {
                         categoryIds.push(item.Id);
                     }
@@ -159,7 +164,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
             }
         };
 
-        this.remove = function (index) {
+        this.remove = function(index) {
             if (index > -1) {
                 $scope.list.splice(index, 1);
             }
@@ -173,7 +178,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
         }
 
 
-        this.handle = function (item) {
+        this.handle = function(item) {
             if (item.url && item.url.length > 0) {
                 $scope.$emit('changeSpinnerStatus', true);
 
@@ -184,27 +189,27 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                     $scope.$emit('changeSpinnerStatus', false);
                     return;
                 }
-                promise.then(function (results) {
+                promise.then(function(results) {
                     item.success = true;
                     item.status = statusEnum.PROCESS_SUCCESS;
-                }, function (err) {
+                }, function(err) {
                     item.error = true;
                     item.errorMessage = err.message;
                     item.status = statusEnum.PROCESS_FAILED;
-                }).finally(function () {
+                }).finally(function() {
                     $scope.$emit('changeSpinnerStatus', false);
                 })
             }
         };
 
         var stopBatchFlag = false;
-        this.doBatch = function () {
+        this.doBatch = function() {
             $scope.doingBatch = true;
             if ($scope.finalList && $scope.finalList.length > 0) {
                 $log.info("start do a batch");
                 stopBatchFlag = false;
                 var list = $scope.finalList;
-                async.eachSeries(list, function (item, callback) {
+                async.eachSeries(list, function(item, callback) {
                     if (stopBatchFlag === true) {
                         callback("停止批处理");
                         return;
@@ -219,17 +224,17 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
                         return;
                     }
                     item.status = statusEnum.PROCESSING;
-                    promise.then(function (results) {
+                    promise.then(function(results) {
                         item.success = true;
                         item.status = statusEnum.PROCESS_SUCCESS;
                         callback();
-                    }, function (err) {
+                    }, function(err) {
                         item.error = true;
                         item.errorMessage = err.message;
                         item.status = statusEnum.PROCESS_FAILED;
                         callback();
                     })
-                }, function (err) {
+                }, function(err) {
                     $scope.doingBatch = false;
                     $log.error(err);
                 })
@@ -240,7 +245,7 @@ app.controller("ProductCtrl", ["$scope", "$log", "FileService", "ProductService"
             }
         };
 
-        this.stopBatch = function () {
+        this.stopBatch = function() {
             stopBatchFlag = true;
         };
 

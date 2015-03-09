@@ -110,7 +110,7 @@ function SpecificationAttributeDal() {
         var checkExistRecordSql = "SELECT  * FROM  Product_SpecificationAttribute_Mapping WHERE ProductId={0} AND SpecificationAttributeOptionId = {1} ";
         // while for existed logics we need to re set AllowFiltering according by current specAttributeWhiteList config in  autoupload_config.specification_attribute_white_list
         var updateAllowFilteringSql = "UPDATE Product_SpecificationAttribute_Mapping SET AllowFiltering={3} WHERE ProductId={0} AND SpecificationAttributeOptionId = {1} ";
-        var insertRecordSql = "INSERT INTO Product_SpecificationAttribute_Mapping (ProductId,  SpecificationAttributeOptionId, CustomValue, AllowFiltering, ShowOnProductPage, DisplayOrder ) VALUES  ({0},{1},{2},{3},{4},{5})";
+        var insertRecordSql = "INSERT INTO Product_SpecificationAttribute_Mapping (ProductId, AttributeTypeId, SpecificationAttributeOptionId, CustomValue, AllowFiltering, ShowOnProductPage, DisplayOrder ) VALUES  ({0},{1},{2},{3},{4},{5},{6})";
 
         // finnaly sql command string.
         var sql = "IF NOT EXISTS (" + checkExistRecordSql + ") BEGIN " + insertRecordSql + " " + checkExistRecordSql + " END ELSE BEGIN " + updateAllowFilteringSql + " " + checkExistRecordSql + " END;";
@@ -126,6 +126,7 @@ function SpecificationAttributeDal() {
             return baseDal.executeEntity(Product_SpecificationAttribute_MappingModel, [
                 sql,
                 productSAP.ProductId,
+                productSAP.AttributeTypeId,
                 productSAP.SpecificationAttributeOptionId,
                 productSAP.CustomValue,
                 productSAP.AllowFiltering,

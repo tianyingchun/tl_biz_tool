@@ -8,7 +8,7 @@ var baseDal = require("../baseDal");
 function CatalogDal() {
 	// 返回所有的分类
 	this.getAllCatagory = function() {
-		var sql = "SELECT Id,Name,ParentCategoryId,DisplayOrder FROM Category";
+		var sql = "SELECT Id,Name,ParentCategoryId,DisplayOrder FROM Category WHERE DELETED=0";
 		return baseDal.executeList(CatalogModel, [sql]);
 	};
 
