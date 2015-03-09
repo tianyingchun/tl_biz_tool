@@ -406,7 +406,7 @@ function ProductDal() {
 
         baseDal.executeNoneQuery(params).then(function(affectedRows) {
 
-            deferred.resolve("insertProductTierPrice success variantId: `" + newProduct.Id + "`");
+            deferred.resolve("insertProductTierPrice success productId: `" + newProduct.Id + "`");
 
         }, function(err) {
 
