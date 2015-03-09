@@ -273,7 +273,6 @@ function ProductDal() {
             resultMessagesObj = baseDal.buildResultMessages("addNewProduct", {
                 productId: newProduct.Id
             });
-            logger.error("error:",newProduct, resultMessagesObj.getResult());
             if (newProduct.Id) {
 
                 var productRelatedTasks = [];

@@ -49,7 +49,7 @@ function ProductDataProvider() {
 
         return productDal.getProductBySku(sku).then(function(product) {
             if (product) {
-                return product.ProductId;
+                return product.Id;
             } else {
                 logger.debug("Can't find product by sku:" + sku);
                 throw new Error("Can't find product by sku:" + sku);
@@ -320,7 +320,6 @@ function ProductDataProvider() {
     this.updateProductSpecificationAttributes = function(sku, specAttribts) {
         // find existed product info.
         return this.getProductIdBySku(sku).then(function(productId) {
-
             return productDal.addProductSpecificationAttributes(productId, specAttribts)
                 .then(function(result) {
                     logger.debug("updateProductSpecificationAttributes finished!");
