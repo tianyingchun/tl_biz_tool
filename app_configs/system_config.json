@@ -19,10 +19,10 @@
                 "title": "正式环境连接",
                 "description": "Sqlserver db正式环境连接",
                 "value": {
-                    "user": "clothesgate_test",
-                    "password": "clothesgate_test",
-                    "server": "calantha.arvixe.com",
-                    "database": "clothesgate_test",
+                    "user": "sa",
+                    "password": "19861121.lr",
+                    "server": "TERENCE-PC",
+                    "database": "clothesgate_36_test",
                     "connectionTimeout":300000,
                     "requestTimeout":300000
                 }

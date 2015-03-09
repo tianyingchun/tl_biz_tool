@@ -12,7 +12,7 @@
       "saveto_dir": {
         "title": "图片抓取到哪儿?",
         "description": "用来保存图片抓取后临到保存到当前电脑的指定目录",
-        "value": "C:\\Users\\yingchun\\Documents\\Tencent Files\\981919332\\FileRecv\\coats-outerware\\coats & outerware 181-200",
+        "value": "C:\\Users\\yingchun\\Documents\\temp_pics",
         "type": "textbox"
       }
     }

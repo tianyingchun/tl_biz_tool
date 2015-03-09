@@ -175,7 +175,7 @@ function PictureDataProvider() {
 
                     var newSize = size;
                     if ((size.height > maxSize) || (size.width > maxSize)) {
-                        newSize = _this.calculateDimensions(size, maxSize);
+                        newSize = calculateDimensions(size, maxSize);
                     }
                     deferred.resolve({
                         filepath: picturePath,
