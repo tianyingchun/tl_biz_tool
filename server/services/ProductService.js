@@ -41,6 +41,14 @@ function ProductDataProvider() {
         return productDal.getPicturesByProductId(productId);
     };
     /**
+     * automatically publish products from specificed category.
+     * @param  {number} categoryId category id
+     * @return {promise}
+     */
+    this.pushlishProducts = function(categoryId) {
+        return productDal.pushlishProducts(categoryId);
+    };
+    /**
      * Get product Id by product variant sku
      * @param  {string} sku product variant sku.
      * @return {promise}

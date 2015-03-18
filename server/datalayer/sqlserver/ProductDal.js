@@ -33,6 +33,16 @@ function ProductDal() {
         return baseDal.executeEntity(ProductModel, [sql, sku])
     };
     /**
+     * automatically publish products from specificed category.
+     * if current product has pictures.
+     * @param  {number} categoryId category id
+     * @return {promise}
+     */
+    this.pushlishProducts = function(categoryId) {
+        var sql = "UPDATE dbo.Product SET Published=1 WHERE Deleted=0 AND Published=0 AND Id IN (SELECT ProductId FROM dbo.Product_Category_Mapping WHERE CategoryId={0}) AND Id IN (SELECT ProductId FROM dbo.Product_Picture_Mapping) ";
+        return baseDal.executeNoneQuery([sql, categoryId]);
+    };
+    /**
      * add product picture mappings.
      * @param {array} pictures [{pictureId:1111, displayOrder:0}]  required, passed target picture id, auto add all pictures mapping for this product
      */
@@ -369,7 +379,7 @@ function ProductDal() {
             return product;
         });
     };
- 
+
     /**
      * 添加产品的Tier Price 给Product
      * @param  {object} newProduct ProductModel instance.

@@ -33,6 +33,25 @@ router.post("/auto_extract_products", function(req, res) {
         base.apiErrorOutput(res, base.getErrorModel(400, "the extract page url is required!"));
     }
 });
+
+/**
+ * API:  /product/auto_publish_products_of_category
+ * auto pushlish product of specificed category.
+ */
+router.post("/auto_publish_products_of_category", function(req, res) {
+    logger.debug('controller: auto_publish_products_of_category...');
+    var reqBody = req.body;
+    var categoryId = reqBody && reqBody.categoryId || "";
+    if (categoryId) {
+        productService.pushlishProducts(categoryId).then(function(result) {
+            base.apiOkOutput(res, result);
+        }, function(err) {
+            base.apiErrorOutput(res, err);
+        })
+    } else {
+        base.apiErrorOutput(res, base.getErrorModel(400, "the categoryId is required!"));
+    }
+});
 /**
  * API: /product/auto_extract_upload_products
  * {url:"",categoryIds:[],manufacturerIds:[]}
